@@ -11,18 +11,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("SECRET_KEY", default="dev-secret-change-me")
 DEBUG = env("DEBUG")
 
-# Allowed hosts configuration for different deployment platforms
-ALLOWED_HOSTS = ["*"]  # Permissive for development
-if not DEBUG:
-    # Add specific hosts for production
-    FLY_APP_NAME = env("FLY_APP_NAME", default=None)
-    if FLY_APP_NAME:
-        ALLOWED_HOSTS = [
-            f"{FLY_APP_NAME}.fly.dev",
-            f"{FLY_APP_NAME}.flycast",
-            "localhost",
-            "127.0.0.1",
-        ]
+# Allowed hosts configuration
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -93,10 +83,5 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Media files configuration
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
-# Fly.io volume support
-if env("FLY_APP_NAME", default=None):
-    # Use volume mount in Fly.io
-    MEDIA_ROOT = "/app/media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = '/order/'
