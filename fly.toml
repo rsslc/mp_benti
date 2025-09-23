@@ -1,0 +1,42 @@
+# Fly.io configuration for MP Benti Django application
+
+app = "mpbenti"
+primary_region = "syd"  # Sydney region
+
+[build]
+
+[env]
+  DEBUG = "False"
+  DJANGO_SUPERUSER_USERNAME = "admin"
+  DJANGO_SUPERUSER_EMAIL = "admin@mpbenti.com.au"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/admin/login/"
+
+[mounts]
+  source = "mpbenti_media"
+  destination = "/app/media"
+
+[[vm]]
+  memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[deploy]
+  release_command = "python manage.py migrate --noinput"
+
+[[statics]]
+  guest_path = "/app/staticfiles"
+  url_prefix = "/static/"
