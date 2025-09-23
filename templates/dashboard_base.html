@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>{% block title %}Dashboard | MP Benti{% endblock %}</title>
+<link href="{% static 'css/dist/styles.css' %}" rel="stylesheet"></head>
+<body class="bg-gray-100"><div class="min-h-screen grid md:grid-cols-[240px_1fr]">
+<aside class="bg-white border-r">
+  <div class="px-4 py-4 border-b flex items-center gap-3">
+    <img src="{% static 'images/logo.png' %}" class="h-8 w-auto" alt=""/>
+    <strong>Dashboard</strong>
+  </div>
+  <nav class="p-2 text-sm">
+    <a class="block px-4 py-2 hover:bg-gray-100" href="/dashboard/">Overview</a>
+    <a class="block px-4 py-2 hover:bg-gray-100" href="/dashboard/orders/">Orders</a>
+    <a class="block px-4 py-2 hover:bg-gray-100" href="/dashboard/products/">Products</a>
+    <a class="block px-4 py-2 hover:bg-gray-100" href="/dashboard/categories/">Categories</a>
+    <a class="block px-4 py-2 hover:bg-gray-100" href="/dashboard/customers/">Customers</a>
+    {% if user.is_superuser %}
+    <a class="block px-4 py-2 hover:bg-gray-100" href="/dashboard/settings/">Site Settings</a>
+    {% endif %}
+    <a class="block px-4 py-2 hover:bg-gray-100" href="/">Back to home</a>
+  </nav>
+</aside>
+<main class="p-6">{% block content %}{% endblock %}</main></div></body></html>

@@ -1,0 +1,29 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Delete Product - Dashboard | MP Benti{% endblock %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-4">Delete Product</h1>
+
+<div class="card p-6 max-w-md">
+  <p class="mb-4">Are you sure you want to delete <strong>{{ product.name }}</strong>?</p>
+
+  <div class="text-sm text-gray-600 mb-6">
+    <p><strong>Category:</strong> {{ product.category.name }}</p>
+    {% if product.description %}
+      <p><strong>Description:</strong> {{ product.description }}</p>
+    {% endif %}
+    {% if product.price_ex_gst %}
+      <p><strong>Price:</strong> A$ {{ product.price_ex_gst }} (Ex GST)</p>
+    {% endif %}
+  </div>
+
+  <form method="post" class="flex gap-2">
+    {% csrf_token %}
+    <button type="submit" class="btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+      Yes, Delete
+    </button>
+    <a href="{% url 'products_list' %}" class="btn btn-outline">Cancel</a>
+  </form>
+</div>
+
+{% endblock %}

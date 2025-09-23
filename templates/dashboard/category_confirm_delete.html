@@ -1,0 +1,93 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Delete Category — Dashboard{% endblock %}
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Delete Category</h1>
+    <a href="{% url 'categories_list' %}" class="btn btn-outline">Back to Categories</a>
+  </div>
+
+  <div class="card p-6">
+    <div class="flex items-start space-x-4">
+      <div class="flex-shrink-0">
+        <svg class="w-12 h-12 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+
+      <div class="flex-1">
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">
+          Are you sure you want to delete "{{ category.name }}"?
+        </h2>
+
+        <div class="space-y-3 text-sm text-gray-600">
+          <div class="flex justify-between">
+            <span>Category type:</span>
+            <span class="font-medium">{% if category.parent %}Subcategory of "{{ category.parent.name }}"{% else %}Parent category{% endif %}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span>Subcategories:</span>
+            <span class="font-medium">{{ category.children.count }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span>Products:</span>
+            <span class="font-medium">{{ category.products.count }}</span>
+          </div>
+
+          {% if category.image %}
+          <div class="flex justify-between">
+            <span>Has image:</span>
+            <span class="font-medium text-green-600">Yes</span>
+          </div>
+          {% endif %}
+        </div>
+
+        {% if category.children.exists or category.products.exists %}
+        <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded">
+          <h3 class="text-sm font-medium text-red-800 mb-1">Cannot Delete</h3>
+          <p class="text-sm text-red-700">
+            {% if category.children.exists %}
+              This category has {{ category.children.count }} subcategor{{ category.children.count|pluralize:"y,ies" }}. Delete the subcategories first.
+            {% endif %}
+            {% if category.products.exists %}
+              {% if category.children.exists %}<br>{% endif %}
+              This category contains {{ category.products.count }} product{{ category.products.count|pluralize }}. Move or delete the products first.
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="flex justify-end space-x-3 mt-6">
+          <a href="{% url 'categories_list' %}" class="btn btn-outline">Cancel</a>
+          <button type="button" class="btn bg-gray-400 text-white cursor-not-allowed" disabled>
+            Cannot Delete
+          </button>
+        </div>
+
+        {% else %}
+
+        <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+          <p class="text-sm text-yellow-800">
+            <strong>Warning:</strong> This action cannot be undone. The category and its image will be permanently deleted.
+          </p>
+        </div>
+
+        <form method="post" class="mt-6">
+          {% csrf_token %}
+          <div class="flex justify-end space-x-3">
+            <a href="{% url 'categories_list' %}" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn bg-red-600 hover:bg-red-700 text-white">
+              Delete Category
+            </button>
+          </div>
+        </form>
+
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

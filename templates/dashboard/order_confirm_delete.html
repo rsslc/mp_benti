@@ -1,0 +1,65 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Delete Order - Dashboard | MP Benti{% endblock %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-4">Delete Order</h1>
+
+<div class="card p-6 max-w-2xl">
+  <p class="mb-4">Are you sure you want to delete <strong>Order #{{ order.id }}</strong>?</p>
+
+  <div class="text-sm text-gray-600 mb-6 space-y-2">
+    <p><strong>Customer:</strong> {{ order.customer.username }}{% if order.customer.customer %} - {{ order.customer.customer.business_name }}{% endif %}</p>
+    <p><strong>Date:</strong> {{ order.created_at|date:"F j, Y g:i A" }}</p>
+    <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+    {% if order.notes %}
+      <p><strong>Notes:</strong> {{ order.notes }}</p>
+    {% endif %}
+
+    {% if order.lines.exists %}
+      <div class="mt-4">
+        <p><strong>Items ({{ order.lines.count }}):</strong></p>
+        <div class="bg-gray-50 p-3 rounded mt-2">
+          {% for line in order.lines.all %}
+            <div class="flex justify-between">
+              <span>{{ line.product.name }} × {{ line.quantity }}</span>
+              {% if line.product.price_inc_gst %}
+                {% widthratio line.product.price_inc_gst 1 line.quantity as line_total %}
+                <span>A$ {{ line_total|floatformat:2 }}</span>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <div class="border-t pt-2 mt-2 font-bold flex justify-between">
+            <span>Total:</span>
+            <span>A$ {{ order_total|floatformat:2 }}</span>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <p><strong>Items:</strong> No items in this order</p>
+    {% endif %}
+  </div>
+
+  <div class="bg-red-50 border border-red-200 rounded p-4 mb-6">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">Warning</h3>
+        <p class="text-sm text-red-700 mt-1">This action cannot be undone. The order and all its items will be permanently deleted.</p>
+      </div>
+    </div>
+  </div>
+
+  <form method="post" class="flex gap-2">
+    {% csrf_token %}
+    <button type="submit" class="btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+      Yes, Delete Order
+    </button>
+    <a href="{% url 'order_detail' order.id %}" class="btn btn-outline">Cancel</a>
+  </form>
+</div>
+
+{% endblock %}

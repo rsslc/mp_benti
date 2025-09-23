@@ -1,0 +1,170 @@
+{% extends "dashboard_base.html" %}
+{% block title %}{% if is_edit %}Edit Order{% else %}Add Order{% endif %} - Dashboard | MP Benti{% endblock %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-4">{% if is_edit %}Edit Order #{{ order.id }}{% else %}Add New Order{% endif %}</h1>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="mb-4 p-4 rounded {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<form method="post" class="space-y-6">
+  {% csrf_token %}
+
+  <!-- Order Information -->
+  <div class="card p-6">
+    <h3 class="text-lg font-bold mb-4">Order Information</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="customer" class="block text-sm font-medium mb-1">Customer *</label>
+        <select id="customer" name="customer" required class="w-full border px-3 py-2 rounded">
+          <option value="">Select a customer</option>
+          {% for user in users %}
+            <option value="{{ user.id }}" {% if form_data.customer == user.id %}selected{% endif %}>
+              {{ user.username }}{% if user.customer %} - {{ user.customer.business_name }}{% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="status" class="block text-sm font-medium mb-1">Status</label>
+        <select id="status" name="status" class="w-full border px-3 py-2 rounded">
+          {% for status_value, status_display in order_statuses %}
+            <option value="{{ status_value }}" {% if form_data.status == status_value %}selected{% endif %}>
+              {{ status_display }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <label for="notes" class="block text-sm font-medium mb-1">Notes</label>
+      <textarea id="notes" name="notes" rows="3"
+        class="w-full border px-3 py-2 rounded"
+        placeholder="Order notes...">{{ form_data.notes|default:'' }}</textarea>
+    </div>
+  </div>
+
+  <!-- Products Section -->
+  <div class="card p-6">
+    <h3 class="text-lg font-bold mb-4">Order Items</h3>
+
+    {% if products %}
+      <div class="space-y-6">
+        {% regroup products by category as product_categories %}
+        {% for category in product_categories %}
+          <div class="border rounded p-4">
+            <h4 class="font-bold text-md mb-3 text-gray-700">{{ category.grouper.name }}</h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {% for product in category.list %}
+                <div class="border rounded p-3 bg-gray-50">
+                  <div class="flex justify-between items-start mb-2">
+                    <div class="flex-1">
+                      <h5 class="font-medium text-sm">{{ product.name }}</h5>
+                      {% if product.description %}
+                        <p class="text-xs text-gray-600 mt-1">{{ product.description|truncatechars:50 }}</p>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="flex justify-between items-center">
+                    <div class="text-sm">
+                      {% if product.price_inc_gst %}
+                        <span class="font-medium">A$ {{ product.price_inc_gst|floatformat:2 }}</span>
+                      {% else %}
+                        <span class="text-gray-500">No price</span>
+                      {% endif %}
+                      {% if product.unit %}
+                        <span class="text-gray-500">/ {{ product.unit }}</span>
+                      {% endif %}
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                      <label for="quantity_{{ product.id }}" class="text-xs">Qty:</label>
+                      <input type="number"
+                        id="quantity_{{ product.id }}"
+                        name="quantity_{{ product.id }}"
+                        min="0"
+                        step="1"
+                        value=""
+                        class="w-16 border px-2 py-1 rounded text-sm quantity-input"
+                        data-product-id="{{ product.id }}"
+                        placeholder="0">
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-500 text-center py-8">No available products found.</p>
+    {% endif %}
+  </div>
+
+  <!-- Form Actions -->
+  <div class="flex gap-2 pt-6 border-t">
+    <button type="submit" class="btn btn-primary">
+      {% if is_edit %}Update Order{% else %}Create Order{% endif %}
+    </button>
+    {% if is_edit %}
+      <a href="{% url 'order_detail' order.id %}" class="btn btn-outline">Cancel</a>
+    {% else %}
+      <a href="{% url 'dashboard_orders' %}" class="btn btn-outline">Cancel</a>
+    {% endif %}
+  </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Populate existing quantities for edit mode
+    {% if is_edit and form_data %}
+        {% for key, value in form_data.items %}
+            {% if 'quantity_' in key %}
+                const input = document.querySelector('input[name="{{ key }}"]');
+                if (input) {
+                    input.value = '{{ value }}';
+                }
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    // Simple client-side total calculation
+    const quantityInputs = document.querySelectorAll('input[name^="quantity_"]');
+
+    function updateTotal() {
+        let total = 0;
+        quantityInputs.forEach(input => {
+            const quantity = parseInt(input.value) || 0;
+            if (quantity > 0) {
+                const productDiv = input.closest('.border.rounded.p-3');
+                const priceText = productDiv.querySelector('.font-medium');
+                if (priceText) {
+                    const price = parseFloat(priceText.textContent.replace('A$ ', '')) || 0;
+                    total += price * quantity;
+                }
+            }
+        });
+
+        console.log('Estimated Total: A$', total.toFixed(2));
+    }
+
+    quantityInputs.forEach(input => {
+        input.addEventListener('input', updateTotal);
+    });
+
+    // Calculate initial total
+    updateTotal();
+});
+</script>
+
+{% endblock %}

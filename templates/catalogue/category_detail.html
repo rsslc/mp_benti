@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}{{ category.name }} — MP Benti{% endblock %}
+{% block content %}
+
+<!-- Breadcrumb Navigation -->
+<nav aria-label="Breadcrumb" class="mb-6">
+  <ol class="flex items-center space-x-1 text-sm">
+    {% for crumb in breadcrumbs %}
+      {% if crumb.url %}
+        <li class="flex items-center">
+          <a href="{{ crumb.url }}" class="px-2 py-1 rounded text-blue-600 hover:text-blue-800 hover:bg-gray-100 transition-colors duration-200">
+            {{ crumb.name }}
+          </a>
+          <svg class="w-4 h-4 mx-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+          </svg>
+        </li>
+      {% else %}
+        <li class="px-2 py-1 text-gray-900 font-medium">{{ crumb.name }}</li>
+      {% endif %}
+    {% endfor %}
+  </ol>
+</nav>
+
+<!-- Category Header with Image -->
+{% if category.image %}
+<div class="mb-6">
+  <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-full h-64 object-cover rounded-lg mb-4">
+</div>
+{% endif %}
+
+<h1 class="text-3xl font-bold mb-6">{{ category.name }}</h1>
+
+{% if category.description %}
+  <p class="text-gray-600 mb-6">{{ category.description }}</p>
+{% endif %}
+
+<!-- Show child categories if this is a parent category -->
+<!--{% if child_categories %}-->
+<!--  <div class="mb-8">-->
+<!--    <h2 class="text-xl font-semibold mb-4">Subcategories</h2>-->
+<!--    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">-->
+<!--      {% for child in child_categories %}-->
+<!--        <a href="{{ child.get_absolute_url }}" class="card hover:shadow-md transition-shadow p-4 block">-->
+<!--          <h3 class="font-medium">{{ child.name }}</h3>-->
+<!--          {% if child.description %}-->
+<!--            <p class="text-sm text-gray-600 mt-1">{{ child.description }}</p>-->
+<!--          {% endif %}-->
+<!--          <p class="text-xs text-gray-500 mt-2">{{ child.products.count }} product{{ child.products.count|pluralize }}</p>-->
+<!--        </a>-->
+<!--      {% endfor %}-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <!-- Show all products from child categories -->
+  <div x-data="{ openSections: {} }">
+    {% for child in child_categories %}
+      {% if child.products.all %}
+        <section class="mb-6">
+          <button
+            @click="openSections['{{ child.id }}'] = !openSections['{{ child.id }}']"
+            class="w-full flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          >
+            <div class="flex items-center space-x-3">
+              <h3 class="text-lg font-semibold text-gray-700">{{ child.name }}</h3>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                {{ child.products.count }} product{{ child.products.count|pluralize }}
+              </span>
+            </div>
+            <svg
+              class="w-5 h-5 text-gray-500 transition-transform duration-200"
+              :style="{ transform: openSections['{{ child.id }}'] ? 'rotate(180deg)' : 'rotate(0deg)' }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          <div
+            x-show="openSections['{{ child.id }}']"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform scale-95"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 transform scale-100"
+            x-transition:leave-end="opacity-0 transform scale-95"
+            class="mt-4"
+          >
+            <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {% for p in child.products.all %}
+              <article class="card overflow-hidden">
+                {% if p.image_main %}
+                  <img src="{{ p.image_main.url }}" class="w-full h-40 object-cover" alt="{{ p.name }}"/>
+                {% else %}
+                  <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">No image</div>
+                {% endif %}
+                <div class="p-4">
+                  <h4 class="font-semibold">{{ p.name }}</h4>
+                  <div class="mt-1 text-sm text-gray-600">
+                    {% if p.unit %}<span>{{ p.unit }}</span>{% endif %}
+                    {% if p.pack_size %}<span class="ml-2">{{ p.pack_size }}</span>{% endif %}
+                  </div>
+                  <div class="mt-2 text-sm">
+                    {% if site_settings.show_prices %}
+                      {% if p.price_inc_gst %}
+                        <span class="font-medium">A$ {{ p.price_inc_gst }}</span>
+                        <span class="text-gray-500">(inc GST)</span>
+                      {% elif p.price_ex_gst %}
+                        <span class="font-medium">A$ {{ p.price_ex_gst }}</span>
+                        <span class="text-gray-500">(ex GST)</span>
+                      {% endif %}
+                    {% else %}
+                      <span class="text-gray-600 italic">{{ site_settings.price_hidden_message }}</span>
+                    {% endif %}
+                  </div>
+                  <div class="mt-2 text-xs {% if not p.available %}text-red-600{% endif %}">
+                    {% if p.available %}Available{% else %}Unavailable{% endif %}
+                  </div>
+                </div>
+              </article>
+              {% endfor %}
+            </div>
+          </div>
+        </section>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Show products directly (for child categories or parent categories with direct products) -->
+{% if not child_categories and products %}
+  <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+    {% for p in products %}
+    <article class="card overflow-hidden">
+      {% if p.image_main %}
+        <img src="{{ p.image_main.url }}" class="w-full h-40 object-cover" alt="{{ p.name }}"/>
+      {% else %}
+        <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">No image</div>
+      {% endif %}
+      <div class="p-4">
+        <h4 class="font-semibold">{{ p.name }}</h4>
+        <div class="mt-1 text-sm text-gray-600">
+          {% if p.unit %}<span>{{ p.unit }}</span>{% endif %}
+          {% if p.pack_size %}<span class="ml-2">{{ p.pack_size }}</span>{% endif %}
+        </div>
+        <div class="mt-2 text-sm">
+          {% if site_settings.show_prices %}
+            {% if p.price_inc_gst %}
+              <span class="font-medium">A$ {{ p.price_inc_gst }}</span>
+              <span class="text-gray-500">(inc GST)</span>
+            {% elif p.price_ex_gst %}
+              <span class="font-medium">A$ {{ p.price_ex_gst }}</span>
+              <span class="text-gray-500">(ex GST)</span>
+            {% endif %}
+          {% else %}
+            <span class="text-gray-600 italic">{{ site_settings.price_hidden_message }}</span>
+          {% endif %}
+        </div>
+        <div class="mt-2 text-xs {% if not p.available %}text-red-600{% endif %}">
+          {% if p.available %}Available{% else %}Unavailable{% endif %}
+        </div>
+      </div>
+    </article>
+    {% empty %}
+    <p class="text-gray-600 col-span-full">No products in this category.</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if not products and not child_categories %}
+  <p class="text-gray-600">No products available in this category.</p>
+{% endif %}
+
+{% endblock %}

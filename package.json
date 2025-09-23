@@ -1,0 +1,5 @@
+{
+  "name":"mpbenti-site","version":"1.0.0","private":true,
+  "scripts":{"dev":"tailwindcss -i ./static/css/input.css -o ./static/css/dist/styles.css --watch","build":"tailwindcss -i ./static/css/input.css -o ./static/css/dist/styles.css --minify"},
+  "devDependencies":{"autoprefixer":"^10.4.20","postcss":"^8.4.47","tailwindcss":"^3.4.10"}
+}

@@ -1,0 +1,9 @@
+@tailwind base;@tailwind components;@tailwind utilities;
+:root { --brand: #0b7a46; }
+.btn{@apply inline-flex items-center px-4 py-2 rounded font-medium}
+.btn-primary{@apply bg-gray-900 text-white}
+.btn-outline{@apply border border-gray-300 text-gray-900}
+.card{@apply bg-white border border-gray-200 rounded-xl shadow-sm}
+.table{@apply w-full text-left}
+.table th{@apply px-3 py-2 border-b text-sm font-semibold text-gray-600}
+.table td{@apply px-3 py-2 border-b}

@@ -1,0 +1,70 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Customers - Dashboard | MP Benti{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold">Customers</h1>
+  <a href="{% url 'account_add' %}" class="btn btn-primary">Add New Account</a>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Business</th>
+        <th>Type</th>
+        <th>Joined</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td class="font-medium">{{ user.username }}</td>
+        <td>{{ user.email|default:"-" }}</td>
+        <td>{{ user.get_full_name|default:"-" }}</td>
+        <td>
+          {% if user.customer %}
+            {{ user.customer.business_name }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>
+          {% if user.is_superuser %}
+            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Superadmin</span>
+          {% elif user.is_staff %}
+            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">Staff</span>
+          {% else %}
+            <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">Customer</span>
+          {% endif %}
+        </td>
+        <td>{{ user.date_joined|date:"Y-m-d" }}</td>
+        <td>
+          <div class="flex gap-2">
+            <a href="{% url 'account_edit' user.id %}" class="text-blue-600 hover:underline">Edit</a>
+            {% if user != request.user %}
+              <a href="{% url 'account_delete' user.id %}" class="text-red-600 hover:underline">Delete</a>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" class="text-center py-8 text-gray-500">No accounts found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

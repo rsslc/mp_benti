@@ -1,0 +1,7 @@
+{% extends "dashboard_base.html" %}{% block title %}Customers — Dashboard{% endblock %}{% block content %}
+{% load static %}
+<h1 class="text-2xl font-bold mb-4">Customers</h1>
+<div class="card overflow-hidden"><table class="table"><thead><tr><th>Business</th><th>Username</th><th>Phone</th></tr></thead><tbody>
+{% for c in customers %}<tr><td>{{ c.business_name }}</td><td>{{ c.user.username }}</td><td>{{ c.phone }}</td></tr>{% empty %}<tr><td colspan="3" class="text-gray-500">No customers yet.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

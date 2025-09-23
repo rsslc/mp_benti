@@ -1,0 +1,8 @@
+{% extends "dashboard_base.html" %}{% block title %}Overview — Dashboard{% endblock %}{% block content %}
+<h1 class="text-2xl font-bold mb-6">Overview</h1>
+<div class="grid sm:grid-cols-3 gap-4">
+  <div class="card p-4"><div class="text-sm text-gray-600">New Orders</div><div class="text-2xl font-semibold">{{ stats.new }}</div></div>
+  <div class="card p-4"><div class="text-sm text-gray-600">Processing</div><div class="text-2xl font-semibold">{{ stats.processing }}</div></div>
+  <div class="card p-4"><div class="text-sm text-gray-600">Fulfilled</div><div class="text-2xl font-semibold">{{ stats.fulfilled }}</div></div>
+</div>
+{% endblock %}

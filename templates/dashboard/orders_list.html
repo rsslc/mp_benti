@@ -1,0 +1,129 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Orders — Dashboard{% endblock %}
+{% block content %}
+
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold">Orders</h1>
+  <a href="{% url 'order_add' %}" class="btn btn-primary">Add New Order</a>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="mb-4 p-4 rounded {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<!-- Search and Filter Section -->
+<div class="card p-4 mb-6">
+  <form method="get" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">Search</label>
+      <input type="text" name="search" value="{{ search }}"
+        placeholder="Customer name, order ID..."
+        class="w-full border px-3 py-2 rounded">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Status</label>
+      <select name="status" class="w-full border px-3 py-2 rounded">
+        <option value="">All Statuses</option>
+        {% for status_value, status_display in order_statuses %}
+          <option value="{{ status_value }}" {% if status_filter == status_value %}selected{% endif %}>
+            {{ status_display }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Date From</label>
+      <input type="date" name="date_from" value="{{ date_from }}"
+        class="w-full border px-3 py-2 rounded">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Date To</label>
+      <input type="date" name="date_to" value="{{ date_to }}"
+        class="w-full border px-3 py-2 rounded">
+    </div>
+
+    <div class="flex items-end gap-2">
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <a href="{% url 'dashboard_orders' %}" class="btn btn-outline">Clear</a>
+    </div>
+  </form>
+</div>
+
+<!-- Orders Table -->
+<div class="card overflow-x-auto">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Order #</th>
+        <th>Customer</th>
+        <th>Business</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Items</th>
+        <th>Total</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td class="font-medium">#{{ o.id }}</td>
+        <td>{{ o.customer.username }}</td>
+        <td>
+          {% if o.customer.customer %}
+            {{ o.customer.customer.business_name }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>{{ o.created_at|date:"Y-m-d H:i" }}</td>
+        <td>
+          {% if o.status == 'new' %}
+            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">{{ o.get_status_display }}</span>
+          {% elif o.status == 'processing' %}
+            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">{{ o.get_status_display }}</span>
+          {% elif o.status == 'fulfilled' %}
+            <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">{{ o.get_status_display }}</span>
+          {% else %}
+            <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">{{ o.get_status_display }}</span>
+          {% endif %}
+        </td>
+        <td>{{ o.lines.count }}</td>
+        <td>
+          {% if o.lines.exists %}
+            A$ {% for line in o.lines.all %}{% if line.product.price_inc_gst %}{{ line.product.price_inc_gst|floatformat:2 }}{% endif %}{% if not forloop.last %} + {% endif %}{% endfor %}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>
+          <div class="flex gap-2">
+            <a href="{% url 'order_detail' o.id %}" class="text-blue-600 hover:underline">View</a>
+            <a href="{% url 'order_edit' o.id %}" class="text-blue-600 hover:underline">Edit</a>
+            <a href="{% url 'order_delete' o.id %}" class="text-red-600 hover:underline">Delete</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" class="text-center py-8 text-gray-500">
+          {% if search or status_filter or date_from or date_to %}
+            No orders found matching your filters.
+          {% else %}
+            No orders yet. <a href="{% url 'order_add' %}" class="text-blue-600 hover:underline">Create the first one!</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

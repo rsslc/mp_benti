@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Products — MP Benti{% endblock %}
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6">Product Categories</h1>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+  {% for category in parent_categories %}
+  <div class="card overflow-hidden hover:shadow-lg transition-shadow duration-200">
+    <a href="{{ category.get_absolute_url }}" class="block">
+      {% if category.image %}
+        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-full h-40 object-cover">
+      {% else %}
+        <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+          No image
+        </div>
+      {% endif %}
+    </a>
+    <div class="p-6 text-center">
+      <h2 class="text-xl font-semibold mb-2">{{ category.name }}</h2>
+      {% if category.description %}
+        <p class="text-sm text-gray-600 mb-3">{{ category.description }}</p>
+      {% endif %}
+      {% with child_count=category.children.count %}
+        {% if child_count > 0 %}
+          <p class="text-xs text-gray-500">{{ child_count }} subcategor{{ child_count|pluralize:"y,ies" }}</p>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-gray-600 col-span-full">No categories available.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

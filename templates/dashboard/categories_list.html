@@ -1,0 +1,128 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Categories — Dashboard{% endblock %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Categories</h1>
+    <a href="{% url 'category_add' %}" class="btn btn-primary">Add Category</a>
+  </div>
+
+  <!-- Parent Categories -->
+  <div class="card p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Parent Categories</h2>
+    {% if parent_categories %}
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="border-b">
+              <th class="text-left py-2 px-3">Image</th>
+              <th class="text-left py-2 px-3">Name</th>
+              <th class="text-left py-2 px-3">Slug</th>
+              <th class="text-left py-2 px-3">Description</th>
+              <th class="text-left py-2 px-3">Subcategories</th>
+              <th class="text-left py-2 px-3">Products</th>
+              <th class="text-left py-2 px-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for category in parent_categories %}
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-2 px-3">
+                {% if category.image %}
+                  <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-8 h-8 object-cover rounded">
+                {% else %}
+                  <div class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
+                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                {% endif %}
+              </td>
+              <td class="py-2 px-3 font-medium">{{ category.name }}</td>
+              <td class="py-2 px-3 text-sm text-gray-600">{{ category.slug|default:"—" }}</td>
+              <td class="py-2 px-3 text-sm text-gray-600">
+                {% if category.description %}
+                  {{ category.description|truncatewords:8 }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td class="py-2 px-3 text-sm">{{ category.children.count }}</td>
+              <td class="py-2 px-3 text-sm">{{ category.products.count }}</td>
+              <td class="py-2 px-3">
+                <div class="flex gap-2">
+                  <a href="{% url 'category_edit' category.id %}" class="text-blue-600 hover:text-blue-800 text-sm">Edit</a>
+                  <a href="{% url 'category_delete' category.id %}" class="text-red-600 hover:text-red-800 text-sm">Delete</a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-gray-600">No parent categories yet. <a href="{% url 'category_add' %}" class="text-blue-600 hover:underline">Create one</a></p>
+    {% endif %}
+  </div>
+
+  <!-- Child Categories -->
+  <div class="card p-6">
+    <h2 class="text-xl font-semibold mb-4">Subcategories</h2>
+    {% if child_categories %}
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="border-b">
+              <th class="text-left py-2 px-3">Image</th>
+              <th class="text-left py-2 px-3">Name</th>
+              <th class="text-left py-2 px-3">Parent</th>
+              <th class="text-left py-2 px-3">Slug</th>
+              <th class="text-left py-2 px-3">Description</th>
+              <th class="text-left py-2 px-3">Products</th>
+              <th class="text-left py-2 px-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for category in child_categories %}
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-2 px-3">
+                {% if category.image %}
+                  <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-8 h-8 object-cover rounded">
+                {% else %}
+                  <div class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
+                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                {% endif %}
+              </td>
+              <td class="py-2 px-3 font-medium">{{ category.name }}</td>
+              <td class="py-2 px-3 text-sm text-blue-600">{{ category.parent.name }}</td>
+              <td class="py-2 px-3 text-sm text-gray-600">{{ category.slug|default:"—" }}</td>
+              <td class="py-2 px-3 text-sm text-gray-600">
+                {% if category.description %}
+                  {{ category.description|truncatewords:8 }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td class="py-2 px-3 text-sm">{{ category.products.count }}</td>
+              <td class="py-2 px-3">
+                <div class="flex gap-2">
+                  <a href="{% url 'category_edit' category.id %}" class="text-blue-600 hover:text-blue-800 text-sm">Edit</a>
+                  <a href="{% url 'category_delete' category.id %}" class="text-red-600 hover:text-red-800 text-sm">Delete</a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-gray-600">No subcategories yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

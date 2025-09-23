@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Place an Order — MP Benti{% endblock %}
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6">Place an Order</h1>
+{% if error %}
+  <p class="text-red-600 mb-4">{{ error }}</p>
+{% endif %}
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Main Content -->
+  <div class="lg:col-span-2">
+
+<input type="text" id="orderSearch" placeholder="Search products..."
+  class="mb-4 w-full border px-3 py-2 rounded" />
+
+<div id="expandButtons" class="mb-4 space-x-2">
+  <button type="button" onclick="expandAll()"
+    class="btn btn-primary">
+    Expand All
+  </button>
+  <button type="button" onclick="collapseAll()"
+    class="btn btn-outline">
+    Collapse All
+  </button>
+</div>
+
+<form id="orderForm" method="post" class="space-y-4" x-data>
+  {% csrf_token %}
+  {% for parent_cat in parent_categories %}
+  <div x-data="{ open: false, searching: false }" class="border rounded category-container">
+    <button type="button" @click="open = !open" x-show="!searching"
+      class="w-full flex justify-between items-center px-4 py-2 bg-gray-100 category-header">
+      <span class="font-semibold">{{ parent_cat.name }}</span>
+      <span x-text="open ? '−' : '+'"></span>
+    </button>
+    <div x-show="open || searching" class="p-4 space-y-4 products-container">
+
+      {% for child_cat in parent_cat.children.all %}
+      <div class="border-l-2 border-gray-200 pl-4">
+        <h4 class="font-medium text-gray-700 mb-2">{{ child_cat.name }}</h4>
+        <div class="space-y-2">
+          {% for p in child_cat.products.all %}
+          <div class="product-row card p-3 flex items-center justify-between transition-colors" id="product_{{ p.id }}">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold text-sm">{{ p.name }}</h3>
+                <span class="selected-indicator hidden bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
+                  ✓ Added
+                </span>
+              </div>
+              <p class="text-xs text-gray-600">
+                {{ p.pack_size }}
+                {% if site_settings.show_prices and p.price_inc_gst %} — A$ {{ p.price_inc_gst }} inc GST{% endif %}
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              {% if site_settings.show_prices and p.price_inc_gst %}
+                <span class="text-sm font-medium">A$ {{ p.price_inc_gst }}</span>
+              {% elif not site_settings.show_prices %}
+                <span class="text-xs text-gray-600 italic">{{ site_settings.price_hidden_message }}</span>
+              {% endif %}
+              <input type="number"
+                name="qty_{{ p.id }}"
+                min="0"
+                value="0"
+                data-product-id="{{ p.id }}"
+                data-product-name="{{ p.name }}"
+                data-product-price="{% if p.price_inc_gst %}{{ p.price_inc_gst }}{% else %}0{% endif %}"
+                data-pack-size="{{ p.pack_size }}"
+                class="quantity-input w-16 border rounded px-2 py-1 text-sm"
+                onchange="updateOrderSummary()">
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+
+      {% comment %}Products directly in parent category (backward compatibility){% endcomment %}
+      {% if parent_cat.products.all %}
+      <div class="space-y-2">
+        {% for p in parent_cat.products.all %}
+        <div class="product-row card p-4 flex items-center justify-between transition-colors" id="product_{{ p.id }}">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h3 class="font-semibold">{{ p.name }}</h3>
+              <span class="selected-indicator hidden bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
+                ✓ Added
+              </span>
+            </div>
+            <p class="text-sm text-gray-600">
+              {{ p.pack_size }}
+              {% if site_settings.show_prices and p.price_inc_gst %} — A$ {{ p.price_inc_gst }} inc GST{% endif %}
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            {% if site_settings.show_prices and p.price_inc_gst %}
+              <span class="text-sm font-medium">A$ {{ p.price_inc_gst }}</span>
+            {% elif not site_settings.show_prices %}
+              <span class="text-xs text-gray-600 italic">{{ site_settings.price_hidden_message }}</span>
+            {% endif %}
+            <input type="number"
+              name="qty_{{ p.id }}"
+              min="0"
+              value="0"
+              data-product-id="{{ p.id }}"
+              data-product-name="{{ p.name }}"
+              data-product-price="{% if p.price_inc_gst %}{{ p.price_inc_gst }}{% else %}0{% endif %}"
+              data-pack-size="{{ p.pack_size }}"
+              class="quantity-input w-20 border rounded px-2 py-1"
+              onchange="updateOrderSummary()">
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+  {% endfor %}
+      <div class="flex justify-between items-center mt-6">
+        <button type="button" onclick="clearCart()" class="btn btn-outline" id="clearCartBtn" style="display: none;">
+          Clear Cart
+        </button>
+        <button type="submit" class="btn btn-primary" id="submitOrderBtn" disabled>
+          Review Order
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Order Summary Sidebar -->
+  <div class="lg:col-span-1">
+    <div class="card p-6 sticky top-4" id="orderSummary">
+      <h3 class="text-lg font-bold mb-4">Your Order</h3>
+
+      <div id="orderItems" class="space-y-3 mb-4">
+        <p class="text-gray-500 text-center py-8" id="emptyCart">
+          No items selected yet
+        </p>
+      </div>
+
+      <div class="border-t pt-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="font-medium">Items:</span>
+          <span id="itemCount">0</span>
+        </div>
+        <div class="flex justify-between items-center text-lg font-bold">
+          <span>Total:</span>
+          <span id="orderTotal">A$ 0.00</span>
+        </div>
+      </div>
+
+      <div class="mt-4 text-sm text-gray-600">
+        <p>• Select quantities for the products you want to order</p>
+        <p>• Review your order before submitting</p>
+        <p>• Paolo will contact you to confirm delivery</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/alpinejs" defer></script>
+<script>
+// Order state management
+let orderState = {
+  items: {},
+  total: 0,
+  itemCount: 0
+};
+
+function expandAll() {
+  document.querySelectorAll('#orderForm .category-container').forEach(cat => {
+    if (cat._x_dataStack && cat._x_dataStack[0]) {
+      cat._x_dataStack[0].open = true;
+    }
+  });
+}
+
+function collapseAll() {
+  document.querySelectorAll('#orderForm .category-container').forEach(cat => {
+    if (cat._x_dataStack && cat._x_dataStack[0]) {
+      cat._x_dataStack[0].open = false;
+    }
+  });
+}
+
+function updateOrderSummary() {
+  const orderItemsContainer = document.getElementById('orderItems');
+  const emptyCart = document.getElementById('emptyCart');
+  const itemCountSpan = document.getElementById('itemCount');
+  const orderTotalSpan = document.getElementById('orderTotal');
+  const submitBtn = document.getElementById('submitOrderBtn');
+  const clearBtn = document.getElementById('clearCartBtn');
+
+  // Reset order state
+  orderState.items = {};
+  orderState.total = 0;
+  orderState.itemCount = 0;
+
+  // Get all quantity inputs
+  const quantityInputs = document.querySelectorAll('.quantity-input');
+
+  quantityInputs.forEach(input => {
+    const quantity = parseInt(input.value) || 0;
+    const productId = input.dataset.productId;
+    const productName = input.dataset.productName;
+    const productPrice = parseFloat(input.dataset.productPrice) || 0;
+    const packSize = input.dataset.packSize;
+
+    // Update visual indicators on product cards
+    const productCard = document.getElementById(`product_${productId}`);
+    const indicator = productCard.querySelector('.selected-indicator');
+
+    if (quantity > 0) {
+      // Add to order state
+      orderState.items[productId] = {
+        name: productName,
+        price: productPrice,
+        quantity: quantity,
+        packSize: packSize,
+        total: productPrice * quantity
+      };
+      orderState.total += productPrice * quantity;
+      orderState.itemCount += quantity;
+
+      // Show visual indicators
+      productCard.classList.add('bg-green-50', 'border-green-200');
+      indicator.classList.remove('hidden');
+    } else {
+      // Remove visual indicators
+      productCard.classList.remove('bg-green-50', 'border-green-200');
+      indicator.classList.add('hidden');
+    }
+  });
+
+  // Update order summary display
+  if (orderState.itemCount > 0) {
+    emptyCart.style.display = 'none';
+
+    // Clear and rebuild order items
+    orderItemsContainer.innerHTML = '';
+
+    for (const [productId, item] of Object.entries(orderState.items)) {
+      const itemElement = document.createElement('div');
+      itemElement.className = 'flex justify-between items-center py-2 border-b border-gray-100';
+      itemElement.innerHTML = `
+        <div class="flex-1">
+          <p class="font-medium text-sm">${item.name}</p>
+          <p class="text-xs text-gray-600">${item.packSize}</p>
+        </div>
+        <div class="text-right">
+          <p class="text-sm">${item.quantity} × A$ ${item.price.toFixed(2)}</p>
+          <p class="font-medium text-sm">A$ ${item.total.toFixed(2)}</p>
+        </div>
+      `;
+      orderItemsContainer.appendChild(itemElement);
+    }
+
+    // Show controls
+    submitBtn.disabled = false;
+    clearBtn.style.display = 'block';
+  } else {
+    emptyCart.style.display = 'block';
+    orderItemsContainer.innerHTML = '<p class="text-gray-500 text-center py-8" id="emptyCart">No items selected yet</p>';
+    submitBtn.disabled = true;
+    clearBtn.style.display = 'none';
+  }
+
+  // Update totals
+  itemCountSpan.textContent = orderState.itemCount;
+  orderTotalSpan.textContent = `A$ ${orderState.total.toFixed(2)}`;
+}
+
+function clearCart() {
+  if (confirm('Are you sure you want to clear all items from your cart?')) {
+    document.querySelectorAll('.quantity-input').forEach(input => {
+      input.value = 0;
+    });
+    updateOrderSummary();
+  }
+}
+
+// Search functionality
+document.getElementById('orderSearch').addEventListener('input', function() {
+  let term = this.value.toLowerCase();
+  let categories = document.querySelectorAll('#orderForm .category-container');
+  let expandButtons = document.getElementById('expandButtons');
+
+  // Hide expand/collapse buttons during search
+  expandButtons.style.display = term !== '' ? 'none' : '';
+
+  categories.forEach(cat => {
+    // Update Alpine's searching state
+    cat._x_dataStack[0].searching = term !== '';
+
+    if (term === '') {
+      // No search - show all categories and products
+      cat.style.display = '';
+      cat.querySelectorAll('.product-row').forEach(prod => {
+        prod.style.display = '';
+      });
+    } else {
+      // Search active - check for matches
+      let hasMatch = false;
+      cat.querySelectorAll('.product-row').forEach(row => {
+        if (row.innerText.toLowerCase().includes(term)) {
+          row.style.display = '';
+          hasMatch = true;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Show/hide entire category based on matches
+      cat.style.display = hasMatch ? '' : 'none';
+    }
+  });
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  updateOrderSummary();
+});
+</script>
+{% endblock %}

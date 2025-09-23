@@ -1,0 +1,168 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Order #{{ order.id }} - Dashboard | MP Benti{% endblock %}
+{% block content %}
+
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold">Order #{{ order.id }}</h1>
+  <div class="flex gap-2">
+    <a href="{% url 'order_edit' order.id %}" class="btn btn-primary">Edit Order</a>
+    <a href="{% url 'order_delete' order.id %}" class="btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete</a>
+    <a href="{% url 'dashboard_orders' %}" class="btn btn-outline">Back to Orders</a>
+  </div>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="mb-4 p-4 rounded {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Order Information -->
+  <div class="lg:col-span-2">
+    <div class="card p-6 mb-6">
+      <h2 class="text-lg font-bold mb-4">Order Information</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Order ID</label>
+          <p class="font-medium">#{{ order.id }}</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Date Created</label>
+          <p>{{ order.created_at|date:"F j, Y g:i A" }}</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Status</label>
+          <p>
+            {% if order.status == 'new' %}
+              <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">{{ order.get_status_display }}</span>
+            {% elif order.status == 'processing' %}
+              <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-sm">{{ order.get_status_display }}</span>
+            {% elif order.status == 'fulfilled' %}
+              <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-sm">{{ order.get_status_display }}</span>
+            {% else %}
+              <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm">{{ order.get_status_display }}</span>
+            {% endif %}
+          </p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Total Items</label>
+          <p>{{ order.lines.count }}</p>
+        </div>
+      </div>
+
+      {% if order.notes %}
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-600">Notes</label>
+        <p class="bg-gray-50 p-3 rounded">{{ order.notes }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Order Items -->
+    <div class="card p-6">
+      <h2 class="text-lg font-bold mb-4">Order Items</h2>
+      {% if order.lines.exists %}
+        <div class="overflow-x-auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>Line Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for line in order.lines.all %}
+              <tr>
+                <td class="font-medium">{{ line.product.name }}</td>
+                <td>{{ line.product.category.name }}</td>
+                <td>
+                  {% if line.product.price_inc_gst %}
+                    A$ {{ line.product.price_inc_gst|floatformat:2 }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td>{{ line.quantity }}</td>
+                <td>
+                  {% if line.product.price_inc_gst %}
+                    {% widthratio line.product.price_inc_gst 1 line.quantity as line_total %}
+                    A$ {{ line_total|floatformat:2 }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+              <tr class="border-t-2 font-bold">
+                <td colspan="4" class="text-right">Order Total:</td>
+                <td>A$ {{ order_total|floatformat:2 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-gray-500 text-center py-8">No items in this order.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Customer Information -->
+  <div>
+    <div class="card p-6">
+      <h2 class="text-lg font-bold mb-4">Customer Information</h2>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Username</label>
+          <p class="font-medium">{{ order.customer.username }}</p>
+        </div>
+
+        {% if order.customer.first_name or order.customer.last_name %}
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Name</label>
+          <p>{{ order.customer.first_name }} {{ order.customer.last_name }}</p>
+        </div>
+        {% endif %}
+
+        {% if order.customer.email %}
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Email</label>
+          <p>{{ order.customer.email }}</p>
+        </div>
+        {% endif %}
+
+        {% if order.customer.customer %}
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Business Name</label>
+          <p class="font-medium">{{ order.customer.customer.business_name }}</p>
+        </div>
+
+        {% if order.customer.customer.phone %}
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Phone</label>
+          <p>{{ order.customer.customer.phone }}</p>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Account Type</label>
+          <p>
+            {% if order.customer.is_staff %}
+              <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Staff</span>
+            {% else %}
+              <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">Customer</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

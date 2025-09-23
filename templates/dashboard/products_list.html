@@ -1,0 +1,123 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Products — Dashboard{% endblock %}
+{% block content %}
+
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold">Products</h1>
+  <a href="{% url 'product_add' %}" class="btn btn-primary">Add New Product</a>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="mb-4 p-4 rounded {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<!-- Search and Filter Section -->
+<div class="card p-4 mb-6">
+  <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">Search</label>
+      <input type="text" name="search" value="{{ search }}"
+        placeholder="Search products..."
+        class="w-full border px-3 py-2 rounded">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Category</label>
+      <select name="category" class="w-full border px-3 py-2 rounded">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat.id }}" {% if category_filter == cat.id|stringformat:"s" %}selected{% endif %}>
+            {{ cat.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Availability</label>
+      <select name="available" class="w-full border px-3 py-2 rounded">
+        <option value="">All</option>
+        <option value="true" {% if available_filter == 'true' %}selected{% endif %}>Available</option>
+        <option value="false" {% if available_filter == 'false' %}selected{% endif %}>Unavailable</option>
+      </select>
+    </div>
+
+    <div class="flex items-end gap-2">
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <a href="{% url 'products_list' %}" class="btn btn-outline">Clear</a>
+    </div>
+  </form>
+</div>
+
+<!-- Products Table -->
+<div class="card overflow-x-auto">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Unit</th>
+        <th>Pack Size</th>
+        <th>Price (Ex GST)</th>
+        <th>Price (Inc GST)</th>
+        <th>Available</th>
+        <th>Stock</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td>
+          {% if p.image_main %}
+            <img src="{{ p.image_main.url }}" alt="{{ p.name }}" class="w-8 h-8 object-cover rounded">
+          {% else %}
+            <div class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
+              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          {% endif %}
+        </td>
+        <td class="font-medium">{{ p.name }}</td>
+        <td>{{ p.category.name }}</td>
+        <td>{{ p.unit|default:"-" }}</td>
+        <td>{{ p.pack_size|default:"-" }}</td>
+        <td>{% if p.price_ex_gst %}A$ {{ p.price_ex_gst }}{% else %}-{% endif %}</td>
+        <td>{% if p.price_inc_gst %}A$ {{ p.price_inc_gst }}{% else %}-{% endif %}</td>
+        <td>
+          {% if p.available %}
+            <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Available</span>
+          {% else %}
+            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Unavailable</span>
+          {% endif %}
+        </td>
+        <td>{{ p.stock_quantity|default:"-" }}</td>
+        <td>
+          <div class="flex gap-2">
+            <a href="{% url 'product_edit' p.id %}" class="text-blue-600 hover:underline">Edit</a>
+            <a href="{% url 'product_delete' p.id %}" class="text-red-600 hover:underline">Delete</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="10" class="text-center py-8 text-gray-500">
+          {% if search or category_filter or available_filter %}
+            No products found matching your filters.
+          {% else %}
+            No products yet. <a href="{% url 'product_add' %}" class="text-blue-600 hover:underline">Add the first one!</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

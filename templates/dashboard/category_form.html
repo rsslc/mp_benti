@@ -1,0 +1,110 @@
+{% extends "dashboard_base.html" %}
+{% block title %}{% if is_edit %}Edit Category{% else %}Add Category{% endif %} — Dashboard{% endblock %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">{% if is_edit %}Edit Category{% else %}Add Category{% endif %}</h1>
+    <a href="{% url 'categories_list' %}" class="btn btn-outline">Back to Categories</a>
+  </div>
+
+  <div class="card p-6">
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="name" class="block text-sm font-medium mb-1">Category Name *</label>
+          <input type="text" id="name" name="name"
+                 value="{% if is_edit %}{{ category.name }}{% elif form_data %}{{ form_data.name }}{% endif %}"
+                 class="w-full border px-3 py-2 rounded focus:border-gray-900" required>
+        </div>
+
+        <div>
+          <label for="slug" class="block text-sm font-medium mb-1">Slug</label>
+          <input type="text" id="slug" name="slug"
+                 value="{% if is_edit %}{{ category.slug }}{% elif form_data %}{{ form_data.slug }}{% endif %}"
+                 class="w-full border px-3 py-2 rounded focus:border-gray-900"
+                 placeholder="auto-generated-from-name">
+          <p class="text-xs text-gray-500 mt-1">Leave blank to auto-generate from name</p>
+        </div>
+      </div>
+
+      <div>
+        <label for="description" class="block text-sm font-medium mb-1">Description</label>
+        <textarea id="description" name="description" rows="3"
+                  class="w-full border px-3 py-2 rounded focus:border-gray-900"
+                  placeholder="Optional description for this category">{% if is_edit %}{{ category.description }}{% elif form_data %}{{ form_data.description }}{% endif %}</textarea>
+      </div>
+
+      <div>
+        <label for="parent" class="block text-sm font-medium mb-1">Parent Category</label>
+        <select id="parent" name="parent" class="w-full border px-3 py-2 rounded focus:border-gray-900">
+          <option value="">— None (make this a top-level category) —</option>
+          {% for parent_cat in parent_categories %}
+            <option value="{{ parent_cat.id }}"
+                    {% if is_edit and category.parent and category.parent.id == parent_cat.id %}selected{% elif form_data and form_data.parent == parent_cat.id|stringformat:"s" %}selected{% endif %}>
+              {{ parent_cat.name }}
+            </option>
+          {% endfor %}
+        </select>
+        <p class="text-xs text-gray-500 mt-1">Select a parent to make this a subcategory</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Category Image</label>
+
+        {% if is_edit and category.image %}
+          <div class="mb-3">
+            <p class="text-sm text-gray-600 mb-2">Current image:</p>
+            <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-32 h-32 object-cover rounded border">
+            <div class="mt-2">
+              <label class="flex items-center">
+                <input type="checkbox" name="remove_image" class="mr-2">
+                <span class="text-sm text-red-600">Remove current image</span>
+              </label>
+            </div>
+          </div>
+        {% endif %}
+
+        <input type="file" id="image" name="image" accept="image/*"
+               class="w-full border px-3 py-2 rounded focus:border-gray-900">
+        <p class="text-xs text-gray-500 mt-1">
+          Upload an image to represent this category (JPG, PNG, etc.)<br>
+          Recommended: 800x600px (4:3 ratio), max 5MB. Images will be automatically resized and optimized.
+        </p>
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-6 border-t">
+        <a href="{% url 'categories_list' %}" class="btn btn-outline">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          {% if is_edit %}Update Category{% else %}Create Category{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  {% if is_edit %}
+  <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-blue-800">Category Information</h3>
+        <div class="mt-2 text-sm text-blue-700">
+          <p>• This category has {{ category.children.count }} subcategor{{ category.children.count|pluralize:"y,ies" }}</p>
+          <p>• This category contains {{ category.products.count }} product{{ category.products.count|pluralize }}</p>
+          {% if category.children.exists %}
+            <p class="text-orange-700 mt-1">⚠️ Changing the parent will affect the category hierarchy</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

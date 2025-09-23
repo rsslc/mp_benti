@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Review Your Order — MP Benti{% endblock %}
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6">Review Your Order</h1>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Order Details -->
+    <div class="lg:col-span-2">
+      <div class="card p-6 mb-6">
+        <h2 class="text-xl font-bold mb-4">Order Items</h2>
+
+        <div class="space-y-4">
+          {% for item in order_data.items %}
+          <div class="flex justify-between items-center py-3 border-b border-gray-100">
+            <div class="flex-1">
+              <h3 class="font-medium">{{ item.product_name }}</h3>
+              <p class="text-sm text-gray-600">{{ item.pack_size }}</p>
+              <p class="text-sm text-gray-500">{{ item.quantity }} × A$ {{ item.price|floatformat:2 }}</p>
+            </div>
+            <div class="text-right">
+              <p class="font-medium">A$ {{ item.total|floatformat:2 }}</p>
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="flex justify-between items-center pt-4 text-lg font-bold">
+            <span>Total ({{ order_data.item_count }} items):</span>
+            <span>A$ {{ order_data.total|floatformat:2 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Notes -->
+      <div class="card p-6">
+        <h2 class="text-xl font-bold mb-4">Delivery Notes</h2>
+        <form method="post" id="confirmOrderForm">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label for="notes" class="block text-sm font-medium mb-2">
+              Special delivery instructions or notes (optional)
+            </label>
+            <textarea
+              id="notes"
+              name="notes"
+              rows="4"
+              class="w-full border px-3 py-2 rounded focus:border-gray-900"
+              placeholder="e.g., Leave at reception, Call before delivery, etc."></textarea>
+          </div>
+
+          <div class="flex gap-3">
+            <button type="submit" class="btn btn-primary">
+              Confirm & Submit Order
+            </button>
+            <a href="{% url 'order_form' %}" class="btn btn-outline">
+              Edit Order
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Customer & Summary Info -->
+    <div class="lg:col-span-1">
+      <!-- Customer Info -->
+      <div class="card p-6 mb-6">
+        <h3 class="text-lg font-bold mb-4">Customer Information</h3>
+        <div class="space-y-2">
+          <div>
+            <label class="text-sm font-medium text-gray-600">Account</label>
+            <p class="font-medium">{{ user.username }}</p>
+          </div>
+
+          {% if user.first_name or user.last_name %}
+          <div>
+            <label class="text-sm font-medium text-gray-600">Name</label>
+            <p>{{ user.first_name }} {{ user.last_name }}</p>
+          </div>
+          {% endif %}
+
+          {% if user.email %}
+          <div>
+            <label class="text-sm font-medium text-gray-600">Email</label>
+            <p>{{ user.email }}</p>
+          </div>
+          {% endif %}
+
+          {% if user.customer %}
+          <div>
+            <label class="text-sm font-medium text-gray-600">Business</label>
+            <p class="font-medium">{{ user.customer.business_name }}</p>
+          </div>
+
+          {% if user.customer.phone %}
+          <div>
+            <label class="text-sm font-medium text-gray-600">Phone</label>
+            <p>{{ user.customer.phone }}</p>
+          </div>
+          {% endif %}
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="card p-6">
+        <h3 class="text-lg font-bold mb-4">Order Summary</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between">
+            <span>Items:</span>
+            <span>{{ order_data.item_count }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Subtotal:</span>
+            <span>A$ {{ order_data.total|floatformat:2 }}</span>
+          </div>
+          <div class="border-t pt-3 flex justify-between font-bold text-lg">
+            <span>Total:</span>
+            <span>A$ {{ order_data.total|floatformat:2 }}</span>
+          </div>
+        </div>
+
+        <div class="mt-6 p-4 bg-blue-50 rounded">
+          <h4 class="font-medium text-blue-900 mb-2">What happens next?</h4>
+          <ul class="text-sm text-blue-800 space-y-1">
+            <li>• Your order will be reviewed by Paolo</li>
+            <li>• You'll receive confirmation via email/phone</li>
+            <li>• Delivery details will be arranged</li>
+            <li>• Payment is handled upon delivery</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Prevent accidental navigation away
+window.addEventListener('beforeunload', function (e) {
+  e.preventDefault();
+  e.returnValue = '';
+});
+
+// Remove the warning when form is submitted
+document.getElementById('confirmOrderForm').addEventListener('submit', function() {
+  window.removeEventListener('beforeunload', arguments.callee);
+});
+</script>
+
+{% endblock %}

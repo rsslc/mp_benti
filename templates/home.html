@@ -1,0 +1,38 @@
+{% extends "base.html" %}{% block title %}MP Benti — Wholesale Foods{% endblock %}
+{% load static %}
+{% block body %}
+<section class="relative">
+  <div class="absolute inset-0"><img src="{% static 'images/background.jpeg' %}" class="w-full h-full object-cover"/><div class="absolute inset-0 bg-black/30"></div></div>
+  <div class="relative max-w-6xl mx-auto px-4 py-24 text-white">
+    <h1 class="text-4xl md:text-5xl font-bold mb-4">Quality Dairy, Smallgoods & Pantry</h1>
+    <p class="text-lg md:text-xl max-w-2xl">Supplying Sydney restaurants with curated Italian and local products.</p>
+    <div class="mt-8 flex gap-3"><a href="/products/" class="btn btn-primary">Browse Products</a><a href="/order/" class="btn btn-outline bg-white text-gray-900">Place an Order</a></div>
+  </div>
+</section>
+<section class="max-w-6xl mx-auto px-4 py-12">
+  <h2 class="text-2xl font-semibold mb-4">Categories</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    {% for cat in categories %}
+    <div class="card overflow-hidden">
+      <a href="/products/{{ cat.slug }}/" class="block">
+        {% if cat.image %}
+          <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="w-full h-40 object-cover">
+        {% else %}
+          <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+            No image
+          </div>
+        {% endif %}
+      </a>
+      <div class="p-5 text-center">
+        <h3 class="text-lg font-semibold">{{ cat.name }}</h3>
+        {% if cat.description %}
+          <p class="text-sm text-gray-600 mt-1">{{ cat.description }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-gray-600">No categories yet.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
