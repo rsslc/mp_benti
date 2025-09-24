@@ -80,7 +80,7 @@ class Product(models.Model):
     unit_weight = models.DecimalField(
         max_digits=8, decimal_places=2, null=True, blank=True
     )
-    pack_size = models.CharField(max_length=100, blank=True)
+    pack_size = models.CharField(max_length=150, blank=True)
     price_ex_gst = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True
     )
