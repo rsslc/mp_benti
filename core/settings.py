@@ -16,10 +16,19 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 # CSRF and trusted origins for production behind proxy
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+
+# Security settings for production
 if not DEBUG:
     # Trust the X-Forwarded-Proto header from nginx
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
+
+    # CSRF settings for double proxy
+    CSRF_COOKIE_SECURE = False  # Set to False since internal traffic is HTTP
+    SESSION_COOKIE_SECURE = False  # Set to False since internal traffic is HTTP
+    CSRF_USE_SESSIONS = False
+    CSRF_COOKIE_HTTPONLY = False
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
