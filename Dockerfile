@@ -48,16 +48,17 @@ COPY --from=tailwind-builder /app/static/css/dist/ ./static/css/dist/
 
 # Create directories and set permissions
 RUN mkdir -p /app/staticfiles /app/media && \
+    chmod +x /app/entrypoint.sh && \
     chown -R django:django /app
-
-# Collect static files
-RUN python manage.py collectstatic --noinput
 
 # Switch to non-root user
 USER django
 
 # Expose port
 EXPOSE 8000
+
+# Use entrypoint script
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Start Gunicorn
 CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "4", "--timeout", "120"]
