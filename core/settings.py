@@ -13,6 +13,13 @@ DEBUG = env("DEBUG")
 
 # Allowed hosts configuration
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
+
+# CSRF and trusted origins for production behind proxy
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+if not DEBUG:
+    # Trust the X-Forwarded-Proto header from nginx
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    USE_X_FORWARDED_HOST = True
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
