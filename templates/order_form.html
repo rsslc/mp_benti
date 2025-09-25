@@ -189,7 +189,7 @@ function collapseAll() {
 
 function updateOrderSummary() {
   const orderItemsContainer = document.getElementById('orderItems');
-  const emptyCart = document.getElementById('emptyCart');
+  let emptyCart = document.getElementById('emptyCart');
   const itemCountSpan = document.getElementById('itemCount');
   const orderTotalSpan = document.getElementById('orderTotal');
   const submitBtn = document.getElementById('submitOrderBtn');
@@ -238,7 +238,9 @@ function updateOrderSummary() {
 
   // Update order summary display
   if (orderState.itemCount > 0) {
-    emptyCart.style.display = 'none';
+    if (emptyCart) {
+      emptyCart.style.display = 'none';
+    }
 
     // Clear and rebuild order items
     orderItemsContainer.innerHTML = '';
@@ -263,7 +265,7 @@ function updateOrderSummary() {
     submitBtn.disabled = false;
     clearBtn.style.display = 'block';
   } else {
-    emptyCart.style.display = 'block';
+    // If the cart is empty, show the empty message
     orderItemsContainer.innerHTML = '<p class="text-gray-500 text-center py-8" id="emptyCart">No items selected yet</p>';
     submitBtn.disabled = true;
     clearBtn.style.display = 'none';
