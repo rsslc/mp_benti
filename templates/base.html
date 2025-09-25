@@ -2,12 +2,15 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>{% block title %}MP Benti — Wholesale Foods{% endblock %}</title>
 <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet">
+<style>[x-cloak] { display: none !important; }</style>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script></head>
 <body class="bg-gray-50 text-gray-900">
-<header class="bg-white/95 backdrop-blur border-b sticky top-0 z-40">
+<header class="bg-white/95 backdrop-blur border-b sticky top-0 z-40" x-data="{ mobileMenuOpen: false }">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
     <a href="/" class="flex items-center gap-3"><img src="{% static 'images/logo.png' %}" alt="MP Benti" class="h-12 w-auto"/><span class="sr-only">MP Benti</span></a>
-    <nav class="flex items-center gap-6 text-sm">
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden sm:flex items-center gap-6 text-sm">
       <a href="/" class="hover:underline">Home</a>
       <a href="/about/" class="hover:underline">About</a>
       <a href="/products/" class="hover:underline">Products</a>
@@ -26,8 +29,51 @@
         <a href="{% url 'login' %}" class="hover:underline">Login</a>
       {% endif %}
     </nav>
+
+    <!-- Mobile Menu Button -->
+    <button @click="mobileMenuOpen = !mobileMenuOpen" class="sm:hidden p-2">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
   </div>
+
+  <!-- Mobile Navigation Menu -->
+  <nav x-show="mobileMenuOpen" x-cloak class="sm:hidden border-t px-4 py-3 space-y-2">
+    <a href="/" class="block py-2 hover:underline">Home</a>
+    <a href="/about/" class="block py-2 hover:underline">About</a>
+    <a href="/products/" class="block py-2 hover:underline">Products</a>
+    <a href="/order/" class="block py-2 hover:underline">Order</a>
+    <a href="/contact/" class="block py-2 hover:underline">Contact</a>
+    {% if user.is_superuser %}
+      <a href="/dashboard/" class="block py-2 hover:underline">Dashboard</a>
+    {% endif %}
+    {% if user.is_authenticated %}
+      <div class="pt-2 border-t">
+        <div class="text-gray-600 py-2">Hi {{ user.username }}</div>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="text-sm hover:underline">Logout</button>
+        </form>
+      </div>
+    {% else %}
+      <a href="{% url 'login' %}" class="block py-2 hover:underline border-t pt-4">Login</a>
+    {% endif %}
+  </nav>
 </header>
 {% block body %}<main class="max-w-6xl mx-auto px-4 py-8">{% block content %}{% endblock %}</main>{% endblock %}
-<footer class="border-t mt-16"><div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-600 flex items-center justify-between"><div class="flex items-center gap-3"><img src="{% static 'images/logo.png' %}" class="h-6 w-auto" alt=""/><span>© {{ now|date:"Y" }} MP Benti Latticini & Salumi</span></div><div class="space-x-4"><a href="mailto:orders@mpbenti.com.au" class="hover:underline">orders@mpbenti.com.au</a><span class="text-gray-300">|</span><a href="/contact/" class="hover:underline">Contact</a></div></div></footer>
+<footer class="border-t mt-16">
+  <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-600 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <img src="{% static 'images/logo.png' %}" class="h-6 w-auto" alt=""/>
+      <span>© {{ now|date:"Y" }} MP Benti Latticini & Salumi</span>
+    </div>
+    <div class="space-x-4 text-center sm:text-right">
+      <a href="mailto:orders@mpbenti.com.au" class="hover:underline">orders@mpbenti.com.au</a>
+      <span class="text-gray-300">|</span>
+      <a href="/contact/" class="hover:underline">Contact</a>
+    </div>
+  </div>
+</footer>
 </body></html>
