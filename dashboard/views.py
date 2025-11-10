@@ -13,11 +13,25 @@ from .models import SiteSettings
 
 
 def staff_required(view):
-    return login_required(user_passes_test(lambda u: u.is_staff)(view))
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(f'/admin/login/?next={request.path}')
+        if not request.user.is_staff:
+            messages.error(request, 'You do not have permission to access the dashboard. Please contact an administrator.')
+            return redirect('/')
+        return view(request, *args, **kwargs)
+    return wrapper
 
 
 def superuser_required(view):
-    return login_required(user_passes_test(lambda u: u.is_superuser)(view))
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(f'/admin/login/?next={request.path}')
+        if not request.user.is_superuser:
+            messages.error(request, 'You do not have permission to access this page. Superuser privileges required.')
+            return redirect('/dashboard/')
+        return view(request, *args, **kwargs)
+    return wrapper
 
 
 @staff_required
