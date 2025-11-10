@@ -3,13 +3,6 @@ set -e
 
 echo "🚀 Starting MP Benti Django Application"
 
-# Wait for database to be ready
-echo "⏳ Waiting for database..."
-while ! pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" 2>/dev/null; do
-  sleep 1
-done
-echo "✅ Database is ready"
-
 # Run database migrations
 echo "🗄️  Running database migrations..."
 python manage.py migrate --noinput

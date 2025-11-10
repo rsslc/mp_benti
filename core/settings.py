@@ -76,6 +76,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": env.db(default="sqlite:///" + str(BASE_DIR / "db.sqlite3"))
 }
+
+# Enable WAL mode for better SQLite concurrency
+if DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
+    DATABASES["default"]["OPTIONS"] = {
+        "init_command": "PRAGMA journal_mode=WAL;",
+    }
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
