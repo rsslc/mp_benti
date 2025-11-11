@@ -13,6 +13,33 @@ class SiteSettings(models.Model):
         default="Contact us for pricing",
         help_text="Message to show when prices are hidden"
     )
+
+    # Business details for tax invoices
+    business_name = models.CharField(
+        max_length=200,
+        default="MP Benti",
+        help_text="Legal business name for invoices"
+    )
+    abn = models.CharField(
+        max_length=11,
+        blank=True,
+        verbose_name="ABN",
+        help_text="Australian Business Number (11 digits)"
+    )
+    business_address = models.TextField(
+        blank=True,
+        help_text="Full business address (street, city, state, postcode)"
+    )
+    business_phone = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text="Business contact phone number"
+    )
+    business_email = models.EmailField(
+        blank=True,
+        help_text="Business contact email address"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

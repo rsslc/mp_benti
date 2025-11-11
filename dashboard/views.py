@@ -4,6 +4,16 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.db.models import Q
+from django.http import HttpResponse
+from django.utils import timezone
+from decimal import Decimal
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT
 
 from catalogue.models import Product, Category
 from catalogue.utils import validate_image_size, validate_image_format
@@ -137,10 +147,13 @@ def order_add(request):
             if key.startswith('quantity_') and value and int(value) > 0:
                 product_id = key.replace('quantity_', '')
                 product = get_object_or_404(Product, id=product_id)
+                # Capture prices at order time for accurate invoices
                 OrderLine.objects.create(
                     order=order,
                     product=product,
-                    quantity=int(value)
+                    quantity=int(value),
+                    unit_price_ex_gst=product.price_ex_gst,
+                    unit_price_inc_gst=product.price_inc_gst
                 )
                 lines_created += 1
 
@@ -199,10 +212,13 @@ def order_edit(request, order_id):
             if key.startswith('quantity_') and value and int(value) > 0:
                 product_id = key.replace('quantity_', '')
                 product = get_object_or_404(Product, id=product_id)
+                # Capture prices at order time for accurate invoices
                 OrderLine.objects.create(
                     order=order,
                     product=product,
-                    quantity=int(value)
+                    quantity=int(value),
+                    unit_price_ex_gst=product.price_ex_gst,
+                    unit_price_inc_gst=product.price_inc_gst
                 )
                 lines_created += 1
 
@@ -324,6 +340,7 @@ def account_add(request):
         # Customer fields
         business_name = request.POST.get('business_name', '')
         phone = request.POST.get('phone', '')
+        address = request.POST.get('address', '')
 
         # Check if username already exists
         if User.objects.filter(username=username).exists():
@@ -350,7 +367,8 @@ def account_add(request):
             Customer.objects.create(
                 user=user,
                 business_name=business_name,
-                phone=phone
+                phone=phone,
+                address=address
             )
 
         messages.success(request, f'Account for {username} created successfully')
@@ -386,17 +404,20 @@ def account_edit(request, user_id):
         # Handle customer profile
         business_name = request.POST.get('business_name', '')
         phone = request.POST.get('phone', '')
+        address = request.POST.get('address', '')
 
         if business_name:
             if customer:
                 customer.business_name = business_name
                 customer.phone = phone
+                customer.address = address
                 customer.save()
             else:
                 Customer.objects.create(
                     user=user,
                     business_name=business_name,
-                    phone=phone
+                    phone=phone,
+                    address=address
                 )
         elif customer:
             # Remove customer profile if business_name is empty
@@ -413,7 +434,8 @@ def account_edit(request, user_id):
         'is_staff': user.is_staff,
         'is_superuser': user.is_superuser,
         'business_name': customer.business_name if customer else '',
-        'phone': customer.phone if customer else ''
+        'phone': customer.phone if customer else '',
+        'address': customer.address if customer else ''
     }
 
     return render(request, "dashboard/account_form.html", {
@@ -647,8 +669,17 @@ def site_settings(request):
     settings = SiteSettings.get_settings()
 
     if request.method == 'POST':
+        # Price display settings
         settings.show_prices = request.POST.get('show_prices') == 'on'
         settings.price_hidden_message = request.POST.get('price_hidden_message', 'Contact us for pricing')
+
+        # Business details for invoices
+        settings.business_name = request.POST.get('business_name', 'MP Benti')
+        settings.abn = request.POST.get('abn', '')
+        settings.business_address = request.POST.get('business_address', '')
+        settings.business_phone = request.POST.get('business_phone', '')
+        settings.business_email = request.POST.get('business_email', '')
+
         settings.save()
         messages.success(request, 'Site settings updated successfully')
         return redirect('site_settings')
@@ -863,3 +894,214 @@ def category_delete(request, category_id):
         return redirect('categories_list')
 
     return render(request, "dashboard/category_confirm_delete.html", {'category': category})
+
+
+# Invoice Generation Views
+
+@staff_required
+def generate_invoice(request, order_id):
+    """Generate invoice number for an order"""
+    order = get_object_or_404(Order, id=order_id)
+
+    if order.invoice_number:
+        messages.info(request, f'Order #{order.id} already has invoice number: {order.invoice_number}')
+    else:
+        # Check if order has prices captured
+        has_prices = all(line.unit_price_ex_gst is not None for line in order.lines.all())
+
+        if not has_prices:
+            messages.error(request, 'Cannot generate invoice: Order does not have prices captured. Only orders created after the invoice system update can be invoiced.')
+            return redirect('order_detail', order_id=order.id)
+
+        invoice_number = order.generate_invoice_number()
+        messages.success(request, f'Invoice {invoice_number} generated successfully for Order #{order.id}')
+
+    return redirect('order_detail', order_id=order.id)
+
+
+@staff_required
+def order_invoice_pdf(request, order_id):
+    """Generate and download PDF invoice"""
+    order = get_object_or_404(Order, id=order_id)
+    settings = SiteSettings.get_settings()
+
+    # Check if invoice number exists
+    if not order.invoice_number:
+        messages.error(request, 'Cannot generate PDF: Invoice number has not been generated yet')
+        return redirect('order_detail', order_id=order.id)
+
+    # Check if order has prices
+    has_prices = all(line.unit_price_ex_gst is not None for line in order.lines.all())
+    if not has_prices:
+        messages.error(request, 'Cannot generate invoice: Order does not have prices captured')
+        return redirect('order_detail', order_id=order.id)
+
+    # Create response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="invoice_{order.invoice_number}.pdf"'
+
+    # Create PDF document
+    doc = SimpleDocTemplate(response, pagesize=A4,
+                            leftMargin=20*mm, rightMargin=20*mm,
+                            topMargin=20*mm, bottomMargin=20*mm)
+
+    # Container for PDF elements
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Custom styles
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=colors.HexColor('#1a1a1a'),
+        spaceAfter=12,
+    )
+
+    heading_style = ParagraphStyle(
+        'CustomHeading',
+        parent=styles['Heading2'],
+        fontSize=12,
+        textColor=colors.HexColor('#333333'),
+        spaceAfter=6,
+    )
+
+    normal_style = ParagraphStyle(
+        'CustomNormal',
+        parent=styles['Normal'],
+        fontSize=10,
+        textColor=colors.HexColor('#333333'),
+    )
+
+    # TAX INVOICE Header
+    elements.append(Paragraph("TAX INVOICE", title_style))
+    elements.append(Spacer(1, 10*mm))
+
+    # Business and Invoice Details Side by Side
+    business_customer_data = [
+        [
+            Paragraph(f"<b>{settings.business_name}</b>", heading_style),
+            Paragraph(f"<b>Invoice Number:</b> {order.invoice_number}", normal_style)
+        ],
+        [
+            Paragraph(f"<b>ABN:</b> {settings.abn}", normal_style),
+            Paragraph(f"<b>Invoice Date:</b> {order.invoice_date.strftime('%d/%m/%Y')}", normal_style)
+        ],
+        [
+            Paragraph(settings.business_address.replace('\n', '<br/>'), normal_style),
+            Paragraph(f"<b>Order Date:</b> {order.created_at.strftime('%d/%m/%Y')}", normal_style)
+        ],
+    ]
+
+    if settings.business_phone:
+        business_customer_data.append([
+            Paragraph(f"<b>Phone:</b> {settings.business_phone}", normal_style),
+            ''
+        ])
+
+    if settings.business_email:
+        business_customer_data.append([
+            Paragraph(f"<b>Email:</b> {settings.business_email}", normal_style),
+            ''
+        ])
+
+    business_table = Table(business_customer_data, colWidths=[90*mm, 90*mm])
+    business_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+    ]))
+    elements.append(business_table)
+    elements.append(Spacer(1, 10*mm))
+
+    # Bill To Section
+    elements.append(Paragraph("<b>BILL TO:</b>", heading_style))
+
+    customer = order.customer
+    try:
+        customer_profile = customer.customer
+        customer_info = f"<b>{customer_profile.business_name}</b><br/>"
+        if customer.get_full_name():
+            customer_info += f"{customer.get_full_name()}<br/>"
+        if customer_profile.address:
+            customer_info += customer_profile.address.replace('\n', '<br/>') + '<br/>'
+        if customer_profile.phone:
+            customer_info += f"Phone: {customer_profile.phone}<br/>"
+        if customer.email:
+            customer_info += f"Email: {customer.email}"
+    except:
+        customer_info = f"<b>{customer.username}</b><br/>"
+        if customer.email:
+            customer_info += f"Email: {customer.email}"
+
+    elements.append(Paragraph(customer_info, normal_style))
+    elements.append(Spacer(1, 10*mm))
+
+    # Order Items Table
+    item_data = [
+        ['Description', 'Quantity', 'Unit Price (ex GST)', 'GST', 'Total (inc GST)']
+    ]
+
+    for line in order.lines.all():
+        item_data.append([
+            line.product.name,
+            str(line.quantity),
+            f"${line.unit_price_ex_gst:.2f}" if line.unit_price_ex_gst else '-',
+            f"${line.get_line_gst():.2f}",
+            f"${line.get_line_total_inc_gst():.2f}"
+        ])
+
+    # Add totals
+    item_data.append(['', '', '', '', ''])
+    item_data.append(['', '', '', 'Subtotal (ex GST):', f"${order.get_subtotal_ex_gst():.2f}"])
+    item_data.append(['', '', '', 'GST (10%):', f"${order.get_gst_amount():.2f}"])
+    item_data.append(['', '', '', 'TOTAL (inc GST):', f"${order.get_total_inc_gst():.2f}"])
+
+    item_table = Table(item_data, colWidths=[80*mm, 25*mm, 35*mm, 30*mm, 30*mm])
+    item_table.setStyle(TableStyle([
+        # Header row
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#f3f4f6')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#1f2937')),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
+
+        # Data rows
+        ('FONTNAME', (0, 1), (-1, -5), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -5), 9),
+        ('LEFTPADDING', (0, 0), (-1, -1), 6),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 1), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+
+        # Align numbers to the right
+        ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),
+        ('ALIGN', (0, 1), (0, -1), 'LEFT'),
+
+        # Grid
+        ('GRID', (0, 0), (-1, -5), 0.5, colors.HexColor('#e5e7eb')),
+        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.HexColor('#d1d5db')),
+
+        # Totals section
+        ('FONTNAME', (3, -3), (-1, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (3, -3), (-1, -1), 10),
+        ('LINEABOVE', (3, -3), (-1, -3), 1, colors.HexColor('#d1d5db')),
+        ('LINEABOVE', (3, -1), (-1, -1), 1.5, colors.HexColor('#1f2937')),
+    ]))
+
+    elements.append(item_table)
+    elements.append(Spacer(1, 15*mm))
+
+    # Footer notes
+    if order.notes:
+        elements.append(Paragraph("<b>Notes:</b>", heading_style))
+        elements.append(Paragraph(order.notes.replace('\n', '<br/>'), normal_style))
+        elements.append(Spacer(1, 5*mm))
+
+    elements.append(Paragraph("This is a tax invoice for GST purposes.", normal_style))
+
+    # Build PDF
+    doc.build(elements)
+
+    return response

@@ -11,6 +11,9 @@ urlpatterns = [
     path("orders/add/", views.order_add, name="order_add"),
     path("orders/<int:order_id>/edit/", views.order_edit, name="order_edit"),
     path("orders/<int:order_id>/delete/", views.order_delete, name="order_delete"),
+    # Invoice management
+    path("orders/<int:order_id>/generate-invoice/", views.generate_invoice, name="generate_invoice"),
+    path("orders/<int:order_id>/invoice/", views.order_invoice_pdf, name="order_invoice_pdf"),
     path("products/", views.products_list, name="products_list"),
     path("categories/", views.categories_list, name="categories_list"),
     path("customers/", views.customers_list, name="dashboard_customers"),

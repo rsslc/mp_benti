@@ -87,6 +87,13 @@
         class="w-full border px-3 py-2 rounded"
         placeholder="+61 4XX XXX XXX">
     </div>
+    <div>
+      <label for="address" class="block text-sm font-medium mb-1">Address</label>
+      <textarea id="address" name="address" rows="3"
+        class="w-full border px-3 py-2 rounded"
+        placeholder="123 Example Street&#10;Sydney NSW 2000&#10;Australia">{{ form_data.address|default:'' }}</textarea>
+      <p class="text-xs text-gray-500 mt-1">Customer delivery/billing address (required for tax invoices)</p>
+    </div>
   </div>
 
   <div class="flex gap-2">

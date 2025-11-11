@@ -3,8 +3,17 @@
 {% block content %}
 
 <div class="flex justify-between items-center mb-6">
-  <h1 class="text-2xl font-bold">Order #{{ order.id }}</h1>
+  <h1 class="text-2xl font-bold">Order #{{ order.id }}{% if order.invoice_number %} - {{ order.invoice_number }}{% endif %}</h1>
   <div class="flex gap-2">
+    {% if not order.invoice_number %}
+      <a href="{% url 'generate_invoice' order.id %}" class="btn bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+        📋 Generate Invoice
+      </a>
+    {% else %}
+      <a href="{% url 'order_invoice_pdf' order.id %}" class="btn bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" target="_blank">
+        📄 Print Invoice
+      </a>
+    {% endif %}
     <a href="{% url 'order_edit' order.id %}" class="btn btn-primary">Edit Order</a>
     <a href="{% url 'order_delete' order.id %}" class="btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete</a>
     <a href="{% url 'dashboard_orders' %}" class="btn btn-outline">Back to Orders</a>
