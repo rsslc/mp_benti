@@ -54,7 +54,13 @@
 
   <!-- Products Section -->
   <div class="card p-6">
-    <h3 class="text-lg font-bold mb-4">Order Items</h3>
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold">Order Items</h3>
+      <button type="button" id="toggle-invoice-prices" class="btn btn-outline text-sm">
+        📝 Show Invoice Prices
+      </button>
+    </div>
+    <p class="text-sm text-gray-600 mb-4">Set quantities and optionally override prices for invoicing</p>
 
     {% if products %}
       <div class="space-y-6">
@@ -75,29 +81,63 @@
                     </div>
                   </div>
 
-                  <div class="flex justify-between items-center">
-                    <div class="text-sm">
-                      {% if product.price_inc_gst %}
-                        <span class="font-medium">A$ {{ product.price_inc_gst|floatformat:2 }}</span>
-                      {% else %}
-                        <span class="text-gray-500">No price</span>
-                      {% endif %}
-                      {% if product.unit %}
-                        <span class="text-gray-500">/ {{ product.unit }}</span>
-                      {% endif %}
+                  <div class="space-y-2">
+                    <!-- Quantity Row -->
+                    <div class="flex justify-between items-center">
+                      <div class="text-sm">
+                        {% if product.price_inc_gst %}
+                          <span class="font-medium">A$ {{ product.price_inc_gst|floatformat:2 }}</span>
+                        {% else %}
+                          <span class="text-gray-500">No price</span>
+                        {% endif %}
+                        {% if product.unit %}
+                          <span class="text-gray-500">/ {{ product.unit }}</span>
+                        {% endif %}
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <label for="quantity_{{ product.id }}" class="text-xs">Qty:</label>
+                        <input type="number"
+                          id="quantity_{{ product.id }}"
+                          name="quantity_{{ product.id }}"
+                          min="0"
+                          step="1"
+                          value="{{ form_data|get_item:'quantity_'|add:product.id|default:'' }}"
+                          class="w-16 border px-2 py-1 rounded text-sm quantity-input"
+                          data-product-id="{{ product.id }}"
+                          placeholder="0">
+                      </div>
                     </div>
 
-                    <div class="flex items-center gap-2">
-                      <label for="quantity_{{ product.id }}" class="text-xs">Qty:</label>
-                      <input type="number"
-                        id="quantity_{{ product.id }}"
-                        name="quantity_{{ product.id }}"
-                        min="0"
-                        step="1"
-                        value=""
-                        class="w-16 border px-2 py-1 rounded text-sm quantity-input"
-                        data-product-id="{{ product.id }}"
-                        placeholder="0">
+                    <!-- Invoice Price Fields (collapsible) -->
+                    <div class="invoice-price-section" id="prices_{{ product.id }}" style="display: none;">
+                      <div class="text-xs font-medium text-gray-600 mb-1">Invoice Prices:</div>
+                      <div class="grid grid-cols-2 gap-2">
+                        <div>
+                          <label for="price_ex_gst_{{ product.id }}" class="text-xs text-gray-600">Ex GST:</label>
+                          <input type="number"
+                            id="price_ex_gst_{{ product.id }}"
+                            name="price_ex_gst_{{ product.id }}"
+                            step="0.01"
+                            min="0"
+                            value="{{ form_data|get_item:'price_ex_gst_'|add:product.id|default:product.price_ex_gst|default:'' }}"
+                            class="w-full border px-2 py-1 rounded text-xs price-ex-gst-input"
+                            data-product-id="{{ product.id }}"
+                            placeholder="0.00">
+                        </div>
+                        <div>
+                          <label for="price_inc_gst_{{ product.id }}" class="text-xs text-gray-600">Inc GST:</label>
+                          <input type="number"
+                            id="price_inc_gst_{{ product.id }}"
+                            name="price_inc_gst_{{ product.id }}"
+                            step="0.01"
+                            min="0"
+                            value="{{ form_data|get_item:'price_inc_gst_'|add:product.id|default:product.price_inc_gst|default:'' }}"
+                            class="w-full border px-2 py-1 rounded text-xs price-inc-gst-input"
+                            data-product-id="{{ product.id }}"
+                            placeholder="0.00">
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -126,6 +166,71 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Toggle invoice price fields
+    const toggleButton = document.getElementById('toggle-invoice-prices');
+    const priceSections = document.querySelectorAll('.invoice-price-section');
+    let pricesVisible = false;
+
+    toggleButton.addEventListener('click', function() {
+        pricesVisible = !pricesVisible;
+        priceSections.forEach(section => {
+            section.style.display = pricesVisible ? 'block' : 'none';
+        });
+        toggleButton.textContent = pricesVisible ? '📝 Hide Invoice Prices' : '📝 Show Invoice Prices';
+    });
+
+    // Auto-show prices if any have values
+    const priceInputs = document.querySelectorAll('.price-ex-gst-input, .price-inc-gst-input');
+    const hasExistingPrices = Array.from(priceInputs).some(input => input.value && parseFloat(input.value) > 0);
+    if (hasExistingPrices) {
+        toggleButton.click();  // Show prices automatically
+    }
+
+    // GST Auto-calculation
+    // When ex-GST is changed, calculate inc-GST
+    document.querySelectorAll('.price-ex-gst-input').forEach(input => {
+        input.addEventListener('input', function() {
+            const productId = this.dataset.productId;
+            const exGst = parseFloat(this.value) || 0;
+            const incGstInput = document.getElementById(`price_inc_gst_${productId}`);
+
+            if (exGst > 0 && !incGstInput.value) {
+                // Only auto-fill if inc GST is empty
+                incGstInput.value = (exGst * 1.1).toFixed(2);
+            }
+        });
+    });
+
+    // When inc-GST is changed, calculate ex-GST
+    document.querySelectorAll('.price-inc-gst-input').forEach(input => {
+        input.addEventListener('input', function() {
+            const productId = this.dataset.productId;
+            const incGst = parseFloat(this.value) || 0;
+            const exGstInput = document.getElementById(`price_ex_gst_${productId}`);
+
+            if (incGst > 0 && !exGstInput.value) {
+                // Only auto-fill if ex GST is empty
+                exGstInput.value = (incGst / 1.1).toFixed(2);
+            }
+        });
+    });
+
+    // Show price fields when quantity is entered
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('input', function() {
+            const productId = this.dataset.productId;
+            const quantity = parseInt(this.value) || 0;
+
+            if (quantity > 0 && !pricesVisible) {
+                // Auto-show prices section when user starts adding quantities
+                const priceSection = document.getElementById(`prices_${productId}`);
+                if (priceSection) {
+                    priceSection.style.display = 'block';
+                }
+            }
+        });
+    });
+
     // Populate existing quantities for edit mode
     {% if is_edit and form_data %}
         {% for key, value in form_data.items %}
@@ -137,33 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
             {% endif %}
         {% endfor %}
     {% endif %}
-
-    // Simple client-side total calculation
-    const quantityInputs = document.querySelectorAll('input[name^="quantity_"]');
-
-    function updateTotal() {
-        let total = 0;
-        quantityInputs.forEach(input => {
-            const quantity = parseInt(input.value) || 0;
-            if (quantity > 0) {
-                const productDiv = input.closest('.border.rounded.p-3');
-                const priceText = productDiv.querySelector('.font-medium');
-                if (priceText) {
-                    const price = parseFloat(priceText.textContent.replace('A$ ', '')) || 0;
-                    total += price * quantity;
-                }
-            }
-        });
-
-        console.log('Estimated Total: A$', total.toFixed(2));
-    }
-
-    quantityInputs.forEach(input => {
-        input.addEventListener('input', updateTotal);
-    });
-
-    // Calculate initial total
-    updateTotal();
 });
 </script>
 

@@ -147,13 +147,28 @@ def order_add(request):
             if key.startswith('quantity_') and value and int(value) > 0:
                 product_id = key.replace('quantity_', '')
                 product = get_object_or_404(Product, id=product_id)
-                # Capture prices at order time for accurate invoices
+
+                # Check for manually entered prices first, otherwise use product prices
+                price_ex_gst = request.POST.get(f'price_ex_gst_{product_id}')
+                price_inc_gst = request.POST.get(f'price_inc_gst_{product_id}')
+
+                # Convert to Decimal if provided, otherwise use product prices
+                if price_ex_gst:
+                    price_ex_gst = Decimal(price_ex_gst)
+                else:
+                    price_ex_gst = product.price_ex_gst
+
+                if price_inc_gst:
+                    price_inc_gst = Decimal(price_inc_gst)
+                else:
+                    price_inc_gst = product.price_inc_gst
+
                 OrderLine.objects.create(
                     order=order,
                     product=product,
                     quantity=int(value),
-                    unit_price_ex_gst=product.price_ex_gst,
-                    unit_price_inc_gst=product.price_inc_gst
+                    unit_price_ex_gst=price_ex_gst,
+                    unit_price_inc_gst=price_inc_gst
                 )
                 lines_created += 1
 
@@ -212,13 +227,28 @@ def order_edit(request, order_id):
             if key.startswith('quantity_') and value and int(value) > 0:
                 product_id = key.replace('quantity_', '')
                 product = get_object_or_404(Product, id=product_id)
-                # Capture prices at order time for accurate invoices
+
+                # Check for manually entered prices first, otherwise use product prices
+                price_ex_gst = request.POST.get(f'price_ex_gst_{product_id}')
+                price_inc_gst = request.POST.get(f'price_inc_gst_{product_id}')
+
+                # Convert to Decimal if provided, otherwise use product prices
+                if price_ex_gst:
+                    price_ex_gst = Decimal(price_ex_gst)
+                else:
+                    price_ex_gst = product.price_ex_gst
+
+                if price_inc_gst:
+                    price_inc_gst = Decimal(price_inc_gst)
+                else:
+                    price_inc_gst = product.price_inc_gst
+
                 OrderLine.objects.create(
                     order=order,
                     product=product,
                     quantity=int(value),
-                    unit_price_ex_gst=product.price_ex_gst,
-                    unit_price_inc_gst=product.price_inc_gst
+                    unit_price_ex_gst=price_ex_gst,
+                    unit_price_inc_gst=price_inc_gst
                 )
                 lines_created += 1
 
@@ -236,9 +266,13 @@ def order_edit(request, order_id):
         'notes': order.notes,
     }
 
-    # Add existing quantities
+    # Add existing quantities and prices
     for line in order.lines.all():
         form_data[f'quantity_{line.product.id}'] = line.quantity
+        if line.unit_price_ex_gst:
+            form_data[f'price_ex_gst_{line.product.id}'] = line.unit_price_ex_gst
+        if line.unit_price_inc_gst:
+            form_data[f'price_inc_gst_{line.product.id}'] = line.unit_price_inc_gst
 
     return render(request, "dashboard/order_form.html", {
         'order': order,
