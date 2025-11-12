@@ -11,9 +11,11 @@ from decimal import Decimal
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_LEFT, TA_RIGHT
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
+import os
+from django.conf import settings as django_settings
 
 from catalogue.models import Product, Category
 from catalogue.utils import validate_image_size, validate_image_format
@@ -983,73 +985,115 @@ def order_invoice_pdf(request, order_id):
     elements = []
     styles = getSampleStyleSheet()
 
-    # Custom styles
+    # Custom styles - Modern & Minimal
     title_style = ParagraphStyle(
         'CustomTitle',
         parent=styles['Heading1'],
-        fontSize=24,
-        textColor=colors.HexColor('#1a1a1a'),
+        fontSize=28,
+        textColor=colors.HexColor('#1f2937'),
+        spaceAfter=4,
+        fontName='Helvetica-Bold',
+    )
+
+    subtitle_style = ParagraphStyle(
+        'CustomSubtitle',
+        parent=styles['Normal'],
+        fontSize=11,
+        textColor=colors.HexColor('#6b7280'),
         spaceAfter=12,
     )
 
     heading_style = ParagraphStyle(
         'CustomHeading',
         parent=styles['Heading2'],
-        fontSize=12,
-        textColor=colors.HexColor('#333333'),
-        spaceAfter=6,
+        fontSize=11,
+        textColor=colors.HexColor('#374151'),
+        spaceAfter=4,
+        fontName='Helvetica-Bold',
+        textTransform='uppercase',
     )
 
     normal_style = ParagraphStyle(
         'CustomNormal',
         parent=styles['Normal'],
-        fontSize=10,
-        textColor=colors.HexColor('#333333'),
+        fontSize=9,
+        textColor=colors.HexColor('#4b5563'),
+        leading=12,
     )
 
-    # TAX INVOICE Header
-    elements.append(Paragraph("TAX INVOICE", title_style))
-    elements.append(Spacer(1, 10*mm))
+    small_style = ParagraphStyle(
+        'CustomSmall',
+        parent=styles['Normal'],
+        fontSize=8,
+        textColor=colors.HexColor('#6b7280'),
+    )
 
-    # Business and Invoice Details Side by Side
-    business_customer_data = [
-        [
-            Paragraph(f"<b>{settings.business_name}</b>", heading_style),
-            Paragraph(f"<b>Invoice Number:</b> {order.invoice_number}", normal_style)
-        ],
-        [
-            Paragraph(f"<b>ABN:</b> {settings.abn}", normal_style),
-            Paragraph(f"<b>Invoice Date:</b> {order.invoice_date.strftime('%d/%m/%Y')}", normal_style)
-        ],
-        [
-            Paragraph(settings.business_address.replace('\n', '<br/>'), normal_style),
-            Paragraph(f"<b>Order Date:</b> {order.created_at.strftime('%d/%m/%Y')}", normal_style)
-        ],
+    # Header with Logo and Title
+    logo_path = os.path.join(django_settings.BASE_DIR, 'static', 'images', 'logo.png')
+
+    if os.path.exists(logo_path):
+        try:
+            # Add logo (scaled to appropriate size)
+            logo = Image(logo_path, width=40*mm, height=40*mm, kind='proportional')
+
+            # Create header table with logo and title
+            header_data = [
+                [logo, Paragraph("TAX INVOICE", title_style)],
+                ['', Paragraph(f"Invoice #{order.invoice_number}", subtitle_style)]
+            ]
+
+            header_table = Table(header_data, colWidths=[45*mm, 125*mm])
+            header_table.setStyle(TableStyle([
+                ('VALIGN', (0, 0), (0, -1), 'TOP'),
+                ('VALIGN', (1, 0), (1, -1), 'MIDDLE'),
+                ('LEFTPADDING', (0, 0), (-1, -1), 0),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+            ]))
+            elements.append(header_table)
+        except:
+            # Fallback if logo fails to load
+            elements.append(Paragraph("TAX INVOICE", title_style))
+            elements.append(Paragraph(f"Invoice #{order.invoice_number}", subtitle_style))
+    else:
+        # No logo available
+        elements.append(Paragraph("TAX INVOICE", title_style))
+        elements.append(Paragraph(f"Invoice #{order.invoice_number}", subtitle_style))
+
+    elements.append(Spacer(1, 8*mm))
+
+    # Business Details Section
+    elements.append(Paragraph("<font size=8 color='#9ca3af'>FROM</font>", small_style))
+    elements.append(Paragraph(f"<b>{settings.business_name}</b>", normal_style))
+    elements.append(Paragraph(f"ABN: {settings.abn}", normal_style))
+    elements.append(Paragraph(settings.business_address.replace('\n', '<br/>'), normal_style))
+    if settings.business_phone:
+        elements.append(Paragraph(f"Phone: {settings.business_phone}", normal_style))
+    if settings.business_email:
+        elements.append(Paragraph(f"Email: {settings.business_email}", normal_style))
+
+    elements.append(Spacer(1, 6*mm))
+
+    # Invoice details in a light gray box
+    invoice_details_data = [
+        [Paragraph(f"<b>Invoice Date:</b>", normal_style), Paragraph(order.invoice_date.strftime('%d %B %Y'), normal_style)],
+        [Paragraph(f"<b>Order Date:</b>", normal_style), Paragraph(order.created_at.strftime('%d %B %Y'), normal_style)],
     ]
 
-    if settings.business_phone:
-        business_customer_data.append([
-            Paragraph(f"<b>Phone:</b> {settings.business_phone}", normal_style),
-            ''
-        ])
-
-    if settings.business_email:
-        business_customer_data.append([
-            Paragraph(f"<b>Email:</b> {settings.business_email}", normal_style),
-            ''
-        ])
-
-    business_table = Table(business_customer_data, colWidths=[90*mm, 90*mm])
-    business_table.setStyle(TableStyle([
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 0),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+    invoice_details_table = Table(invoice_details_data, colWidths=[40*mm, 50*mm])
+    invoice_details_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#f9fafb')),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
     ]))
-    elements.append(business_table)
-    elements.append(Spacer(1, 10*mm))
+    elements.append(invoice_details_table)
+    elements.append(Spacer(1, 8*mm))
 
     # Bill To Section
-    elements.append(Paragraph("<b>BILL TO:</b>", heading_style))
+    elements.append(Paragraph("<font size=8 color='#9ca3af'>BILL TO</font>", small_style))
 
     customer = order.customer
     try:
