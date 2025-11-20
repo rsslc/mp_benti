@@ -117,7 +117,8 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Media files configuration
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+# Use /data/media in production (Docker/Railway), otherwise use local media folder
+MEDIA_ROOT = Path("/data/media") if Path("/data").exists() else BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = '/order/'
 

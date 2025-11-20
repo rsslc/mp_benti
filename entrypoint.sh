@@ -4,9 +4,10 @@ set -e
 echo "🚀 Starting MP Benti Django Application"
 
 # Copy initial media files if media directory is empty
-if [ -d "/app/media_initial" ] && [ ! "$(ls -A /app/media)" ]; then
+if [ -d "/app/media_initial" ] && [ ! -d "/data/media" ]; then
     echo "📁 Copying initial media files..."
-    cp -r /app/media_initial/* /app/media/ 2>/dev/null || true
+    mkdir -p /data/media
+    cp -r /app/media_initial/* /data/media/ 2>/dev/null || true
 fi
 
 # Run database migrations

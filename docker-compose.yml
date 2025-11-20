@@ -3,15 +3,14 @@ services:
     build: .
     command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3 --threads 4
     volumes:
-      - ./db.sqlite3:/app/db.sqlite3
-      - ./media:/app/media
+      - app_data:/data
       - static_data:/app/staticfiles
     ports:
       - "8000:8000"
     environment:
       - DEBUG=${DEBUG:-False}
       - SECRET_KEY=${SECRET_KEY}
-      - DATABASE_URL=sqlite:////app/db.sqlite3
+      - DATABASE_URL=sqlite:////data/db.sqlite3
       - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
       - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@mpbenti.com.au}
       - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
@@ -26,7 +25,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - static_data:/app/staticfiles:ro
-      - ./media:/app/media:ro
+      - app_data:/data:ro
     ports:
       - "8010:80"
       - "443:443"
@@ -40,4 +39,5 @@ networks:
   frontend:
 
 volumes:
+  app_data:
   static_data:
