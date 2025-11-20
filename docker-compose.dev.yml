@@ -7,6 +7,8 @@ services:
       - media_data_dev:/app/media
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     environment:
       - DEBUG=True
       - SECRET_KEY=${SECRET_KEY:-dev-secret-key}
