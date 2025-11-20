@@ -1,4 +1,5 @@
 {% extends "dashboard_base.html" %}
+{% load dashboard_tags %}
 {% block title %}{% if is_edit %}Edit Order{% else %}Add Order{% endif %} - Dashboard | MP Benti{% endblock %}
 {% block content %}
 
@@ -56,11 +57,8 @@
   <div class="card p-6">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-bold">Order Items</h3>
-      <button type="button" id="toggle-invoice-prices" class="btn btn-outline text-sm">
-        📝 Show Invoice Prices
-      </button>
     </div>
-    <p class="text-sm text-gray-600 mb-4">Set quantities and optionally override prices for invoicing</p>
+    <p class="text-sm text-gray-600 mb-4">Set quantities and prices for invoicing</p>
 
     {% if products %}
       <div class="space-y-6">
@@ -102,15 +100,15 @@
                           name="quantity_{{ product.id }}"
                           min="0"
                           step="1"
-                          value="{{ form_data|get_item:'quantity_'|add:product.id|default:'' }}"
+                          value="{% get_form_value form_data 'quantity_' product.id %}"
                           class="w-16 border px-2 py-1 rounded text-sm quantity-input"
                           data-product-id="{{ product.id }}"
                           placeholder="0">
                       </div>
                     </div>
 
-                    <!-- Invoice Price Fields (collapsible) -->
-                    <div class="invoice-price-section" id="prices_{{ product.id }}" style="display: none;">
+                    <!-- Invoice Price Fields -->
+                    <div class="invoice-price-section mt-2" id="prices_{{ product.id }}">
                       <div class="text-xs font-medium text-gray-600 mb-1">Invoice Prices:</div>
                       <div class="grid grid-cols-2 gap-2">
                         <div>
@@ -120,7 +118,7 @@
                             name="price_ex_gst_{{ product.id }}"
                             step="0.01"
                             min="0"
-                            value="{{ form_data|get_item:'price_ex_gst_'|add:product.id|default:product.price_ex_gst|default:'' }}"
+                            value="{% get_form_value form_data 'price_ex_gst_' product.id product.price_ex_gst %}"
                             class="w-full border px-2 py-1 rounded text-xs price-ex-gst-input"
                             data-product-id="{{ product.id }}"
                             placeholder="0.00">
@@ -132,10 +130,11 @@
                             name="price_inc_gst_{{ product.id }}"
                             step="0.01"
                             min="0"
-                            value="{{ form_data|get_item:'price_inc_gst_'|add:product.id|default:product.price_inc_gst|default:'' }}"
+                            value="{% get_form_value form_data 'price_inc_gst_' product.id product.price_inc_gst %}"
                             class="w-full border px-2 py-1 rounded text-xs price-inc-gst-input"
                             data-product-id="{{ product.id }}"
-                            placeholder="0.00">
+                            placeholder="0.00"
+                            readonly>
                         </div>
                       </div>
                     </div>
@@ -166,68 +165,22 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Toggle invoice price fields
-    const toggleButton = document.getElementById('toggle-invoice-prices');
-    const priceSections = document.querySelectorAll('.invoice-price-section');
-    let pricesVisible = false;
-
-    toggleButton.addEventListener('click', function() {
-        pricesVisible = !pricesVisible;
-        priceSections.forEach(section => {
-            section.style.display = pricesVisible ? 'block' : 'none';
-        });
-        toggleButton.textContent = pricesVisible ? '📝 Hide Invoice Prices' : '📝 Show Invoice Prices';
-    });
-
-    // Auto-show prices if any have values
-    const priceInputs = document.querySelectorAll('.price-ex-gst-input, .price-inc-gst-input');
-    const hasExistingPrices = Array.from(priceInputs).some(input => input.value && parseFloat(input.value) > 0);
-    if (hasExistingPrices) {
-        toggleButton.click();  // Show prices automatically
-    }
-
-    // GST Auto-calculation
-    // When ex-GST is changed, calculate inc-GST
+    // GST Auto-calculation - Always calculate Inc GST from Ex GST
     document.querySelectorAll('.price-ex-gst-input').forEach(input => {
+        // Calculate on page load if there's a value
+        const productId = input.dataset.productId;
+        const exGst = parseFloat(input.value) || 0;
+        if (exGst > 0) {
+            const incGstInput = document.getElementById(`price_inc_gst_${productId}`);
+            incGstInput.value = (exGst * 1.1).toFixed(2);
+        }
+
+        // Calculate on input change
         input.addEventListener('input', function() {
             const productId = this.dataset.productId;
             const exGst = parseFloat(this.value) || 0;
             const incGstInput = document.getElementById(`price_inc_gst_${productId}`);
-
-            if (exGst > 0 && !incGstInput.value) {
-                // Only auto-fill if inc GST is empty
-                incGstInput.value = (exGst * 1.1).toFixed(2);
-            }
-        });
-    });
-
-    // When inc-GST is changed, calculate ex-GST
-    document.querySelectorAll('.price-inc-gst-input').forEach(input => {
-        input.addEventListener('input', function() {
-            const productId = this.dataset.productId;
-            const incGst = parseFloat(this.value) || 0;
-            const exGstInput = document.getElementById(`price_ex_gst_${productId}`);
-
-            if (incGst > 0 && !exGstInput.value) {
-                // Only auto-fill if ex GST is empty
-                exGstInput.value = (incGst / 1.1).toFixed(2);
-            }
-        });
-    });
-
-    // Show price fields when quantity is entered
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('input', function() {
-            const productId = this.dataset.productId;
-            const quantity = parseInt(this.value) || 0;
-
-            if (quantity > 0 && !pricesVisible) {
-                // Auto-show prices section when user starts adding quantities
-                const priceSection = document.getElementById(`prices_${productId}`);
-                if (priceSection) {
-                    priceSection.style.display = 'block';
-                }
-            }
+            incGstInput.value = exGst > 0 ? (exGst * 1.1).toFixed(2) : '';
         });
     });
 
@@ -235,10 +188,12 @@ document.addEventListener('DOMContentLoaded', function() {
     {% if is_edit and form_data %}
         {% for key, value in form_data.items %}
             {% if 'quantity_' in key %}
-                const input = document.querySelector('input[name="{{ key }}"]');
-                if (input) {
-                    input.value = '{{ value }}';
-                }
+                (function() {
+                    const input = document.querySelector('input[name="{{ key }}"]');
+                    if (input) {
+                        input.value = '{{ value }}';
+                    }
+                })();
             {% endif %}
         {% endfor %}
     {% endif %}

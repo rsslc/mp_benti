@@ -942,12 +942,13 @@ def generate_invoice(request, order_id):
     if order.invoice_number:
         messages.info(request, f'Order #{order.id} already has invoice number: {order.invoice_number}')
     else:
-        # Check if order has prices captured
-        has_prices = all(line.unit_price_ex_gst is not None for line in order.lines.all())
-
-        if not has_prices:
-            messages.error(request, 'Cannot generate invoice: Order does not have prices captured. Only orders created after the invoice system update can be invoiced.')
-            return redirect('order_detail', order_id=order.id)
+        # Auto-populate prices from product if missing (for old orders)
+        for line in order.lines.all():
+            if line.unit_price_ex_gst is None or line.unit_price_inc_gst is None:
+                # Use current product prices as fallback
+                line.unit_price_ex_gst = line.product.price_ex_gst
+                line.unit_price_inc_gst = line.product.price_inc_gst
+                line.save()
 
         invoice_number = order.generate_invoice_number()
         messages.success(request, f'Invoice {invoice_number} generated successfully for Order #{order.id}')
@@ -966,11 +967,13 @@ def order_invoice_pdf(request, order_id):
         messages.error(request, 'Cannot generate PDF: Invoice number has not been generated yet')
         return redirect('order_detail', order_id=order.id)
 
-    # Check if order has prices
-    has_prices = all(line.unit_price_ex_gst is not None for line in order.lines.all())
-    if not has_prices:
-        messages.error(request, 'Cannot generate invoice: Order does not have prices captured')
-        return redirect('order_detail', order_id=order.id)
+    # Auto-populate prices from product if missing (for old orders or edited orders)
+    for line in order.lines.all():
+        if line.unit_price_ex_gst is None or line.unit_price_inc_gst is None:
+            # Use current product prices as fallback
+            line.unit_price_ex_gst = line.product.price_ex_gst
+            line.unit_price_inc_gst = line.product.price_inc_gst
+            line.save()
 
     # Create response
     response = HttpResponse(content_type='application/pdf')

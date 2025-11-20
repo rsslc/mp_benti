@@ -86,11 +86,15 @@ DATABASES = {
     "default": env.db(default="sqlite:///" + str(BASE_DIR / "db.sqlite3"))
 }
 
-# Enable WAL mode for better SQLite concurrency
+# Configure SQLite-specific options and remove incompatible parameters
 if DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
-    DATABASES["default"]["OPTIONS"] = {
-        "init_command": "PRAGMA journal_mode=WAL;",
-    }
+    # Remove init_command if present (not supported by SQLite)
+    if "OPTIONS" in DATABASES["default"] and "init_command" in DATABASES["default"]["OPTIONS"]:
+        del DATABASES["default"]["OPTIONS"]["init_command"]
+
+    # Set SQLite-specific options
+    DATABASES["default"].setdefault("OPTIONS", {})
+    DATABASES["default"]["OPTIONS"]["timeout"] = 20
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
