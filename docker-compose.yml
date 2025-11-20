@@ -5,8 +5,8 @@ services:
     volumes:
       - media_data:/app/media
       - static_data:/app/staticfiles
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     environment:
       - DEBUG=${DEBUG:-False}
       - SECRET_KEY=${SECRET_KEY}
