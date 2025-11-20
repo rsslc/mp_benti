@@ -56,6 +56,7 @@ def reverse_load_initial_data(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
+    atomic = False  # Disable atomic transactions for fixture loading
 
     dependencies = [
         ('catalogue', '0006_increase_pack_size_length'),  # Must run after pack_size is increased
