@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('catalogue', '0006_increase_pack_size_length'),  # Must run after pack_size is increased
-        ('dashboard', '0001_initial'),  # Ensure dashboard models exist
+        ('dashboard', '0002_sitesettings_abn_sitesettings_business_address_and_more'),  # Ensure all dashboard fields exist
     ]
 
     operations = [
