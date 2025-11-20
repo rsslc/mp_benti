@@ -5,13 +5,12 @@ services:
     volumes:
       - media_data:/app/media
       - static_data:/app/staticfiles
-      - db_data:/app/data
     expose:
       - "8000"
     environment:
       - DEBUG=${DEBUG:-False}
       - SECRET_KEY=${SECRET_KEY}
-      - DATABASE_URL=sqlite:////app/data/db.sqlite3
+      - DATABASE_URL=sqlite:////app/db.sqlite3
       - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
       - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@mpbenti.com.au}
       - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
@@ -40,6 +39,5 @@ networks:
   frontend:
 
 volumes:
-  db_data:
   media_data:
   static_data:
