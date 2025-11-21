@@ -1,0 +1,71 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Import Products — Dashboard{% endblock %}
+{% block content %}
+
+<div class="mb-6">
+  <h1 class="text-2xl font-bold">Import Products from CSV</h1>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="mb-4 p-4 rounded {% if message.tags == 'error' or message.tags == 'warning' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="card p-6 mb-6">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="mb-6">
+      <label for="csv_file" class="block text-sm font-medium mb-2">Select CSV file:</label>
+      <input type="file" name="csv_file" id="csv_file" accept=".csv" required
+        class="w-full border px-3 py-2 rounded focus:ring focus:ring-blue-200">
+    </div>
+
+    <div class="flex gap-3">
+      <button type="submit" class="btn btn-primary">Import Products</button>
+      <a href="{% url 'products_list' %}" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<div class="card p-6">
+  <h2 class="text-xl font-bold mb-4">CSV Format Instructions</h2>
+
+  <div class="mb-6">
+    <p class="text-gray-700 mb-2">The CSV file should have the following columns (header row required):</p>
+    <ul class="list-disc list-inside space-y-1 text-gray-600">
+      <li><strong>Name</strong> - Product name (required)</li>
+      <li><strong>Category</strong> - Category name (required, will be created if doesn't exist)</li>
+      <li><strong>Description</strong> - Product description</li>
+      <li><strong>Unit</strong> - Unit of measurement</li>
+      <li><strong>Unit Weight</strong> - Weight per unit</li>
+      <li><strong>Pack Size</strong> - Pack size description</li>
+      <li><strong>Price Ex GST</strong> - Price excluding GST</li>
+      <li><strong>Price Inc GST</strong> - Price including GST</li>
+      <li><strong>Available</strong> - Available for sale (True/False)</li>
+      <li><strong>Stock Quantity</strong> - Current stock quantity</li>
+    </ul>
+  </div>
+
+  <div class="mb-6">
+    <h3 class="font-bold mb-2">Example CSV:</h3>
+    <pre class="bg-gray-100 p-4 rounded text-sm overflow-x-auto">Name,Category,Description,Unit,Unit Weight,Pack Size,Price Ex GST,Price Inc GST,Available,Stock Quantity
+Italian Mozzarella,Cheese,Fresh mozzarella from Italy,kg,1.00,500g x 12,45.00,49.50,True,50
+Plain Flour,Flour,All-purpose white flour,kg,1.00,1kg x 10,25.00,27.50,True,100</pre>
+  </div>
+
+  <div class="bg-blue-50 border border-blue-200 rounded p-4">
+    <p class="text-blue-800"><strong>Note:</strong> If a product with the same name and category already exists, it will be updated with the new data from the CSV.</p>
+  </div>
+
+  <div class="mt-4">
+    <a href="/products_template.csv" download class="text-blue-600 hover:underline">
+      Download Example CSV Template
+    </a>
+  </div>
+</div>
+
+{% endblock %}

@@ -7,6 +7,8 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.utils import timezone
 from decimal import Decimal
+import csv
+import io
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
@@ -310,6 +312,55 @@ def order_delete(request, order_id):
 
 @staff_required
 def products_list(request):
+    # Handle POST requests for bulk actions
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        selected_ids = request.POST.getlist('selected_products')
+
+        if not selected_ids:
+            messages.warning(request, 'No products selected')
+            return redirect('products_list')
+
+        if action == 'delete':
+            # Bulk delete
+            products_to_delete = Product.objects.filter(id__in=selected_ids)
+            count = products_to_delete.count()
+            products_to_delete.delete()
+            messages.success(request, f'{count} product(s) deleted successfully')
+            return redirect('products_list')
+
+        elif action == 'export':
+            # Export to CSV
+            products_to_export = Product.objects.filter(id__in=selected_ids).select_related('category')
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="products_export.csv"'
+
+            writer = csv.writer(response)
+            # Write header
+            writer.writerow([
+                'Name', 'Category', 'Description', 'Unit', 'Unit Weight',
+                'Pack Size', 'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity'
+            ])
+
+            # Write data
+            for product in products_to_export:
+                writer.writerow([
+                    product.name,
+                    product.category.name,
+                    product.description,
+                    product.unit,
+                    product.unit_weight,
+                    product.pack_size,
+                    product.price_ex_gst,
+                    product.price_inc_gst,
+                    product.available,
+                    product.stock_quantity,
+                ])
+
+            return response
+
+    # GET request - show product list
     products = Product.objects.select_related("category").all()
     categories = Category.objects.all()
 
@@ -698,6 +749,97 @@ def product_delete(request, product_id):
         return redirect('products_list')
 
     return render(request, "dashboard/product_confirm_delete.html", {'product': product})
+
+
+@staff_required
+def products_import_csv(request):
+    """Import products from CSV file"""
+    if request.method == 'POST':
+        csv_file = request.FILES.get('csv_file')
+        if not csv_file:
+            messages.error(request, 'Please select a CSV file')
+            return redirect('products_import_csv')
+
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'File must be a CSV')
+            return redirect('products_import_csv')
+
+        try:
+            # Read CSV file
+            decoded_file = csv_file.read().decode('utf-8')
+            io_string = io.StringIO(decoded_file)
+            reader = csv.DictReader(io_string)
+
+            created_count = 0
+            updated_count = 0
+            error_count = 0
+            errors = []
+
+            for row_num, row in enumerate(reader, start=2):  # Start at 2 because of header row
+                try:
+                    # Get or create category
+                    category_name = row.get('Category', '').strip()
+                    if not category_name:
+                        errors.append(f'Row {row_num}: Category is required')
+                        error_count += 1
+                        continue
+
+                    category, _ = Category.objects.get_or_create(name=category_name)
+
+                    # Check if product exists (by name and category)
+                    product_name = row.get('Name', '').strip()
+                    if not product_name:
+                        errors.append(f'Row {row_num}: Product name is required')
+                        error_count += 1
+                        continue
+
+                    product, created = Product.objects.update_or_create(
+                        name=product_name,
+                        category=category,
+                        defaults={
+                            'description': row.get('Description', ''),
+                            'unit': row.get('Unit', ''),
+                            'unit_weight': row.get('Unit Weight') or None,
+                            'pack_size': row.get('Pack Size', ''),
+                            'price_ex_gst': row.get('Price Ex GST') or None,
+                            'price_inc_gst': row.get('Price Inc GST') or None,
+                            'available': row.get('Available', 'True').lower() in ('true', '1', 'yes'),
+                            'stock_quantity': row.get('Stock Quantity') or None,
+                        }
+                    )
+
+                    if created:
+                        created_count += 1
+                    else:
+                        updated_count += 1
+
+                except Exception as e:
+                    errors.append(f'Row {row_num}: {str(e)}')
+                    error_count += 1
+                    continue
+
+            # Show success message
+            msg = f'Import completed: {created_count} created, {updated_count} updated'
+            if error_count:
+                msg += f', {error_count} errors'
+            messages.success(request, msg)
+
+            # Show errors if any
+            if errors and len(errors) <= 10:  # Only show first 10 errors
+                for error in errors[:10]:
+                    messages.warning(request, error)
+            elif errors:
+                messages.warning(request, f'Showing first 10 of {len(errors)} errors. Check your CSV file.')
+                for error in errors[:10]:
+                    messages.warning(request, error)
+
+        except Exception as e:
+            messages.error(request, f'Error importing CSV: {str(e)}')
+
+        return redirect('products_list')
+
+    # GET request - show upload form
+    return render(request, "dashboard/products_import_csv.html")
 
 
 @superuser_required

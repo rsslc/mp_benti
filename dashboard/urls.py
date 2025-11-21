@@ -19,6 +19,7 @@ urlpatterns = [
     path("customers/", views.customers_list, name="dashboard_customers"),
     # Product management
     path("products/add/", views.product_add, name="product_add"),
+    path("products/import-csv/", views.products_import_csv, name="products_import_csv"),
     path("products/<int:product_id>/edit/", views.product_edit, name="product_edit"),
     path("products/<int:product_id>/delete/", views.product_delete, name="product_delete"),
     # Category management

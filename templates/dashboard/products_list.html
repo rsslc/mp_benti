@@ -4,12 +4,20 @@
 
 <div class="flex justify-between items-center mb-6">
   <h1 class="text-2xl font-bold">Products</h1>
-  <a href="{% url 'product_add' %}" class="btn btn-primary">Add New Product</a>
+  <div class="flex gap-2">
+    <a href="{% url 'products_import_csv' %}" class="btn btn-outline">
+      <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+      </svg>
+      Import CSV
+    </a>
+    <a href="{% url 'product_add' %}" class="btn btn-primary">Add New Product</a>
+  </div>
 </div>
 
 {% if messages %}
   {% for message in messages %}
-    <div class="mb-4 p-4 rounded {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+    <div class="mb-4 p-4 rounded {% if message.tags == 'error' or message.tags == 'warning' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
       {{ message }}
     </div>
   {% endfor %}
@@ -53,71 +61,155 @@
   </form>
 </div>
 
-<!-- Products Table -->
-<div class="card overflow-x-auto">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Image</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Unit</th>
-        <th>Pack Size</th>
-        <th>Price (Ex GST)</th>
-        <th>Price (Inc GST)</th>
-        <th>Available</th>
-        <th>Stock</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for p in products %}
-      <tr>
-        <td>
-          {% if p.image_main %}
-            <img src="{{ p.image_main.url }}" alt="{{ p.name }}" class="w-8 h-8 object-cover rounded">
-          {% else %}
-            <div class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
-              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
-              </svg>
+<!-- Bulk Actions Form -->
+<form method="post" id="bulkActionForm">
+  {% csrf_token %}
+  <input type="hidden" name="action" id="bulkAction" value="">
+
+  <!-- Bulk Actions Bar -->
+  <div class="card p-4 mb-4 flex items-center gap-4">
+    <label class="flex items-center gap-2">
+      <input type="checkbox" id="selectAll" class="rounded">
+      <span class="text-sm font-medium">Select All</span>
+    </label>
+
+    <div class="flex gap-2">
+      <button type="button" onclick="submitBulkAction('export')" class="btn btn-outline btn-sm">
+        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+        </svg>
+        Export Selected
+      </button>
+
+      <button type="button" onclick="confirmBulkDelete()" class="btn btn-outline btn-sm text-red-600 hover:bg-red-50">
+        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+        </svg>
+        Delete Selected
+      </button>
+    </div>
+
+    <span id="selectedCount" class="text-sm text-gray-600 ml-auto">0 selected</span>
+  </div>
+
+  <!-- Products Table -->
+  <div class="card overflow-x-auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="w-12">
+            <input type="checkbox" class="rounded" disabled title="Use 'Select All' button above">
+          </th>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Unit</th>
+          <th>Pack Size</th>
+          <th>Price (Ex GST)</th>
+          <th>Price (Inc GST)</th>
+          <th>Available</th>
+          <th>Stock</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td>
+            <input type="checkbox" name="selected_products" value="{{ p.id }}" class="product-checkbox rounded">
+          </td>
+          <td>
+            {% if p.image_main %}
+              <img src="{{ p.image_main.url }}" alt="{{ p.name }}" class="w-8 h-8 object-cover rounded">
+            {% else %}
+              <div class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
+                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            {% endif %}
+          </td>
+          <td class="font-medium">{{ p.name }}</td>
+          <td>{{ p.category.name }}</td>
+          <td>{{ p.unit|default:"-" }}</td>
+          <td>{{ p.pack_size|default:"-" }}</td>
+          <td>{% if p.price_ex_gst %}A$ {{ p.price_ex_gst }}{% else %}-{% endif %}</td>
+          <td>{% if p.price_inc_gst %}A$ {{ p.price_inc_gst }}{% else %}-{% endif %}</td>
+          <td>
+            {% if p.available %}
+              <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Available</span>
+            {% else %}
+              <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Unavailable</span>
+            {% endif %}
+          </td>
+          <td>{{ p.stock_quantity|default:"-" }}</td>
+          <td>
+            <div class="flex gap-2">
+              <a href="{% url 'product_edit' p.id %}" class="text-blue-600 hover:underline">Edit</a>
+              <a href="{% url 'product_delete' p.id %}" class="text-red-600 hover:underline">Delete</a>
             </div>
-          {% endif %}
-        </td>
-        <td class="font-medium">{{ p.name }}</td>
-        <td>{{ p.category.name }}</td>
-        <td>{{ p.unit|default:"-" }}</td>
-        <td>{{ p.pack_size|default:"-" }}</td>
-        <td>{% if p.price_ex_gst %}A$ {{ p.price_ex_gst }}{% else %}-{% endif %}</td>
-        <td>{% if p.price_inc_gst %}A$ {{ p.price_inc_gst }}{% else %}-{% endif %}</td>
-        <td>
-          {% if p.available %}
-            <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Available</span>
-          {% else %}
-            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Unavailable</span>
-          {% endif %}
-        </td>
-        <td>{{ p.stock_quantity|default:"-" }}</td>
-        <td>
-          <div class="flex gap-2">
-            <a href="{% url 'product_edit' p.id %}" class="text-blue-600 hover:underline">Edit</a>
-            <a href="{% url 'product_delete' p.id %}" class="text-red-600 hover:underline">Delete</a>
-          </div>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="10" class="text-center py-8 text-gray-500">
-          {% if search or category_filter or available_filter %}
-            No products found matching your filters.
-          {% else %}
-            No products yet. <a href="{% url 'product_add' %}" class="text-blue-600 hover:underline">Add the first one!</a>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="11" class="text-center py-8 text-gray-500">
+            {% if search or category_filter or available_filter %}
+              No products found matching your filters.
+            {% else %}
+              No products yet. <a href="{% url 'product_add' %}" class="text-blue-600 hover:underline">Add the first one!</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</form>
+
+<script>
+// Select All functionality
+document.getElementById('selectAll').addEventListener('change', function(e) {
+  const checkboxes = document.querySelectorAll('.product-checkbox');
+  checkboxes.forEach(cb => cb.checked = e.target.checked);
+  updateSelectedCount();
+});
+
+// Update selected count
+function updateSelectedCount() {
+  const checked = document.querySelectorAll('.product-checkbox:checked').length;
+  document.getElementById('selectedCount').textContent = checked + ' selected';
+}
+
+// Listen to individual checkbox changes
+document.querySelectorAll('.product-checkbox').forEach(cb => {
+  cb.addEventListener('change', updateSelectedCount);
+});
+
+// Submit bulk action
+function submitBulkAction(action) {
+  const checked = document.querySelectorAll('.product-checkbox:checked').length;
+  if (checked === 0) {
+    alert('Please select at least one product');
+    return;
+  }
+  document.getElementById('bulkAction').value = action;
+  document.getElementById('bulkActionForm').submit();
+}
+
+// Confirm bulk delete
+function confirmBulkDelete() {
+  const checked = document.querySelectorAll('.product-checkbox:checked').length;
+  if (checked === 0) {
+    alert('Please select at least one product');
+    return;
+  }
+  if (confirm(`Are you sure you want to delete ${checked} product(s)? This action cannot be undone.`)) {
+    submitBulkAction('delete');
+  }
+}
+
+// Initialize count on page load
+updateSelectedCount();
+</script>
 
 {% endblock %}
