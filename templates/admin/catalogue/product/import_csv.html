@@ -1,0 +1,70 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Import Products from CSV</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-row">
+            <div>
+                <label for="csv_file">Select CSV file:</label>
+                <input type="file" name="csv_file" id="csv_file" accept=".csv" required>
+            </div>
+        </div>
+
+        <div class="submit-row">
+            <input type="submit" value="Import" class="default">
+            <a href="{% url 'admin:catalogue_product_changelist' %}" class="button cancel-link">Cancel</a>
+        </div>
+    </form>
+
+    <div class="help">
+        <h2>CSV Format</h2>
+        <p>The CSV file should have the following columns (header row required):</p>
+        <ul>
+            <li><strong>Name</strong> - Product name (required)</li>
+            <li><strong>Category</strong> - Category name (required, will be created if doesn't exist)</li>
+            <li><strong>Description</strong> - Product description</li>
+            <li><strong>Unit</strong> - Unit of measurement</li>
+            <li><strong>Unit Weight</strong> - Weight per unit</li>
+            <li><strong>Pack Size</strong> - Pack size description</li>
+            <li><strong>Price Ex GST</strong> - Price excluding GST</li>
+            <li><strong>Price Inc GST</strong> - Price including GST</li>
+            <li><strong>Available</strong> - Available for sale (True/False)</li>
+            <li><strong>Stock Quantity</strong> - Current stock quantity</li>
+        </ul>
+
+        <h3>Example CSV:</h3>
+        <pre>Name,Category,Description,Unit,Unit Weight,Pack Size,Price Ex GST,Price Inc GST,Available,Stock Quantity
+Italian Mozzarella,Cheese,Fresh mozzarella from Italy,kg,1.00,500g x 12,45.00,49.50,True,50
+Plain Flour,Flour,All-purpose white flour,kg,1.00,1kg x 10,25.00,27.50,True,100</pre>
+
+        <p><strong>Note:</strong> If a product with the same name and category already exists, it will be updated with the new data.</p>
+    </div>
+</div>
+
+<style>
+.help {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.help h2 {
+    margin-top: 0;
+}
+.help pre {
+    background: white;
+    padding: 10px;
+    border: 1px solid #ddd;
+    overflow-x: auto;
+    font-size: 12px;
+}
+.cancel-link {
+    margin-left: 10px;
+}
+</style>
+{% endblock %}
