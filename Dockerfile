@@ -46,9 +46,11 @@ COPY . .
 # Copy built Tailwind CSS from previous stage
 COPY --from=tailwind-builder /app/static/css/dist/ ./static/css/dist/
 
-# Create directories and preserve initial media files
+# Copy initial media files (seed data like category images)
+COPY initial_media/ /app/media_initial/
+
+# Create directories and set permissions
 RUN mkdir -p /app/staticfiles /app/media /data && \
-    cp -r /app/media /app/media_initial 2>/dev/null || mkdir -p /app/media_initial && \
     chmod +x /app/entrypoint.sh && \
     chown -R django:django /app /data
 
