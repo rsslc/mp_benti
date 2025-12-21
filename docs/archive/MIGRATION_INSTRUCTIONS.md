@@ -39,10 +39,10 @@ The following model changes have been made to support Australian tax invoice gen
 
 ## Running Migrations
 
-### After Deployment to Railway:
+### After Deployment to PythonAnywhere:
 
 ```bash
-# The migrations will be created and run automatically by Railway
+# The migrations will be created and run automatically by the setup script
 # using the entrypoint.sh script which runs:
 python manage.py makemigrations
 python manage.py migrate
@@ -53,8 +53,8 @@ python manage.py migrate
 If you need to run migrations manually:
 
 ```bash
-# SSH into Railway container
-railway shell
+# In PythonAnywhere Bash console
+python manage.py shell
 
 # Create migrations
 python manage.py makemigrations
@@ -92,7 +92,7 @@ After migrations run, configure your business details:
 If you want to add addresses to existing customers:
 
 ```bash
-railway run python manage.py shell
+python manage.py shell
 ```
 
 ```python

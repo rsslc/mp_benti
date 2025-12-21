@@ -1,6 +1,6 @@
-# MP Benti - Django E-Commerce Platform
+# MP Benti - Wholesale Food Ordering Platform
 
-A modern Django-based wholesale food ordering system with Tailwind CSS, designed for easy Docker deployment.
+A modern Django-based wholesale ordering system with Tailwind CSS, designed for PythonAnywhere deployment.
 
 ## Features
 
@@ -17,48 +17,32 @@ A modern Django-based wholesale food ordering system with Tailwind CSS, designed
 
 - **Backend**: Django 5.0.7, Python 3.11
 - **Frontend**: Tailwind CSS, Alpine.js
-- **Database**: PostgreSQL (production), SQLite (development)
-- **Server**: Gunicorn, Nginx
-- **Containerization**: Docker, Docker Compose
+- **Database**: SQLite (development/production)
+- **Deployment**: PythonAnywhere
 
 ## Quick Start
 
-### Local Development (Docker)
+### Local Development
 
-1. **Clone the repository**:
+1. **Clone and setup**:
    ```bash
-   git clone https://github.com/rsslc/mp_benti.git
-   cd mp_benti
-   ```
-
-2. **Run with Docker Compose**:
-   ```bash
-   docker-compose up --build
-   ```
-
-3. **Access the application**:
-   - Application: http://localhost:8000
-   - Admin Panel: http://localhost:8000/admin/
-   - Default credentials: admin / admin123
-
-### Local Development (Traditional)
-
-1. **Setup Python environment**:
-   ```bash
+   git clone <repository-url>
+   cd mpbenti_site
    python -m venv .venv
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
-2. **Setup Node.js for Tailwind**:
+2. **Configure environment**:
    ```bash
-   npm install
-   npm run build
+   cp .env.example .env
+   # Edit .env with your settings
    ```
 
-3. **Setup database**:
+3. **Run migrations and create superuser**:
    ```bash
    python manage.py migrate
+   python manage.py createsuperuser
    python manage.py collectstatic --noinput
    ```
 
@@ -67,68 +51,53 @@ A modern Django-based wholesale food ordering system with Tailwind CSS, designed
    python manage.py runserver
    ```
 
-## Production Deployment
+5. **Access the application**:
+   - Application: http://localhost:8000
+   - Admin Panel: http://localhost:8000/admin/
 
-### Docker Deployment (Recommended)
+### Production Deployment
 
-#### Using Docker Compose
+See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** for complete PythonAnywhere deployment instructions.
 
-1. **Create `.env` file** from `.env.example`:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your production values
-   ```
+## Documentation
 
-2. **Run production stack**:
-   ```bash
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
+- **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Complete deployment guide
+- **[docs/SETUP.md](docs/SETUP.md)** - Initial setup and configuration
+- **[docs/ADMIN.md](docs/ADMIN.md)** - Admin user management
+- **[docs/PRODUCTION.md](docs/PRODUCTION.md)** - Production checklist
 
-This will start:
-- Django application (Gunicorn)
-- PostgreSQL database
-- Nginx reverse proxy
+## Project Structure
 
-#### Digital Ocean Deployment
+```
+mpbenti_site/
+├── catalogue/          # Product and category management
+├── customers/          # Customer models and management
+├── dashboard/          # Admin dashboard views
+├── orders/             # Order processing
+├── core/              # Django settings and configuration
+├── templates/         # HTML templates
+├── static/            # Static files (CSS, JS, images)
+├── docs/              # Documentation
+└── manage.py          # Django management script
+```
 
-1. **Create a Droplet** with Docker pre-installed
+## Key Management Commands
 
-2. **Clone and configure**:
-   ```bash
-   git clone https://github.com/rsslc/mp_benti.git
-   cd mp_benti
-   cp .env.example .env
-   # Edit .env with production values
-   ```
-
-3. **Deploy**:
-   ```bash
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
-
-4. **Configure domain** and SSL with Certbot:
-   ```bash
-   # Install Certbot
-   apt-get update
-   apt-get install certbot python3-certbot-nginx
-
-   # Get SSL certificate
-   certbot --nginx -d yourdomain.com
-   ```
-
-## Data Migration
-
-The application automatically migrates initial data on first deployment:
-
-- **Categories**: 8 parent/child categories
-- **Products**: 252 products with details
-- **Settings**: Default site configuration
-- **Superuser**: Admin account created from environment variables
-
-To manually load data:
 ```bash
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py loaddata initial_data.json
+# Create superuser
+python manage.py createsuperuser
+
+# Load initial data
+python manage.py loaddata initial_data.json
+
+# Run migrations
+python manage.py migrate
+
+# Collect static files
+python manage.py collectstatic
+
+# Run development server
+python manage.py runserver
 ```
 
 ## Environment Variables
@@ -138,101 +107,18 @@ Key environment variables (see `.env.example`):
 ```bash
 SECRET_KEY=your-secret-key
 DEBUG=False
-DATABASE_URL=postgresql://user:pass@host/db
-ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+ALLOWED_HOSTS=yourdomain.com
+CSRF_TRUSTED_ORIGINS=https://yourdomain.com
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=admin@example.com
 DJANGO_SUPERUSER_PASSWORD=secure-password
 ```
 
-## Docker Commands
+## Support
 
-**Development**:
-```bash
-# Start services
-docker-compose up
-
-# Rebuild after changes
-docker-compose up --build
-
-# Stop services
-docker-compose down
-```
-
-**Production**:
-```bash
-# Start production stack
-docker-compose -f docker-compose.prod.yml up -d
-
-# View logs
-docker-compose -f docker-compose.prod.yml logs -f
-
-# Execute Django commands
-docker-compose -f docker-compose.prod.yml exec web python manage.py [command]
-
-# Backup database
-docker-compose -f docker-compose.prod.yml exec db pg_dump -U mpbenti mpbenti > backup.sql
-```
-
-## Project Structure
-
-```
-mp_benti/
-├── catalogue/          # Product catalog app
-├── customers/          # Customer management
-├── orders/            # Order processing
-├── dashboard/         # Admin dashboard
-├── core/              # Django settings
-├── templates/         # HTML templates
-├── static/            # CSS, JS, images
-├── docker-compose.yml # Development Docker config
-├── docker-compose.prod.yml # Production Docker config
-├── Dockerfile         # Multi-stage Docker build
-├── nginx.conf        # Nginx configuration
-└── initial_data.json # Initial database fixtures
-```
-
-## Development
-
-### Tailwind CSS
-
-Build CSS during development:
-```bash
-npm run dev  # Watch mode
-npm run build  # Production build
-```
-
-### Django Management
-
-Common Django commands:
-```bash
-# Create superuser
-python manage.py createsuperuser
-
-# Make migrations
-python manage.py makemigrations
-python manage.py migrate
-
-# Collect static files
-python manage.py collectstatic
-
-# Run tests
-python manage.py test
-```
-
-## Security Considerations
-
-- Change `SECRET_KEY` in production
-- Set `DEBUG=False` in production
-- Configure `ALLOWED_HOSTS` properly
-- Use strong database passwords
-- Enable HTTPS with SSL certificates
-- Regular security updates
+For deployment issues or questions, refer to the documentation in the `docs/` folder.
 
 ## License
 
-Private project - All rights reserved
+Proprietary - All rights reserved
 
-## Support
-
-For issues or questions, contact: admin@mpbenti.com.au

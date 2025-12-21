@@ -1,15 +1,28 @@
 from pathlib import Path
 import environ
 
+# Base directory
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 # Environment variables
+# NOTE: On PythonAnywhere you can either:
+#  - create a /home/<user>/.env file (recommended), or
+#  - set variables directly in the WSGI file via os.environ.
 env = environ.Env(
     DEBUG=(bool, False)
 )
-environ.Env.read_env()
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = env("SECRET_KEY")
-DEBUG = env("DEBUG", default=False)
+# Load .env file if present. By default django-environ looks for a file named
+# ".env" in the current working directory; we explicitly point it at BASE_DIR
+# to make deployments more predictable.
+environ.Env.read_env(str(BASE_DIR / ".env"), overwrite=False)
+
+# Core settings
+DEBUG = env.bool("DEBUG", default=False)
+
+# In production, SECRET_KEY must be provided via environment.
+# In development, fall back to a hardcoded key to avoid crashes.
+SECRET_KEY = env("SECRET_KEY", default="django-insecure-change-me") if DEBUG else env("SECRET_KEY")
 
 # Allowed hosts configuration
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
@@ -117,7 +130,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Media files configuration
 MEDIA_URL = "/media/"
-# Use /data/media in production (Docker/Railway), otherwise use local media folder
+# Use /data/media in production (Docker), otherwise use local media folder
 MEDIA_ROOT = Path("/data/media") if Path("/data").exists() else BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = '/order/'

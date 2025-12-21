@@ -2,7 +2,7 @@
 
 ## ✅ Current Status
 
-Your Django app is **mostly production-ready**, but needs a few critical configurations before Railway deployment.
+Your Django app is **mostly production-ready**, but needs a few critical configurations before PythonAnywhere deployment.
 
 ---
 
@@ -45,16 +45,16 @@ SESSION_COOKIE_SECURE = False  # Set to False since internal traffic is HTTP
 
 **Current Status:** These are set to `False` for double-proxy setups (Proxmox Nginx → Docker)
 
-**For Railway:** Should be `True` since Railway handles HTTPS directly
+**For PythonAnywhere:** Should be `True` since PythonAnywhere handles HTTPS directly
 
-**Fix Required for Railway:**
+**Fix Required for PythonAnywhere:**
 ```python
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     USE_X_FORWARDED_HOST = True
     USE_X_FORWARDED_PORT = True
 
-    # Railway: Set to True since Railway handles HTTPS
+    # PythonAnywhere: Set to True since PythonAnywhere handles HTTPS
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_HTTPONLY = True
@@ -172,8 +172,8 @@ python3 -c "import json; users=[d for d in json.load(open('initial_data.json')) 
 
 **Option 1: Load Everything (Quick Start)**
 ```bash
-# After Railway deployment
-railway run python manage.py loaddata initial_data.json
+# After PythonAnywhere deployment
+python manage.py loaddata initial_data.json
 ```
 
 Then immediately:
@@ -199,7 +199,7 @@ with open('initial_data_no_users.json', 'w') as f:
 
 Then load:
 ```bash
-railway run python manage.py loaddata initial_data_no_users.json
+python manage.py loaddata initial_data_no_users.json
 ```
 
 ---
@@ -216,20 +216,20 @@ Apply the security fixes mentioned above to `core/settings.py`
 python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
 ```
 
-Save this for Railway environment variables.
+Save this for PythonAnywhere environment variables.
 
 ### Step 3: Review Initial Data
 
 Decide on data loading strategy (see above).
 
-### Step 4: Set Railway Environment Variables
+### Step 4: Set PythonAnywhere Environment Variables
 
 **Required:**
 ```bash
 SECRET_KEY=<generated-secret-key>
 DEBUG=False
-ALLOWED_HOSTS=*.railway.app,yourdomain.com
-CSRF_TRUSTED_ORIGINS=https://your-app-name.railway.app,https://yourdomain.com
+ALLOWED_HOSTS=yourusername.pythonanywhere.com,yourdomain.com
+CSRF_TRUSTED_ORIGINS=https://your-app-name.pythonanywhere.com,https://yourdomain.com
 DATABASE_URL=sqlite:////app/data/db.sqlite3
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=admin@mpbenti.com.au
@@ -242,7 +242,7 @@ DJANGO_SETTINGS_MODULE=core.settings
 PYTHONUNBUFFERED=1
 ```
 
-### Step 5: Create Railway Volume
+### Step 5: Create PythonAnywhere Volume
 
 - Volume name: `db_volume`
 - Mount path: `/app/data`
@@ -253,7 +253,7 @@ PYTHONUNBUFFERED=1
 ## 📋 Post-Deployment Steps
 
 ### 1. Initial Deployment
-Railway will automatically:
+PythonAnywhere deployment will:
 - ✅ Run migrations
 - ✅ Create superuser (from env vars)
 - ✅ Collect static files
@@ -262,32 +262,32 @@ Railway will automatically:
 
 **Option A: Load all data**
 ```bash
-railway run python manage.py loaddata initial_data.json
+python manage.py loaddata initial_data.json
 ```
 
 Then check and secure the included users:
 ```bash
-railway run python manage.py shell < check_staff_users.py
+python manage.py shell < check_staff_users.py
 ```
 
 **Option B: Load filtered data (no users)**
 ```bash
-railway run python manage.py loaddata initial_data_no_users.json
+python manage.py loaddata initial_data_no_users.json
 ```
 
 ### 3. Verify Deployment
 
-- [ ] Visit `https://your-app.railway.app`
+- [ ] Visit `https://your-app.pythonanywhere.com`
 - [ ] Check homepage loads
-- [ ] Login to admin: `https://your-app.railway.app/admin`
+- [ ] Login to admin: `https://your-app.pythonanywhere.com/admin`
 - [ ] Verify products are visible in catalogue
 - [ ] Test placing an order
-- [ ] Access dashboard: `https://your-app.railway.app/dashboard`
+- [ ] Access dashboard: `https://your-app.pythonanywhere.com/dashboard`
 
 ### 4. Create Additional Staff Users
 
 ```bash
-railway run python manage.py make_staff username
+python manage.py make_staff username
 ```
 
 ### 5. Configure Site Settings
@@ -339,7 +339,7 @@ python manage.py runserver
 
 After deployment, monitor:
 
-### Railway Dashboard
+### PythonAnywhere Dashboard
 - CPU and memory usage
 - Request logs
 - Error rates
@@ -353,7 +353,7 @@ After deployment, monitor:
 - Regular backups
 
 ### Security
-- Review Railway logs for suspicious activity
+- Review PythonAnywhere logs for suspicious activity
 - Monitor failed login attempts
 
 ---
@@ -387,7 +387,7 @@ After deployment, monitor:
 ### Must Do Before Deployment:
 1. ❌ Fix SECRET_KEY to not have default fallback
 2. ⚠️  Fix ALLOWED_HOSTS to not default to wildcard
-3. ⚠️  Update CSRF/SESSION cookie settings for Railway
+3. ⚠️  Update CSRF/SESSION cookie settings for PythonAnywhere
 4. 🔑 Generate secure SECRET_KEY
 5. 🗑️  Remove or secure users in initial_data.json
 
@@ -400,9 +400,9 @@ After deployment, monitor:
 ### Deployment Flow:
 1. Apply security fixes
 2. Push to GitHub
-3. Deploy to Railway
-4. Railway auto-runs migrations and creates superuser
-5. Load initial data via Railway CLI
+3. Deploy to PythonAnywhere
+4. PythonAnywhere auto-runs migrations and creates superuser
+5. Load initial data via PythonAnywhere CLI
 6. Verify everything works
 7. Start using the platform!
 
@@ -410,5 +410,5 @@ After deployment, monitor:
 
 ## 🆘 Need Help?
 
-See `RAILWAY_DEPLOY.md` for detailed deployment instructions.
+See `DEPLOYMENT.md` for detailed deployment instructions.
 See `STAFF_ACCESS_FIX.md` for user management.

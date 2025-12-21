@@ -6,7 +6,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+./dist/
 downloads/
 eggs/
 .eggs/
@@ -60,7 +60,11 @@ yarn-error.log*
 
 # Static files (generated)
 staticfiles/
-static/css/dist/
+
+# Tailwind build output: commit the built CSS for PythonAnywhere (no npm there)
+# Ignore everything in dist except the final compiled stylesheet.
+static/css/dist/*
+!static/css/dist/styles.css
 
 # Media files (uploads)
 media/

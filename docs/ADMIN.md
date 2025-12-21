@@ -8,17 +8,17 @@ Your Django app automatically creates an admin user during deployment using envi
 
 ## 🔄 The Automatic Process
 
-### When Railway Deploys Your App:
+### When PythonAnywhere Deploys Your App:
 
 ```
-1. Docker builds your container
-2. Container starts running
+1. You run the setup script in Bash console
+2. entrypoint.sh script executes
 3. entrypoint.sh script executes automatically
 4. Script runs these steps in order:
    ├─ Run database migrations
    ├─ 👤 Create superuser (if doesn't exist)
    ├─ Collect static files
-   └─ Start Gunicorn web server
+   └─ Setup complete
 ```
 
 ---
@@ -49,7 +49,7 @@ else:
 
 ### What This Does:
 
-1. **Reads environment variables** you set in Railway:
+1. **Reads environment variables** you set in PythonAnywhere:
    - `DJANGO_SUPERUSER_USERNAME` → admin username
    - `DJANGO_SUPERUSER_EMAIL` → admin email
    - `DJANGO_SUPERUSER_PASSWORD` → admin password
@@ -65,11 +65,11 @@ else:
 
 ---
 
-## 🚀 How to Use This in Railway
+## 🚀 How to Use This in PythonAnywhere
 
-### Step 1: Set Environment Variables in Railway Dashboard
+### Step 1: Set Environment Variables
 
-Go to your Railway project → **Variables** tab → Add these:
+Go to your PythonAnywhere web app settings or add to your `.env` file:
 
 ```bash
 DJANGO_SUPERUSER_USERNAME=admin
@@ -77,33 +77,37 @@ DJANGO_SUPERUSER_EMAIL=admin@mpbenti.com.au
 DJANGO_SUPERUSER_PASSWORD=YourStrongPassword123!
 ```
 
-**Example:**
+**Example (.env file):**
 ```
-Variable Name                  | Variable Value
--------------------------------|--------------------------------
-DJANGO_SUPERUSER_USERNAME      | admin
-DJANGO_SUPERUSER_EMAIL         | admin@mpbenti.com.au
-DJANGO_SUPERUSER_PASSWORD      | MySecurePass2024!
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@mpbenti.com.au
+DJANGO_SUPERUSER_PASSWORD=MySecurePass2024!
 ```
 
-### Step 2: Deploy (or Redeploy)
+### Step 2: Run Setup Script
 
-Railway will:
-- Build your Docker image
-- Run `entrypoint.sh`
+In your PythonAnywhere Bash console:
+
+```bash
+cd ~/your-app-folder
+bash entrypoint.sh
+```
+
+This will:
+- Run database migrations
 - **Automatically create the admin user** with those credentials
-- Start the application
+- Collect static files
 
 ### Step 3: Login
 
-Visit your Railway URL and login:
-- **URL:** `https://your-app.railway.app/admin`
+Visit your PythonAnywhere URL and login:
+- **URL:** `https://yourusername.pythonanywhere.com/admin`
 - **Username:** `admin` (or whatever you set)
 - **Password:** `YourStrongPassword123!` (what you set)
 
 ---
 
-## 🎯 Example: Complete Railway Setup
+## 🎯 Example: Complete PythonAnywhere Setup
 
 ### Environment Variables to Set:
 
@@ -111,8 +115,8 @@ Visit your Railway URL and login:
 # Security (required)
 SECRET_KEY=django-insecure-abc123xyz789-CHANGE-THIS-TO-GENERATED-KEY
 DEBUG=False
-ALLOWED_HOSTS=*.railway.app
-CSRF_TRUSTED_ORIGINS=https://mpbenti.railway.app
+ALLOWED_HOSTS=*.pythonanywhere.app
+CSRF_TRUSTED_ORIGINS=https://mpbenti.pythonanywhere.app
 
 # Database (required)
 DATABASE_URL=sqlite:////app/data/db.sqlite3
@@ -126,7 +130,7 @@ DJANGO_SUPERUSER_PASSWORD=StrongPassword123!
 ### What Happens on First Deploy:
 
 ```
-Railway Console Output:
+Console Output:
 ----------------------
 🚀 Starting MP Benti Django Application
 🗄️  Running database migrations...
@@ -142,15 +146,13 @@ Railway Console Output:
 📦 Collecting static files...
   ... (static files collected)
 
-🎉 Setup complete! Starting Gunicorn...
-INFO Starting gunicorn 22.0.0
-INFO Listening at: http://0.0.0.0:8000
+🎉 Setup complete!
 ```
 
-### What Happens on Subsequent Deploys:
+### What Happens on Subsequent Runs:
 
 ```
-Railway Console Output:
+Console Output:
 ----------------------
 🚀 Starting MP Benti Django Application
 🗄️  Running database migrations...
@@ -162,10 +164,10 @@ Railway Console Output:
 📦 Collecting static files...
   ... (static files collected)
 
-🎉 Setup complete! Starting Gunicorn...
+🎉 Setup complete!
 ```
 
-**Notice:** On subsequent deploys, it says "Superuser already exists" and doesn't create a duplicate!
+**Notice:** On subsequent runs, it says "Superuser already exists" and doesn't create a duplicate!
 
 ---
 
@@ -181,7 +183,7 @@ Railway Console Output:
 - ❌ Use weak passwords like `admin`, `password123`, etc.
 - ❌ Share these credentials publicly
 - ❌ Use the same password across multiple services
-- ❌ Commit these values to git (they're in Railway env vars only)
+- ❌ Commit these values to git (they're in PythonAnywhere env vars only)
 
 ### Strong Password Example:
 ```bash
@@ -218,12 +220,12 @@ DJANGO_SUPERUSER_EMAIL=test@test.com
 DJANGO_SUPERUSER_PASSWORD=testpass123
 ```
 
-Then run with Docker:
+Then run the setup script:
 ```bash
-docker compose -f docker-compose.dev.yml up --build
+bash entrypoint.sh
 ```
 
-Watch the logs - you'll see:
+Watch the output - you'll see:
 ```
 👤 Creating superuser...
 ✅ Superuser testadmin created
@@ -239,7 +241,7 @@ Login at `http://localhost:8000/admin` with:
 
 ### Issue: "Superuser not created"
 
-**Check Railway logs for:**
+**Check PythonAnywhere logs for:**
 ```
 ℹ️  Superuser already exists or password not provided
 ```
@@ -251,7 +253,7 @@ Login at `http://localhost:8000/admin` with:
 
 **Solution:**
 - Verify env vars are spelled exactly: `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL`, `DJANGO_SUPERUSER_PASSWORD`
-- Check Railway dashboard Variables tab
+- Check PythonAnywhere dashboard Variables tab
 - Redeploy after adding missing variables
 
 ### Issue: "Can't login with created credentials"
@@ -263,7 +265,7 @@ Login at `http://localhost:8000/admin` with:
 
 **Solution 1: Check what user was created**
 ```bash
-railway run python manage.py shell
+pythonanywhere run python manage.py shell
 ```
 ```python
 from django.contrib.auth.models import User
@@ -274,12 +276,12 @@ for u in users:
 
 **Solution 2: Reset password**
 ```bash
-railway run python manage.py changepassword admin
+pythonanywhere run python manage.py changepassword admin
 ```
 
 **Solution 3: Create new superuser manually**
 ```bash
-railway run python manage.py createsuperuser
+pythonanywhere run python manage.py createsuperuser
 ```
 
 ### Issue: "Multiple superusers exist"
@@ -288,12 +290,12 @@ If you loaded `initial_data.json` (which includes `luca.rossi` and `admin`), you
 
 **Check all superusers:**
 ```bash
-railway run python manage.py shell < check_staff_users.py
+pythonanywhere run python manage.py shell < check_staff_users.py
 ```
 
 **Solution:** Use the one that exists, or delete extras:
 ```bash
-railway run python manage.py shell
+pythonanywhere run python manage.py shell
 ```
 ```python
 from django.contrib.auth.models import User
@@ -309,7 +311,7 @@ User.objects.filter(username='old_username').delete()
 |----------|--------|
 | **When is admin created?** | Automatically on first deployment |
 | **How is it created?** | Via `entrypoint.sh` script reading env vars |
-| **What credentials?** | Whatever you set in Railway environment variables |
+| **What credentials?** | Whatever you set in PythonAnywhere environment variables |
 | **Manual work needed?** | ❌ NO - completely automatic |
 | **Can I change credentials?** | ✅ Yes, use `changepassword` command |
 | **Safe for production?** | ✅ Yes, if you use strong passwords |
@@ -320,18 +322,18 @@ User.objects.filter(username='old_username').delete()
 
 **You don't create the admin user manually!**
 
-Just set these 3 environment variables in Railway:
+Just set these 3 environment variables in PythonAnywhere:
 1. `DJANGO_SUPERUSER_USERNAME`
 2. `DJANGO_SUPERUSER_EMAIL`
 3. `DJANGO_SUPERUSER_PASSWORD`
 
-Railway deploys → `entrypoint.sh` runs → Admin user created automatically → You can login immediately! 🎉
+Run setup → `entrypoint.sh` executes → Admin user created automatically → You can login immediately! 🎉
 
 ---
 
 ## 📚 Related Documentation
 
-- **RAILWAY_DEPLOY.md** - Complete Railway deployment guide
-- **PRODUCTION_CHECKLIST.md** - Production security checklist
-- **STAFF_ACCESS_FIX.md** - Managing additional staff users
+- **DEPLOYMENT.md** - Complete PythonAnywhere deployment guide
+- **PRODUCTION.md** - Production security checklist
+- **archive/STAFF_ACCESS_FIX.md** - Managing additional staff users
 - **entrypoint.sh** - The actual script that creates the user
