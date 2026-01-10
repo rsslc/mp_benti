@@ -3,7 +3,7 @@
 <title>{% block title %}MP Benti — Wholesale Foods{% endblock %}</title>
 <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet">
 <style>[x-cloak] { display: none !important; }</style>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script></head>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script></head>
 <body class="bg-gray-50 text-gray-900">
 <header class="bg-white/95 backdrop-blur border-b sticky top-0 z-40" x-data="{ mobileMenuOpen: false }">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -14,11 +14,26 @@
       <a href="/" class="hover:underline">Home</a>
       <a href="/about/" class="hover:underline">About</a>
       <a href="/products/" class="hover:underline">Products</a>
-      <a href="/order/" class="hover:underline">Order</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'my_orders' %}" class="hover:underline">My Orders</a>
+      {% endif %}
       <a href="/contact/" class="hover:underline">Contact</a>
       {% if user.is_superuser %}
         <a href="/dashboard/" class="hover:underline">Dashboard</a>
       {% endif %}
+
+      <!-- Cart Icon -->
+      <a href="{% url 'cart_detail' %}" class="relative hover:text-blue-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>
+        {% if cart|length > 0 %}
+          <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {{ cart|length }}
+          </span>
+        {% endif %}
+      </a>
+
       {% if user.is_authenticated %}
         <form action="{% url 'logout' %}" method="post" class="inline-flex items-center gap-0.5 text-gray-600">
           {% csrf_token %}
@@ -44,7 +59,15 @@
     <a href="/" class="block py-2 hover:underline">Home</a>
     <a href="/about/" class="block py-2 hover:underline">About</a>
     <a href="/products/" class="block py-2 hover:underline">Products</a>
-    <a href="/order/" class="block py-2 hover:underline">Order</a>
+    <a href="{% url 'cart_detail' %}" class="block py-2 hover:underline flex justify-between">
+      <span>Cart</span>
+      {% if cart|length > 0 %}
+        <span class="bg-red-600 text-white text-xs rounded-full px-2 py-0.5">{{ cart|length }}</span>
+      {% endif %}
+    </a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'my_orders' %}" class="block py-2 hover:underline">My Orders</a>
+    {% endif %}
     <a href="/contact/" class="block py-2 hover:underline">Contact</a>
     {% if user.is_superuser %}
       <a href="/dashboard/" class="block py-2 hover:underline">Dashboard</a>
@@ -63,6 +86,41 @@
   </nav>
 </header>
 {% block body %}<main class="max-w-6xl mx-auto px-4 py-8">{% block content %}{% endblock %}</main>{% endblock %}
+
+<!-- Back to Top (global) -->
+<button
+  id="backToTop"
+  type="button"
+  class="hidden fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg z-50"
+  title="Back to top"
+  aria-label="Back to top"
+>
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+  </svg>
+</button>
+<script>
+  (function () {
+    const btn = document.getElementById('backToTop');
+    if (!btn) return;
+
+    const toggle = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      if (y > 300) {
+        btn.classList.remove('hidden');
+      } else {
+        btn.classList.add('hidden');
+      }
+    };
+
+    window.addEventListener('scroll', toggle, { passive: true });
+    window.addEventListener('load', toggle);
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  })();
+</script>
+
 <footer class="border-t mt-16">
   <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-600 flex flex-col sm:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-3">

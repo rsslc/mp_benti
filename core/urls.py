@@ -8,6 +8,7 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("catalogue.urls")),
+    path("cart/", include("cart.urls")),
     path("dashboard/", include("dashboard.urls")),
     path("__reload__/", include("django_browser_reload.urls")),
     path(

@@ -114,6 +114,7 @@ Before going live:
 - [ ] Create virtual environment
 - [ ] Install dependencies
 - [ ] Create and configure `.env` file with secure SECRET_KEY
+- [ ] Configure email settings (for order notifications)
 - [ ] Run database migrations
 - [ ] Create superuser
 - [ ] Collect static files
@@ -122,7 +123,10 @@ Before going live:
 - [ ] Add static file mappings
 - [ ] Test the site loads correctly
 - [ ] Test admin panel login
-- [ ] Test creating an order
+- [ ] Test shopping cart (add/remove items)
+- [ ] Test checkout flow
+- [ ] Test order email notification
+- [ ] Test order history page
 - [ ] Set up custom domain (optional)
 - [ ] Configure database backups
 - [ ] Enable HTTPS (Force HTTPS in Web tab)

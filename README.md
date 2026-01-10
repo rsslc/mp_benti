@@ -114,6 +114,31 @@ DJANGO_SUPERUSER_EMAIL=admin@example.com
 DJANGO_SUPERUSER_PASSWORD=secure-password
 ```
 
+## Shopping Cart & Orders
+
+### Customer Flow
+1. Browse products at `/products/`
+2. Search/filter within categories
+3. Add items to cart with custom quantities
+4. View/edit cart at `/cart/`
+5. Login and checkout at `/cart/checkout/`
+6. View order history at `/my-orders/`
+
+### Key URLs
+- `/products/` - Product catalog
+- `/cart/` - Shopping cart
+- `/cart/checkout/` - Checkout (requires login)
+- `/my-orders/` - Order history (requires login)
+- `/my-orders/{id}/` - Order details
+
+### Email Notifications
+Orders automatically trigger email notifications to the configured admin email (mpbenti@gmail.com).
+
+**Gmail Setup:**
+1. Enable 2-factor authentication
+2. Generate App Password at: https://myaccount.google.com/apppasswords
+3. Add credentials to `.env` file (see Environment Variables above)
+
 ## Support
 
 For deployment issues or questions, refer to the documentation in the `docs/` folder.

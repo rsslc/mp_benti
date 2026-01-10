@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import redirect, render, get_object_or_404
 
 from catalogue.models import Product
@@ -24,6 +25,9 @@ def category_list(request):
 def category_detail(request, category_slug=None, parent_slug=None, child_slug=None):
     breadcrumbs = [{'name': 'Products', 'url': '/products/'}]
 
+    # Get search query
+    search_query = request.GET.get('q', '').strip()
+
     if child_slug:
         # Viewing a child category
         parent_category = get_object_or_404(Category, slug=parent_slug, parent=None)
@@ -32,6 +36,14 @@ def category_detail(request, category_slug=None, parent_slug=None, child_slug=No
 
         breadcrumbs.append({'name': parent_category.name, 'url': parent_category.get_absolute_url()})
         breadcrumbs.append({'name': category.name, 'url': None})
+
+        # Apply search filter for child categories
+        if search_query:
+            products = products.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(pack_size__icontains=search_query)
+            )
     else:
         # Viewing a category (could be parent or child)
         category = get_object_or_404(Category, slug=category_slug)
@@ -46,18 +58,32 @@ def category_detail(request, category_slug=None, parent_slug=None, child_slug=No
 
         breadcrumbs.append({'name': category.name, 'url': None})
 
+        # Apply search filter if query exists
+        # When searching, hide child categories and show all matching products in flat list
+        if search_query:
+            products = products.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(pack_size__icontains=search_query)
+            )
+            # Hide child categories when searching to show flat product list
+            child_categories = None
+
         context = {
             'category': category,
             'child_categories': child_categories,
             'products': products,
             'breadcrumbs': breadcrumbs,
+            'search_query': search_query,
         }
         return render(request, "catalogue/category_detail.html", context)
+
 
     context = {
         'category': category,
         'products': products,
         'breadcrumbs': breadcrumbs,
+        'search_query': search_query,
     }
     return render(request, "catalogue/category_detail.html", context)
 
@@ -188,3 +214,25 @@ def order_confirmation(request):
             pass
 
     return render(request, "order_confirmation.html", {"order": order})
+
+
+@login_required
+def my_orders(request):
+    """Display customer's order history"""
+    orders = Order.objects.filter(customer=request.user).order_by('-created_at')
+
+    # Calculate totals for each order
+    for order in orders:
+        order.calculated_total = order.get_total_inc_gst()
+
+    return render(request, "my_orders.html", {"orders": orders})
+
+
+@login_required
+def order_detail_view(request, order_id):
+    """Display a specific order's details"""
+    order = get_object_or_404(Order, id=order_id, customer=request.user)
+    order.calculated_total = order.get_total_inc_gst()
+
+    return render(request, "order.html", {"order": order})
+

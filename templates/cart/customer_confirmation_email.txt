@@ -1,0 +1,43 @@
+Order Confirmation - MP Benti
+=====================================
+
+Hi {{ customer.first_name|default:customer.username }},
+
+Thank you for your order! We've received your order and will process it shortly.
+
+Order Details:
+--------------
+Order Number: #{{ order.id }}
+Order Date: {{ order.created_at|date:"F d, Y H:i" }}
+Status: {{ order.get_status_display }}
+
+Items Ordered:
+--------------
+{% for item in items %}
+{{ item.product }}{% if item.pack_size %} - {{ item.pack_size }}{% endif %}
+Quantity: {{ item.quantity }} × A$ {{ item.price|floatformat:2 }} = A$ {{ item.total|floatformat:2 }}
+{% endfor %}
+
+Order Total: A$ {{ total|floatformat:2 }}
+
+{% if order.notes %}
+Your Delivery Notes:
+{{ order.notes }}
+{% endif %}
+
+What Happens Next?
+------------------
+1. We'll review your order and check product availability
+2. Paolo will contact you to confirm details and arrange delivery
+3. Your order will be prepared and delivered as scheduled
+
+If you have any questions about your order, please contact us at mpbenti@gmail.com or call Paolo directly.
+
+Thank you for choosing MP Benti!
+
+---
+MP Benti - Premium Dairy Products
+www.mpbenti.com.au
+
+
+

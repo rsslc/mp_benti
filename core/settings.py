@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "customers",
     "orders",
     "dashboard",
+    "cart",
 ]
 
 # Add django_browser_reload only in development
@@ -90,6 +91,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "dashboard.context_processors.site_settings",
+                "cart.context_processors.cart",
             ]
         },
     }
@@ -133,7 +135,19 @@ MEDIA_URL = "/media/"
 # Use /data/media in production (Docker), otherwise use local media folder
 MEDIA_ROOT = Path("/data/media") if Path("/data").exists() else BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-LOGIN_REDIRECT_URL = '/order/'
+LOGIN_REDIRECT_URL = '/products/'
+
+# Cart session ID
+CART_SESSION_ID = 'cart'
+
+# Email configuration
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@mpbenti.com.au')
 
 # Logging configuration
 LOGGING = {

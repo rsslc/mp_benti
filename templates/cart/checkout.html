@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Checkout — MP Benti{% endblock %}
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6">Checkout</h1>
+
+<form method="post" action="{% url 'checkout' %}">
+  {% csrf_token %}
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Order Review -->
+    <div class="lg:col-span-2">
+      <div class="card p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Order Details</h2>
+        <div class="space-y-3">
+          {% for item in items %}
+          <div class="flex justify-between items-center py-2 border-b">
+            <div class="flex-1">
+              <h3 class="font-medium">{{ item.product.name }}</h3>
+              <p class="text-sm text-gray-600">{{ item.product.pack_size }}</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-gray-600">Qty: {{ item.quantity }}</span>
+              {% if site_settings.show_prices %}
+                <span class="font-medium w-24 text-right">A$ {{ item.total_price }}</span>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <h2 class="text-xl font-semibold mb-4">Additional Notes</h2>
+        <textarea name="notes"
+                  rows="4"
+                  class="w-full border rounded px-3 py-2"
+                  placeholder="Any special instructions or notes for this order..."></textarea>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="lg:col-span-1">
+      <div class="card p-6 sticky top-24">
+        <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+
+        <div class="space-y-2 mb-6">
+          <div class="flex justify-between text-sm">
+            <span>Items:</span>
+            <span>{{ cart|length }}</span>
+          </div>
+          {% if site_settings.show_prices %}
+            <div class="flex justify-between font-semibold text-lg pt-2 border-t">
+              <span>Total:</span>
+              <span>A$ {{ total }}</span>
+            </div>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full mb-3">
+          Place Order
+        </button>
+
+        <a href="{% url 'cart_detail' %}" class="btn btn-outline w-full">
+          Back to Cart
+        </a>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% endblock %}
+

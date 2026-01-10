@@ -1,0 +1,23 @@
+New Order Received - Order #{{ order.id }}
+=====================================
+
+Customer: {{ order.customer.username }}
+Email: {{ order.customer.email }}
+Date: {{ order.created_at|date:"F d, Y H:i" }}
+
+Order Items:
+------------
+{% for item in items %}
+{{ item.product }} - Qty: {{ item.quantity }} - A$ {{ item.price }} each - Total: A$ {{ item.total }}
+{% endfor %}
+
+Order Total: A$ {{ total }}
+
+{% if order.notes %}
+Customer Notes:
+{{ order.notes }}
+{% endif %}
+
+---
+This is an automated notification from MP Benti online ordering system.
+
