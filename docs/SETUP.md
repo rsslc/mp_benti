@@ -37,6 +37,8 @@ Generate SECRET_KEY:
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
+**For email configuration**: See [EMAIL_TESTING.md](EMAIL_TESTING.md) for Gmail API setup (Gmail no longer supports SMTP with app passwords).
+
 ### 4. Database Setup
 ```bash
 python manage.py migrate
@@ -114,7 +116,7 @@ Before going live:
 - [ ] Create virtual environment
 - [ ] Install dependencies
 - [ ] Create and configure `.env` file with secure SECRET_KEY
-- [ ] Configure email settings (for order notifications)
+- [ ] Configure email settings (Gmail API or transactional service - see EMAIL_TESTING.md)
 - [ ] Run database migrations
 - [ ] Create superuser
 - [ ] Collect static files

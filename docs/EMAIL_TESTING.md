@@ -111,38 +111,120 @@ EMAIL_FILE_PATH=/tmp/app-emails
 
 ---
 
-### Method 3: Gmail SMTP (Real Emails)
+### Method 3: Gmail API (Real Emails)
 
-**Best for**: Testing actual email delivery
+**Best for**: Testing actual email delivery with Gmail
+
+**Important**: Gmail no longer supports SMTP with app passwords for new applications. You must use the Gmail API instead.
 
 **Setup**:
 
-1. **Enable 2-Factor Authentication** on your Gmail account
+1. **Create Google Cloud Project and Enable Gmail API**:
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project (e.g., "MP Benti Email")
+   - Go to "APIs & Services" → "Library"
+   - Search for "Gmail API" and click "Enable"
 
-2. **Create an App Password**:
-   - Go to: https://myaccount.google.com/apppasswords
-   - Select "Mail" and your device
-   - Copy the generated 16-character password
+2. **Create OAuth 2.0 Credentials**:
+   - Go to "APIs & Services" → "Credentials"
+   - Click "Create Credentials" → "OAuth client ID"
+   - Configure OAuth consent screen first if prompted:
+     - User Type: External (for testing) or Internal (if G Suite)
+     - Add your email as a test user
+   - Application type: "Desktop app"
+   - Name it "MP Benti Local Dev"
+   - Download the credentials JSON file
+   - Save it as `credentials.json` in your project root
 
-3. **Update your `.env` file**:
+3. **Install Gmail API dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **First-time Authentication**:
+   
+   **Option A: Using the authentication script (recommended)**
+   ```bash
+   python authenticate_gmail.py
+   ```
+   
+   **Option B: Using Django shell**
+   ```bash
+   python manage.py shell
+   ```
+   Then execute:
+   ```python
+   from cart.gmail_utils import authenticate_gmail
+   authenticate_gmail()
+   ```
+   
+   **Two authentication methods are supported:**
+   
+   **Method A: Automatic (tries first)**
+   - A browser window will open automatically
+   - Sign in with your Gmail account
+   - Grant ALL permissions (click "Continue" on every screen)
+   - The system will automatically capture the token and save it
+   
+   **Method B: Manual (fallback if automatic fails)**
+   - If the automatic method fails (e.g., can't start local server), you'll see manual instructions
+   - You'll be given a URL to open in your browser
+   - After granting permissions, copy the ENTIRE redirect URL from your browser
+   - Paste it back in the terminal when prompted
+   - The URL will look like: `http://localhost:PORT/?code=XXXXX&scope=...`
+   
+   - **IMPORTANT**: Make sure to click "Continue" on ALL permission screens to ensure a refresh token is granted
+   - A `token.json` file will be **automatically created** in your project root (keep this secure!)
+   - You should see: "✓✓✓ SUCCESS! Refresh token received! Authentication will persist - no need to log in again!"
+
+5. **Token Storage and Lifetime**:
+   - The `token.json` file contains:
+     - **Access token**: Short-lived (1 hour), used to make API calls
+     - **Refresh token**: Long-lived (no expiration), used to get new access tokens
+   - The system **automatically** handles token refresh:
+     - When the access token expires (after ~1 hour), the refresh token is used to get a new access token
+     - This happens transparently - you won't need to re-authenticate
+     - The refreshed token is automatically saved back to `token.json`
+   - **You only need to authenticate once** (when you first run `authenticate_gmail()`)
+   - The refresh token **does not expire** unless:
+     - You revoke access in your Google account settings
+     - You delete the `token.json` file
+     - The refresh token hasn't been used for 6 months (Google's inactivity policy)
+   - If re-authentication is needed, the system will automatically prompt you with a browser window
+
+6. **Update your `.env` file**:
    ```env
-   EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_PORT=587
-   EMAIL_USE_TLS=True
-   EMAIL_HOST_USER=your-email@gmail.com
-   EMAIL_HOST_PASSWORD=your-app-password-here
+   EMAIL_BACKEND=gmail_api
    DEFAULT_FROM_EMAIL=your-email@gmail.com
    ```
 
-4. **Restart your server**
+7. **Add `credentials.json` and `token.json` to `.gitignore`**:
+   ```bash
+   echo "credentials.json" >> .gitignore
+   echo "token.json" >> .gitignore
+   ```
+
+8. **Restart your server**
 
 **How to test**:
-1. Place a test order through checkout
-2. Check `mpbenti@gmail.com` and `mpbenti2@gmail.com` inboxes for the admin notification
-3. Check the customer's email inbox for the confirmation email
+1. Authenticate once (see step 4 above)
+2. Place a test order through checkout
+3. Check `mpbenti@gmail.com` and `mpbenti2@gmail.com` inboxes for the admin notification
+4. Check the customer's email inbox for the confirmation email
+
+**Quick test without placing an order:**
+```bash
+python test_gmail.py
+```
+This script will send a test email to verify Gmail API is working.
 
 **Note**: For testing, you might want to temporarily change the recipient email addresses in `cart/views.py` to your own email address.
+
+**Security Notes**:
+- Never commit `credentials.json` or `token.json` to git
+- The `token.json` contains refresh tokens that allow sending emails
+- For production, use a service account or secure credential management
+- Gmail API has a sending limit: 2,000 emails per day for free accounts
 
 ---
 
@@ -194,6 +276,7 @@ You can also test emails directly from Django shell:
 python manage.py shell
 ```
 
+**For console/SMTP backends:**
 ```python
 from django.core.mail import send_mail
 from django.conf import settings
@@ -201,6 +284,20 @@ from django.conf import settings
 send_mail(
     'Test Email',
     'This is a test email from MP Benti.',
+    settings.DEFAULT_FROM_EMAIL,
+    ['mpbenti@gmail.com'],
+    fail_silently=False,
+)
+```
+
+**For Gmail API backend:**
+```python
+from cart.gmail_utils import send_mail_gmail_api
+from django.conf import settings
+
+send_mail_gmail_api(
+    'Test Email',
+    'This is a test email from MP Benti using Gmail API.',
     settings.DEFAULT_FROM_EMAIL,
     ['mpbenti@gmail.com'],
     fail_silently=False,
@@ -264,21 +361,54 @@ python manage.py shell < test_order_email.py
 - Check that your server is running in the terminal
 - Verify `EMAIL_BACKEND` is set to `console.EmailBackend`
 
-### Gmail authentication fails
-- Ensure 2FA is enabled on your Gmail account
-- Use an App Password, not your regular password
-- Check that "Less secure app access" is not blocking (should use App Password instead)
+### Gmail API authentication fails
+- Ensure you've enabled Gmail API in Google Cloud Console
+- Check that OAuth consent screen is properly configured
+- Verify you've added your email as a test user (if using External user type)
+- Delete `token.json` and re-authenticate if you see permission errors
+- Check that `credentials.json` is in the correct location
+
+### Gmail API quota exceeded
+- Gmail API has a limit of 2,000 emails per day for free accounts
+- Check your quota usage in Google Cloud Console → APIs & Services → Dashboard
+- For higher limits, consider using a transactional email service (SendGrid, Mailgun, etc.)
 
 ### No error but email not received
 - Check spam folder
 - Verify the recipient email address
 - Check Django logs for email errors
 - Try the test script above to isolate the issue
+- Verify your Gmail account can send emails normally
 
-### Connection timeout
-- Check firewall settings
-- Verify `EMAIL_PORT` (usually 587 for TLS, 465 for SSL)
-- Ensure `EMAIL_USE_TLS` matches your port
+### Token expired or "Please visit this URL to authorize" appearing repeatedly
+- **Problem**: The refresh token was not properly saved during initial authentication, or the authentication flow never completed
+- **Cause**: 
+  - Not clicking "Continue" on all permission screens
+  - OAuth callback not captured (local server failed)
+  - Browser/OAuth flow issues
+- **Solution**: Delete `token.json` and re-authenticate using manual method:
+  ```bash
+  rm token.json
+  python manage.py shell
+  ```
+  Then run:
+  ```python
+  from cart.gmail_utils import authenticate_gmail
+  authenticate_gmail()
+  ```
+  **If automatic authentication fails:**
+  - The system will automatically switch to manual mode
+  - Copy the authorization URL shown and open it in a browser
+  - After granting permissions, copy the ENTIRE redirect URL (starts with `http://localhost`)
+  - Paste it when prompted in the terminal
+  
+  Make sure to:
+  1. Complete ALL permission screens
+  2. Look for the message: "✓✓✓ SUCCESS! Refresh token received!"
+  3. If you see "WARNING: No refresh token received", the authentication didn't complete properly - try again
+  4. Verify `token.json` was created: `ls -la token.json`
+
+- **Note**: Access tokens expire after ~1 hour, but the system automatically refreshes them using the refresh token. If you keep getting prompted to authenticate, the refresh token is missing from `token.json`
 
 ---
 
@@ -340,19 +470,46 @@ Then create the HTML templates with styled content.
 
 For production, consider:
 
-1. **Use a transactional email service**:
-   - SendGrid
-   - Mailgun
-   - Amazon SES
-   - Postmark
+1. **Use a transactional email service** (recommended):
+   - SendGrid (99,000 free emails/month with good deliverability)
+   - Mailgun (5,000 free emails/month)
+   - Amazon SES (62,000 free emails/month on AWS free tier)
+   - Postmark (100 free emails/month, excellent deliverability)
+   
+   These services provide:
+   - Higher sending limits than Gmail API
+   - Better deliverability and reputation management
+   - Email analytics and tracking
+   - Dedicated IP addresses
+   - Professional support
 
-2. **Add error handling and logging**
+2. **If using Gmail API in production**:
+   - Use a service account instead of OAuth for unattended operation
+   - Be aware of the 2,000 emails/day limit
+   - Set up proper error handling and retry logic
+   - Monitor your API quota in Google Cloud Console
+   - Consider upgrading to Google Workspace for higher limits
 
-3. **Queue emails** (using Celery) to avoid blocking the checkout process
+3. **Add error handling and logging**:
+   - Log all email sending attempts
+   - Handle API failures gracefully
+   - Alert administrators if emails fail to send
 
-4. **Track email delivery** status
+4. **Queue emails** (using Celery with Redis/RabbitMQ):
+   - Prevents blocking the checkout process
+   - Allows for retry on failure
+   - Better scalability
 
-5. **Add email analytics** to track open rates and customer engagement
+5. **Track email delivery**:
+   - Monitor bounce rates
+   - Track open rates (if using transactional service)
+   - Set up webhooks for delivery status
+
+6. **Security considerations**:
+   - Store credentials securely (use environment variables or secret managers)
+   - Rotate tokens/credentials periodically
+   - Monitor for unauthorized access
+   - Use least-privilege service accounts
 
 ---
 
@@ -360,8 +517,9 @@ For production, consider:
 
 **Current Setup**: Console backend (emails print to terminal)
 **Easiest for testing**: Keep console backend - just watch your terminal
-**For real emails**: Use Gmail SMTP with App Password
+**For real emails (development)**: Use Gmail API with OAuth authentication
 **For safe testing**: Use Mailtrap or Mailhog
+**For production**: Use a transactional email service (SendGrid, Mailgun, Amazon SES)
 
 Choose the method that best fits your testing needs!
 

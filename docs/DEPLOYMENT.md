@@ -75,6 +75,12 @@ DATABASE_URL=sqlite:////home/yourusername/mpbenti_site/db.sqlite3
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=admin@mpbenti.com.au
 DJANGO_SUPERUSER_PASSWORD=your-secure-admin-password
+
+# Email Configuration (optional - defaults to console output)
+# For Gmail API setup, see docs/EMAIL_TESTING.md
+# For production, consider using SendGrid, Mailgun, or Amazon SES
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+DEFAULT_FROM_EMAIL=noreply@mpbenti.com.au
 ```
 
 **Generate a secure SECRET_KEY:**
@@ -82,6 +88,13 @@ DJANGO_SUPERUSER_PASSWORD=your-secure-admin-password
 ```bash
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
+
+**Note on Email Configuration:**
+- By default, emails are logged to the console (terminal output)
+- To send real emails, you'll need to configure Gmail API or a transactional email service
+- See [EMAIL_TESTING.md](EMAIL_TESTING.md) for detailed setup instructions
+- Gmail no longer supports SMTP with app passwords - you must use Gmail API
+- **Gmail API token**: After one-time authentication, token.json is automatically stored and refreshed - no repeated login needed
 
 ### 6. Run Database Migrations
 

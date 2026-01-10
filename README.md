@@ -135,9 +135,10 @@ DJANGO_SUPERUSER_PASSWORD=secure-password
 Orders automatically trigger email notifications to the configured admin email (mpbenti@gmail.com).
 
 **Gmail Setup:**
-1. Enable 2-factor authentication
-2. Generate App Password at: https://myaccount.google.com/apppasswords
-3. Add credentials to `.env` file (see Environment Variables above)
+Gmail no longer supports app passwords for new applications. Use Gmail API instead:
+1. See `docs/EMAIL_TESTING.md` for complete Gmail API setup instructions
+2. One-time OAuth authentication creates a `token.json` file that persists
+3. Token automatically refreshes - no repeated login required
 
 ## Support
 

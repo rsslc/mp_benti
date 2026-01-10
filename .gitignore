@@ -36,6 +36,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Gmail API credentials (never commit these!)
+credentials.json
+token.json
+
 # IDEs
 .vscode/
 .idea/

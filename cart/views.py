@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect, render, get_object_or_404
 from django.template.loader import render_to_string
 from django.conf import settings
+import os
 
 from catalogue.models import Product
 from orders.models import Order, OrderLine
@@ -142,14 +143,28 @@ def send_order_notification_email(order):
     # Render email template
     message = render_to_string('cart/order_notification_email.txt', context)
 
-    # Send to both admin email addresses
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        ['mpbenti@gmail.com', 'mpbenti2@gmail.com'],
-        fail_silently=False,
-    )
+    # Check if using Gmail API backend
+    email_backend = os.environ.get('EMAIL_BACKEND', settings.EMAIL_BACKEND if hasattr(settings, 'EMAIL_BACKEND') else '')
+
+    if email_backend == 'gmail_api':
+        # Use Gmail API
+        from .gmail_utils import send_mail_gmail_api
+        send_mail_gmail_api(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            ['mpbenti@gmail.com', 'mpbenti2@gmail.com'],
+            fail_silently=False,
+        )
+    else:
+        # Use Django's standard send_mail (SMTP or console)
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            ['mpbenti@gmail.com', 'mpbenti2@gmail.com'],
+            fail_silently=False,
+        )
 
 
 def send_customer_confirmation_email(order):
@@ -177,12 +192,26 @@ def send_customer_confirmation_email(order):
     # Render email template
     message = render_to_string('cart/customer_confirmation_email.txt', context)
 
-    # Send to customer
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        [order.customer.email],
-        fail_silently=False,
-    )
+    # Check if using Gmail API backend
+    email_backend = os.environ.get('EMAIL_BACKEND', settings.EMAIL_BACKEND if hasattr(settings, 'EMAIL_BACKEND') else '')
+
+    if email_backend == 'gmail_api':
+        # Use Gmail API
+        from .gmail_utils import send_mail_gmail_api
+        send_mail_gmail_api(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [order.customer.email],
+            fail_silently=False,
+        )
+    else:
+        # Use Django's standard send_mail (SMTP or console)
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [order.customer.email],
+            fail_silently=False,
+        )
 
