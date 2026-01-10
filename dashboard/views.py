@@ -193,7 +193,7 @@ def order_add(request):
 
 @staff_required
 def order_edit(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
+    order = get_object_or_404(Order.objects.prefetch_related('lines__product__category'), id=order_id)
     users = User.objects.filter(is_active=True).order_by('username')
     products = Product.objects.filter(available=True).select_related('category').order_by('category__name', 'name')
 

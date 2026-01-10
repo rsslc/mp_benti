@@ -53,101 +53,220 @@
     </div>
   </div>
 
-  <!-- Products Section -->
-  <div class="card p-6">
+  <!-- Current Order Items Section -->
+  {% if is_edit %}
+  <div class="card p-6 bg-blue-50 border-2 border-blue-200">
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-bold">Order Items</h3>
+      <h3 class="text-lg font-bold text-blue-900">Current Order Items</h3>
+      <span class="text-sm text-blue-700 font-medium" id="current-items-count">{{ order.lines.count }} item{{ order.lines.count|pluralize }}</span>
     </div>
-    <p class="text-sm text-gray-600 mb-4">Set quantities and prices for invoicing</p>
 
-    {% if products %}
-      <div class="space-y-6">
-        {% regroup products by category as product_categories %}
-        {% for category in product_categories %}
-          <div class="border rounded p-4">
-            <h4 class="font-bold text-md mb-3 text-gray-700">{{ category.grouper.name }}</h4>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {% for product in category.list %}
-                <div class="border rounded p-3 bg-gray-50">
-                  <div class="flex justify-between items-start mb-2">
-                    <div class="flex-1">
-                      <h5 class="font-medium text-sm">{{ product.name }}</h5>
-                      {% if product.description %}
-                        <p class="text-xs text-gray-600 mt-1">{{ product.description|truncatechars:50 }}</p>
-                      {% endif %}
-                    </div>
-                  </div>
-
-                  <div class="space-y-2">
-                    <!-- Quantity Row -->
-                    <div class="flex justify-between items-center">
-                      <div class="text-sm">
-                        {% if product.price_inc_gst %}
-                          <span class="font-medium">A$ {{ product.price_inc_gst|floatformat:2 }}</span>
-                        {% else %}
-                          <span class="text-gray-500">No price</span>
-                        {% endif %}
-                        {% if product.unit %}
-                          <span class="text-gray-500">/ {{ product.unit }}</span>
-                        {% endif %}
-                      </div>
-
-                      <div class="flex items-center gap-2">
-                        <label for="quantity_{{ product.id }}" class="text-xs">Qty:</label>
-                        <input type="number"
-                          id="quantity_{{ product.id }}"
-                          name="quantity_{{ product.id }}"
-                          min="0"
-                          step="1"
-                          value="{% get_form_value form_data 'quantity_' product.id %}"
-                          class="w-16 border px-2 py-1 rounded text-sm quantity-input"
-                          data-product-id="{{ product.id }}"
-                          placeholder="0">
-                      </div>
-                    </div>
-
-                    <!-- Invoice Price Fields -->
-                    <div class="invoice-price-section mt-2" id="prices_{{ product.id }}">
-                      <div class="text-xs font-medium text-gray-600 mb-1">Invoice Prices:</div>
-                      <div class="grid grid-cols-2 gap-2">
-                        <div>
-                          <label for="price_ex_gst_{{ product.id }}" class="text-xs text-gray-600">Ex GST:</label>
-                          <input type="number"
-                            id="price_ex_gst_{{ product.id }}"
-                            name="price_ex_gst_{{ product.id }}"
-                            step="0.01"
-                            min="0"
-                            value="{% get_form_value form_data 'price_ex_gst_' product.id product.price_ex_gst %}"
-                            class="w-full border px-2 py-1 rounded text-xs price-ex-gst-input"
-                            data-product-id="{{ product.id }}"
-                            placeholder="0.00">
-                        </div>
-                        <div>
-                          <label for="price_inc_gst_{{ product.id }}" class="text-xs text-gray-600">Inc GST:</label>
-                          <input type="number"
-                            id="price_inc_gst_{{ product.id }}"
-                            name="price_inc_gst_{{ product.id }}"
-                            step="0.01"
-                            min="0"
-                            value="{% get_form_value form_data 'price_inc_gst_' product.id product.price_inc_gst %}"
-                            class="w-full border px-2 py-1 rounded text-xs price-inc-gst-input"
-                            data-product-id="{{ product.id }}"
-                            placeholder="0.00"
-                            readonly>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+    <div id="current-order-items">
+      {% if order.lines.all %}
+        <div class="space-y-3">
+          {% for line in order.lines.all %}
+            <div class="bg-white border rounded-lg p-4 current-order-item" data-product-id="{{ line.product.id }}">
+              <div class="flex justify-between items-start gap-4">
+                <div class="flex-1">
+                  <h5 class="font-medium">{{ line.product.name }}</h5>
+                  <p class="text-xs text-gray-600 mt-1">{{ line.product.pack_size }}</p>
+                  <p class="text-xs text-gray-500 mt-1">Category: {{ line.product.category.name }}</p>
                 </div>
-              {% endfor %}
+
+                <div class="flex items-center gap-4">
+                  <!-- Quantity -->
+                  <div>
+                    <label class="text-xs text-gray-600 block mb-1">Quantity</label>
+                    <input type="number"
+                      name="quantity_{{ line.product.id }}"
+                      min="0"
+                      step="1"
+                      value="{{ line.quantity }}"
+                      class="w-20 border px-2 py-1 rounded text-sm quantity-input"
+                      data-product-id="{{ line.product.id }}">
+                  </div>
+
+                  <!-- Price Ex GST -->
+                  <div>
+                    <label class="text-xs text-gray-600 block mb-1">Price Ex GST</label>
+                    <input type="number"
+                      name="price_ex_gst_{{ line.product.id }}"
+                      step="0.01"
+                      min="0"
+                      value="{{ line.unit_price_ex_gst|default:line.product.price_ex_gst }}"
+                      class="w-24 border px-2 py-1 rounded text-sm price-ex-gst-input"
+                      data-product-id="{{ line.product.id }}"
+                      placeholder="0.00">
+                  </div>
+
+                  <!-- Price Inc GST -->
+                  <div>
+                    <label class="text-xs text-gray-600 block mb-1">Price Inc GST</label>
+                    <input type="number"
+                      name="price_inc_gst_{{ line.product.id }}"
+                      step="0.01"
+                      min="0"
+                      value="{{ line.unit_price_inc_gst|default:line.product.price_inc_gst }}"
+                      class="w-24 border px-2 py-1 rounded text-sm price-inc-gst-input"
+                      data-product-id="{{ line.product.id }}"
+                      placeholder="0.00"
+                      readonly>
+                  </div>
+
+                  <!-- Remove Button -->
+                  <button type="button"
+                    class="text-red-600 hover:text-red-800 text-sm font-medium remove-item-btn"
+                    data-product-id="{{ line.product.id }}"
+                    title="Remove item">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-8 text-gray-500">
+          <p>No items in this order yet.</p>
+          <p class="text-sm mt-2">Use the "Add Products" section below to add items.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Add Products Section -->
+  <div class="card p-6">
+    <div class="flex justify-between items-center mb-4 cursor-pointer" onclick="toggleAddProducts()">
+      <div>
+        <h3 class="text-lg font-bold">{% if is_edit %}Add More Products{% else %}Select Products{% endif %}</h3>
+        <p class="text-sm text-gray-600">Browse by category or search for products</p>
       </div>
-    {% else %}
-      <p class="text-gray-500 text-center py-8">No available products found.</p>
-    {% endif %}
+      <button type="button" class="text-blue-600 hover:text-blue-800 font-medium" id="toggle-add-btn">
+        <span id="toggle-text">{% if is_edit %}Show Products{% else %}Expand{% endif %}</span>
+        <svg id="toggle-icon" class="inline w-5 h-5 ml-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div id="add-products-section" class="{% if is_edit %}hidden{% endif %}">
+      <!-- Search Bar -->
+      <div class="mb-4">
+        <input type="text"
+          id="product-search"
+          placeholder="Search products by name..."
+          class="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <!-- Category Filter -->
+      <div class="mb-4">
+        <div class="flex gap-2 flex-wrap">
+          <button type="button" class="category-filter-btn active px-4 py-2 rounded-full text-sm font-medium bg-blue-600 text-white" data-category="all">
+            All Products
+          </button>
+          {% regroup products by category as product_categories %}
+          {% for category in product_categories %}
+            <button type="button" class="category-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300" data-category="{{ category.grouper.id }}">
+              {{ category.grouper.name }}
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      {% if products %}
+        <div id="products-grid" class="space-y-6">
+          {% regroup products by category as product_categories %}
+          {% for category in product_categories %}
+            <div class="category-section border rounded p-4" data-category-id="{{ category.grouper.id }}">
+              <h4 class="font-bold text-md mb-3 text-gray-700">{{ category.grouper.name }}</h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for product in category.list %}
+                  <div class="product-card border rounded p-3 bg-gray-50" data-product-id="{{ product.id }}" data-product-name="{{ product.name|lower }}" data-category-id="{{ product.category.id }}">
+                    <div class="flex justify-between items-start mb-2">
+                      <div class="flex-1">
+                        <h5 class="font-medium text-sm">{{ product.name }}</h5>
+                        {% if product.pack_size %}
+                          <p class="text-xs text-gray-600 mt-1">{{ product.pack_size }}</p>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="space-y-2">
+                      <!-- Price and Quantity Row -->
+                      <div class="flex justify-between items-center">
+                        <div class="text-sm">
+                          {% if product.price_inc_gst %}
+                            <span class="font-medium">A$ {{ product.price_inc_gst|floatformat:2 }}</span>
+                          {% else %}
+                            <span class="text-gray-500">No price</span>
+                          {% endif %}
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                          <label for="add_quantity_{{ product.id }}" class="text-xs">Qty:</label>
+                          <input type="number"
+                            id="add_quantity_{{ product.id }}"
+                            name="quantity_{{ product.id }}"
+                            min="0"
+                            step="1"
+                            value="{% get_form_value form_data 'quantity_' product.id %}"
+                            class="w-16 border px-2 py-1 rounded text-sm quantity-input add-product-qty"
+                            data-product-id="{{ product.id }}"
+                            placeholder="0">
+                        </div>
+                      </div>
+
+                      <!-- Invoice Price Fields -->
+                      <div class="invoice-price-section mt-2" id="add_prices_{{ product.id }}">
+                        <div class="text-xs font-medium text-gray-600 mb-1">Invoice Prices:</div>
+                        <div class="grid grid-cols-2 gap-2">
+                          <div>
+                            <label for="add_price_ex_gst_{{ product.id }}" class="text-xs text-gray-600">Ex GST:</label>
+                            <input type="number"
+                              id="add_price_ex_gst_{{ product.id }}"
+                              name="price_ex_gst_{{ product.id }}"
+                              step="0.01"
+                              min="0"
+                              value="{% get_form_value form_data 'price_ex_gst_' product.id product.price_ex_gst %}"
+                              class="w-full border px-2 py-1 rounded text-xs price-ex-gst-input"
+                              data-product-id="{{ product.id }}"
+                              placeholder="0.00">
+                          </div>
+                          <div>
+                            <label for="add_price_inc_gst_{{ product.id }}" class="text-xs text-gray-600">Inc GST:</label>
+                            <input type="number"
+                              id="add_price_inc_gst_{{ product.id }}"
+                              name="price_inc_gst_{{ product.id }}"
+                              step="0.01"
+                              min="0"
+                              value="{% get_form_value form_data 'price_inc_gst_' product.id product.price_inc_gst %}"
+                              class="w-full border px-2 py-1 rounded text-xs price-inc-gst-input"
+                              data-product-id="{{ product.id }}"
+                              placeholder="0.00"
+                              readonly>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div id="no-results" class="hidden text-center py-8 text-gray-500">
+          <p>No products found matching your search.</p>
+        </div>
+      {% else %}
+        <p class="text-gray-500 text-center py-8">No available products found.</p>
+      {% endif %}
+    </div>
   </div>
 
   <!-- Form Actions -->
@@ -164,6 +283,17 @@
 </form>
 
 <script>
+// Toggle Add Products Section
+function toggleAddProducts() {
+    const section = document.getElementById('add-products-section');
+    const icon = document.getElementById('toggle-icon');
+    const text = document.getElementById('toggle-text');
+
+    section.classList.toggle('hidden');
+    icon.classList.toggle('rotate-180');
+    text.textContent = section.classList.contains('hidden') ? 'Show Products' : 'Hide Products';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // GST Auto-calculation - Always calculate Inc GST from Ex GST
     document.querySelectorAll('.price-ex-gst-input').forEach(input => {
@@ -171,18 +301,128 @@ document.addEventListener('DOMContentLoaded', function() {
         const productId = input.dataset.productId;
         const exGst = parseFloat(input.value) || 0;
         if (exGst > 0) {
-            const incGstInput = document.getElementById(`price_inc_gst_${productId}`);
-            incGstInput.value = (exGst * 1.1).toFixed(2);
+            const incGstInput = document.querySelector(`input[name="price_inc_gst_${productId}"]`);
+            if (incGstInput) {
+                incGstInput.value = (exGst * 1.1).toFixed(2);
+            }
         }
 
         // Calculate on input change
         input.addEventListener('input', function() {
             const productId = this.dataset.productId;
             const exGst = parseFloat(this.value) || 0;
-            const incGstInput = document.getElementById(`price_inc_gst_${productId}`);
-            incGstInput.value = exGst > 0 ? (exGst * 1.1).toFixed(2) : '';
+            const incGstInput = document.querySelector(`input[name="price_inc_gst_${productId}"]`);
+            if (incGstInput) {
+                incGstInput.value = exGst > 0 ? (exGst * 1.1).toFixed(2) : '';
+            }
         });
     });
+
+    // Remove item functionality (for edit mode)
+    document.querySelectorAll('.remove-item-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const item = this.closest('.current-order-item');
+
+            if (confirm('Remove this item from the order?')) {
+                // Set quantity to 0 (will be excluded on save)
+                const qtyInput = item.querySelector(`input[name="quantity_${productId}"]`);
+                if (qtyInput) {
+                    qtyInput.value = '0';
+                }
+
+                // Hide the item visually
+                item.style.opacity = '0.5';
+                item.style.textDecoration = 'line-through';
+                this.textContent = 'Removed';
+                this.disabled = true;
+
+                // Update count
+                updateCurrentItemsCount();
+            }
+        });
+    });
+
+    // Product search functionality
+    const searchInput = document.getElementById('product-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            filterProducts(searchTerm);
+        });
+    }
+
+    // Category filter functionality
+    document.querySelectorAll('.category-filter-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active state
+            document.querySelectorAll('.category-filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            this.classList.add('active', 'bg-blue-600', 'text-white');
+            this.classList.remove('bg-gray-200', 'text-gray-700');
+
+            // Filter products
+            const categoryId = this.dataset.category;
+            const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            filterProducts(searchTerm, categoryId);
+        });
+    });
+
+    function filterProducts(searchTerm = '', categoryId = 'all') {
+        const productCards = document.querySelectorAll('.product-card');
+        const categorySections = document.querySelectorAll('.category-section');
+        const noResults = document.getElementById('no-results');
+        let visibleCount = 0;
+
+        // Hide all category sections first
+        categorySections.forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Filter products
+        productCards.forEach(card => {
+            const productName = card.dataset.productName;
+            const productCategoryId = card.dataset.categoryId;
+
+            const matchesSearch = !searchTerm || productName.includes(searchTerm);
+            const matchesCategory = categoryId === 'all' || productCategoryId === categoryId;
+
+            if (matchesSearch && matchesCategory) {
+                card.style.display = 'block';
+                visibleCount++;
+                // Show the parent category section
+                const parentSection = card.closest('.category-section');
+                if (parentSection) {
+                    parentSection.style.display = 'block';
+                }
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Show/hide no results message
+        if (noResults) {
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        // Hide empty category sections
+        categorySections.forEach(section => {
+            const visibleCards = section.querySelectorAll('.product-card[style*="display: block"]');
+            if (visibleCards.length === 0) {
+                section.style.display = 'none';
+            }
+        });
+    }
+
+    function updateCurrentItemsCount() {
+        const countElement = document.getElementById('current-items-count');
+        if (countElement) {
+            const visibleItems = document.querySelectorAll('.current-order-item:not([style*="opacity: 0.5"])').length;
+            countElement.textContent = `${visibleItems} item${visibleItems !== 1 ? 's' : ''}`;
+        }
+    }
 
     // Populate existing quantities for edit mode
     {% if is_edit and form_data %}
@@ -190,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
             {% if 'quantity_' in key %}
                 (function() {
                     const input = document.querySelector('input[name="{{ key }}"]');
-                    if (input) {
+                    if (input && input.classList.contains('add-product-qty')) {
                         input.value = '{{ value }}';
                     }
                 })();
