@@ -1,7 +1,13 @@
 from PIL import Image, ImageOps
 import io
+import os
+from django.conf import settings
+from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import sys
+
+
+PRODUCT_IMAGE_IMPORT_DIR = "product_images_import"
 
 
 def process_image(image_field, max_width, max_height, format='JPEG', quality=85):
@@ -113,6 +119,32 @@ def validate_image_size(image_field, max_size_mb=5):
         return False, f"Image file size must be less than {max_size_mb}MB"
 
     return True, None
+
+
+def get_import_image_file(filename):
+    """
+    Look up an image by filename in the manual image-import staging folder
+    (MEDIA_ROOT/product_images_import/), for use during CSV product import.
+
+    Args:
+        filename: Filename as given in the CSV (e.g. "mozzarella.jpg")
+
+    Returns:
+        django.core.files.File, or None if filename is blank or the file
+        isn't found in the staging folder.
+    """
+    if not filename:
+        return None
+
+    safe_name = os.path.basename(filename.strip())
+    if not safe_name:
+        return None
+
+    path = os.path.join(settings.MEDIA_ROOT, PRODUCT_IMAGE_IMPORT_DIR, safe_name)
+    if not os.path.isfile(path):
+        return None
+
+    return File(open(path, 'rb'), name=safe_name)
 
 
 def validate_image_format(image_field):

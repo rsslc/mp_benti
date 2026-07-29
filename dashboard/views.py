@@ -20,7 +20,7 @@ import os
 from django.conf import settings as django_settings
 
 from catalogue.models import Product, Category
-from catalogue.utils import validate_image_size, validate_image_format
+from catalogue.utils import validate_image_size, validate_image_format, get_import_image_file
 from customers.models import Customer
 from orders.models import Order, OrderLine, ORDER_STATUS
 from .models import SiteSettings
@@ -340,7 +340,8 @@ def products_list(request):
             # Write header
             writer.writerow([
                 'Name', 'Category', 'Description', 'Pack Description',
-                'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity'
+                'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity',
+                'Image', 'Alt Image'
             ])
 
             # Write data
@@ -354,6 +355,8 @@ def products_list(request):
                     product.price_inc_gst,
                     product.available,
                     product.stock_quantity,
+                    os.path.basename(product.image_main.name) if product.image_main else '',
+                    os.path.basename(product.image_alt.name) if product.image_alt else '',
                 ])
 
             return response
@@ -792,6 +795,36 @@ def products_import_csv(request):
                             'stock_quantity': row.get('Stock Quantity') or None,
                         }
                     )
+
+                    # Optionally attach images by filename from the
+                    # product_images_import staging folder
+                    opened_files = []
+                    image_name = row.get('Image', '').strip()
+                    if image_name:
+                        image_file = get_import_image_file(image_name)
+                        if image_file:
+                            product.image_main = image_file
+                            opened_files.append(image_file)
+                        else:
+                            errors.append(
+                                f"Row {row_num}: image '{image_name}' not found in product_images_import folder"
+                            )
+
+                    alt_image_name = row.get('Alt Image', '').strip()
+                    if alt_image_name:
+                        alt_image_file = get_import_image_file(alt_image_name)
+                        if alt_image_file:
+                            product.image_alt = alt_image_file
+                            opened_files.append(alt_image_file)
+                        else:
+                            errors.append(
+                                f"Row {row_num}: alt image '{alt_image_name}' not found in product_images_import folder"
+                            )
+
+                    if opened_files:
+                        product.save()
+                        for f in opened_files:
+                            f.close()
 
                     if created:
                         created_count += 1

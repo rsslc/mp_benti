@@ -45,18 +45,31 @@
       <li><strong>Price Inc GST</strong> - Price including GST</li>
       <li><strong>Available</strong> - Available for sale (True/False)</li>
       <li><strong>Stock Quantity</strong> - Current stock quantity</li>
+      <li><strong>Image</strong> - Filename of the main product image (optional, see below)</li>
+      <li><strong>Alt Image</strong> - Filename of the alternative product image (optional)</li>
     </ul>
   </div>
 
   <div class="mb-6">
     <h3 class="font-bold mb-2">Example CSV:</h3>
-    <pre class="bg-gray-100 p-4 rounded text-sm overflow-x-auto">Name,Category,Description,Pack Description,Price Ex GST,Price Inc GST,Available,Stock Quantity
-Italian Mozzarella,Cheese,Fresh mozzarella from Italy,500g x 12,45.00,49.50,True,50
-Plain Flour,Flour,All-purpose white flour,1kg x 10,25.00,27.50,True,100</pre>
+    <pre class="bg-gray-100 p-4 rounded text-sm overflow-x-auto">Name,Category,Description,Pack Description,Price Ex GST,Price Inc GST,Available,Stock Quantity,Image,Alt Image
+Italian Mozzarella,Cheese,Fresh mozzarella from Italy,500g x 12,45.00,49.50,True,50,mozzarella.jpg,mozzarella-alt.jpg
+Plain Flour,Flour,All-purpose white flour,1kg x 10,25.00,27.50,True,100,,</pre>
   </div>
 
-  <div class="bg-blue-50 border border-blue-200 rounded p-4">
+  <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-4">
     <p class="text-blue-800"><strong>Note:</strong> If a product with the same name and category already exists, it will be updated with the new data from the CSV.</p>
+  </div>
+
+  <div class="bg-yellow-50 border border-yellow-200 rounded p-4">
+    <p class="text-yellow-900 font-medium mb-1">Importing images</p>
+    <p class="text-yellow-800 text-sm">
+      Upload the image files to the <code>product_images_import</code> folder on the server first
+      (e.g. via your hosting provider's file manager), then reference each file by its exact filename
+      in the <strong>Image</strong> / <strong>Alt Image</strong> columns. Leave these columns blank to
+      leave a product's images unchanged. If a filename isn't found, the row is still imported but a
+      warning is shown and the image is skipped.
+    </p>
   </div>
 
   <div class="mt-4">

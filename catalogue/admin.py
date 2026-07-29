@@ -5,8 +5,10 @@ from django.urls import path
 from django.contrib import messages
 import csv
 import io
+import os
 
 from .models import Category, Product
+from .utils import get_import_image_file
 
 
 @admin.register(Category)
@@ -66,7 +68,8 @@ class ProductAdmin(admin.ModelAdmin):
         # Write header
         writer.writerow([
             'Name', 'Category', 'Description', 'Pack Description',
-            'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity'
+            'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity',
+            'Image', 'Alt Image'
         ])
 
         # Write data
@@ -80,6 +83,8 @@ class ProductAdmin(admin.ModelAdmin):
                 product.price_inc_gst,
                 product.available,
                 product.stock_quantity,
+                os.path.basename(product.image_main.name) if product.image_main else '',
+                os.path.basename(product.image_alt.name) if product.image_alt else '',
             ])
 
         return response
@@ -142,6 +147,38 @@ class ProductAdmin(admin.ModelAdmin):
                                 'stock_quantity': row.get('Stock Quantity') or None,
                             }
                         )
+
+                        # Optionally attach images by filename from the
+                        # product_images_import staging folder
+                        opened_files = []
+                        image_name = row.get('Image', '').strip()
+                        if image_name:
+                            image_file = get_import_image_file(image_name)
+                            if image_file:
+                                product.image_main = image_file
+                                opened_files.append(image_file)
+                            else:
+                                messages.warning(
+                                    request,
+                                    f"'{product_name}': image '{image_name}' not found in product_images_import folder"
+                                )
+
+                        alt_image_name = row.get('Alt Image', '').strip()
+                        if alt_image_name:
+                            alt_image_file = get_import_image_file(alt_image_name)
+                            if alt_image_file:
+                                product.image_alt = alt_image_file
+                                opened_files.append(alt_image_file)
+                            else:
+                                messages.warning(
+                                    request,
+                                    f"'{product_name}': alt image '{alt_image_name}' not found in product_images_import folder"
+                                )
+
+                        if opened_files:
+                            product.save()
+                            for f in opened_files:
+                                f.close()
 
                         if created:
                             created_count += 1
