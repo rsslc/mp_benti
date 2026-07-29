@@ -42,7 +42,7 @@ def category_detail(request, category_slug=None, parent_slug=None, child_slug=No
             products = products.filter(
                 Q(name__icontains=search_query) |
                 Q(description__icontains=search_query) |
-                Q(pack_size__icontains=search_query)
+                Q(pack_description__icontains=search_query)
             )
     else:
         # Viewing a category (could be parent or child)
@@ -64,7 +64,7 @@ def category_detail(request, category_slug=None, parent_slug=None, child_slug=No
             products = products.filter(
                 Q(name__icontains=search_query) |
                 Q(description__icontains=search_query) |
-                Q(pack_size__icontains=search_query)
+                Q(pack_description__icontains=search_query)
             )
             # Hide child categories when searching to show flat product list
             child_categories = None
@@ -114,7 +114,7 @@ def order_form(request):
                             order_items.append({
                                 'product_id': p.id,
                                 'product_name': p.name,
-                                'pack_size': p.pack_size,
+                                'pack_description': p.pack_description,
                                 'price': p.price_inc_gst or 0,
                                 'quantity': qty,
                                 'total': item_total
@@ -131,7 +131,7 @@ def order_form(request):
                         order_items.append({
                             'product_id': p.id,
                             'product_name': p.name,
-                            'pack_size': p.pack_size,
+                            'pack_description': p.pack_description,
                             'price': p.price_inc_gst or 0,
                             'quantity': qty,
                             'total': item_total

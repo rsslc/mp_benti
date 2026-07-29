@@ -21,7 +21,7 @@
 
           <div class="flex-1">
             <h3 class="font-semibold">{{ item.product.name }}</h3>
-            <p class="text-sm text-gray-600">{{ item.product.pack_size }}</p>
+            <p class="text-sm text-gray-600">{{ item.product.pack_description }}</p>
             {% if site_settings.show_prices %}
               <p class="text-sm text-gray-900 font-medium mt-1">A$ {{ item.price }} inc GST</p>
             {% endif %}

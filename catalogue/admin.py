@@ -47,8 +47,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "category",
-        "unit",
-        "pack_size",
+        "pack_description",
         "price_ex_gst",
         "price_inc_gst",
         "available",
@@ -66,8 +65,8 @@ class ProductAdmin(admin.ModelAdmin):
         writer = csv.writer(response)
         # Write header
         writer.writerow([
-            'Name', 'Category', 'Description', 'Unit', 'Unit Weight',
-            'Pack Size', 'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity'
+            'Name', 'Category', 'Description', 'Pack Description',
+            'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity'
         ])
 
         # Write data
@@ -76,9 +75,7 @@ class ProductAdmin(admin.ModelAdmin):
                 product.name,
                 product.category.name,
                 product.description,
-                product.unit,
-                product.unit_weight,
-                product.pack_size,
+                product.pack_description,
                 product.price_ex_gst,
                 product.price_inc_gst,
                 product.available,
@@ -138,9 +135,7 @@ class ProductAdmin(admin.ModelAdmin):
                             category=category,
                             defaults={
                                 'description': row.get('Description', ''),
-                                'unit': row.get('Unit', ''),
-                                'unit_weight': row.get('Unit Weight') or None,
-                                'pack_size': row.get('Pack Size', ''),
+                                'pack_description': row.get('Pack Description', ''),
                                 'price_ex_gst': row.get('Price Ex GST') or None,
                                 'price_inc_gst': row.get('Price Inc GST') or None,
                                 'available': row.get('Available', 'True').lower() in ('true', '1', 'yes'),

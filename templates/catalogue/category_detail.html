@@ -110,8 +110,7 @@
                   <div>
                     <h4 class="font-semibold">{{ p.name }}</h4>
                     <div class="mt-1 text-sm text-gray-600">
-                      {% if p.unit %}<span>{{ p.unit }}</span>{% endif %}
-                      {% if p.pack_size %}<span class="ml-2">{{ p.pack_size }}</span>{% endif %}
+                      {% if p.pack_description %}<span>{{ p.pack_description }}</span>{% endif %}
                     </div>
                     <div class="mt-2 text-sm">
                       {% if site_settings.show_prices %}
@@ -197,8 +196,7 @@
         <div>
           <h4 class="font-semibold">{{ p.name }}</h4>
           <div class="mt-1 text-sm text-gray-600">
-            {% if p.unit %}<span>{{ p.unit }}</span>{% endif %}
-            {% if p.pack_size %}<span class="ml-2">{{ p.pack_size }}</span>{% endif %}
+            {% if p.pack_description %}<span>{{ p.pack_description }}</span>{% endif %}
           </div>
           <div class="mt-2 text-sm">
             {% if site_settings.show_prices %}

@@ -176,7 +176,7 @@ def send_customer_confirmation_email(order):
     for line in order.lines.all():
         items.append({
             'product': line.product.name,
-            'pack_size': line.product.pack_size,
+            'pack_description': line.product.pack_description,
             'quantity': line.quantity,
             'price': line.unit_price_inc_gst or 0,
             'total': (line.unit_price_inc_gst or 0) * line.quantity

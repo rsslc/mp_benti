@@ -45,7 +45,7 @@
     "fields": {
       "name": "BOCCONCINI 1KG, 19X55GR",
       "category": 5,
-      "pack_size": "(4X 1KG BOX)",
+      "pack_description": "(4X 1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -57,7 +57,7 @@
     "fields": {
       "name": "CILIEGINE 1 KG ,91X11GR",
       "category": 5,
-      "pack_size": "(4 X 1KG BOX)",
+      "pack_description": "(4 X 1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -69,7 +69,7 @@
     "fields": {
       "name": "FIOR DI LATTE 1 KG, 4X250GR",
       "category": 5,
-      "pack_size": "(4X 1KG BOX)",
+      "pack_description": "(4X 1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -81,7 +81,7 @@
     "fields": {
       "name": "FIOR DI LATTE 7KG ,28X250 GR",
       "category": 5,
-      "pack_size": "(7KG BKT)",
+      "pack_description": "(7KG BKT)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -93,7 +93,7 @@
     "fields": {
       "name": "SFOGLIATA 1KG BAG",
       "category": 5,
-      "pack_size": "(BOX N/A)",
+      "pack_description": "(BOX N/A)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -105,7 +105,7 @@
     "fields": {
       "name": "NODINI/TRECCINE 1KG BKT",
       "category": 5,
-      "pack_size": "(4X1KG BOX)",
+      "pack_description": "(4X1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -117,7 +117,7 @@
     "fields": {
       "name": "PERLINE 1,5 KG 2GR BOCCONICINI",
       "category": 5,
-      "pack_size": "(4X1,5 KG BOX)",
+      "pack_description": "(4X1,5 KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -129,7 +129,7 @@
     "fields": {
       "name": "BURRATA HANDCRAFTED 1KG 10X 100GR",
       "category": 5,
-      "pack_size": "(4X1KG BOX)",
+      "pack_description": "(4X1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -141,7 +141,7 @@
     "fields": {
       "name": "BURRATA HANDCRAFTED 1KG  5X200 GR",
       "category": 5,
-      "pack_size": "(4X 1KG BOX)",
+      "pack_description": "(4X 1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -153,7 +153,7 @@
     "fields": {
       "name": "BURRATINA HANDCRAFTED 1KG 13X75GR",
       "category": 5,
-      "pack_size": "(4X1KGBOX)",
+      "pack_description": "(4X1KGBOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -165,7 +165,7 @@
     "fields": {
       "name": "STRACCIATELLA HANDCRAFTED 500 GR TUB",
       "category": 5,
-      "pack_size": "(BOX N/A)",
+      "pack_description": "(BOX N/A)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -177,7 +177,7 @@
     "fields": {
       "name": "PIZZARELLA\t1KG LOGS",
       "category": 5,
-      "pack_size": "(8X 1KG BOX)",
+      "pack_description": "(8X 1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -189,7 +189,7 @@
     "fields": {
       "name": "SCAMORZA AFFUMICATA  950GR",
       "category": 5,
-      "pack_size": "(8X950GR LOGS)",
+      "pack_description": "(8X950GR LOGS)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -201,7 +201,7 @@
     "fields": {
       "name": "FRESH RICOTTA 1KG BAG",
       "category": 5,
-      "pack_size": "(4X 1KG BOX)",
+      "pack_description": "(4X 1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -213,7 +213,7 @@
     "fields": {
       "name": "FRESH RICOTTA 2 KG BAG",
       "category": 5,
-      "pack_size": "(2X 2KG BOX)",
+      "pack_description": "(2X 2KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -225,7 +225,7 @@
     "fields": {
       "name": "FRESH RICOTTA 5 KG BAG",
       "category": 5,
-      "pack_size": "(2X5KG BOX)",
+      "pack_description": "(2X5KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -237,7 +237,7 @@
     "fields": {
       "name": "FETA PERSIAN STYLE IN OIL 2KG BKT",
       "category": 5,
-      "pack_size": "(4X2KG BKT)",
+      "pack_description": "(4X2KG BKT)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -249,7 +249,7 @@
     "fields": {
       "name": "OAXACA 1 KG BAG",
       "category": 5,
-      "pack_size": "(9X 1KG BOX)",
+      "pack_description": "(9X 1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -269,7 +269,7 @@
     "fields": {
       "name": "BUFFALO FETA IN OIL 2KG BKT",
       "category": 6,
-      "pack_size": "(4X2KGBOX)",
+      "pack_description": "(4X2KGBOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -281,7 +281,7 @@
     "fields": {
       "name": "BUFFALO MOZZARELLA 1KG, 8X125GR",
       "category": 6,
-      "pack_size": "(4X1KG BOX)",
+      "pack_description": "(4X1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -293,7 +293,7 @@
     "fields": {
       "name": "BUFFALO RICOTTA 1KG BAG",
       "category": 6,
-      "pack_size": "(4X1KG BOX)",
+      "pack_description": "(4X1KG BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -305,7 +305,7 @@
     "fields": {
       "name": "BUFFALO YOGURT 500 GR TUB",
       "category": 6,
-      "pack_size": "(6X 500 GR TUB/BOX)",
+      "pack_description": "(6X 500 GR TUB/BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -317,7 +317,7 @@
     "fields": {
       "name": "COWS MILK RETAIL :",
       "category": 6,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -329,7 +329,7 @@
     "fields": {
       "name": "BOCCONCINI 180GR TUBS",
       "category": 6,
-      "pack_size": "(6X30GR) (6TUBSX BOX)",
+      "pack_description": "(6X30GR) (6TUBSX BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -341,7 +341,7 @@
     "fields": {
       "name": "BOCCONCINI 500GR BKT",
       "category": 6,
-      "pack_size": "(17X30GR) (6 BKT BOX)",
+      "pack_description": "(17X30GR) (6 BKT BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -353,7 +353,7 @@
     "fields": {
       "name": "CILIEGINE 180GR TUBS",
       "category": 6,
-      "pack_size": "(16X11.5GR ) (6TUBS X BOX)",
+      "pack_description": "(16X11.5GR ) (6TUBS X BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -365,7 +365,7 @@
     "fields": {
       "name": "CILIEGINE 500 GR BKT",
       "category": 6,
-      "pack_size": "(44X$11.5GR) (6 BKT BOX)",
+      "pack_description": "(44X$11.5GR) (6 BKT BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -377,7 +377,7 @@
     "fields": {
       "name": "NODINI/TRECCINE 500GR BKT",
       "category": 6,
-      "pack_size": "( 6X 500GR BOX)",
+      "pack_description": "( 6X 500GR BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -389,7 +389,7 @@
     "fields": {
       "name": "BURRATA HANDMADE 150 GR TUB",
       "category": 6,
-      "pack_size": "(6 TUBS BOX)",
+      "pack_description": "(6 TUBS BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -401,7 +401,7 @@
     "fields": {
       "name": "BURRATA HANDMADE 110 GR TUB",
       "category": 6,
-      "pack_size": "(8TUBS BOX)",
+      "pack_description": "(8TUBS BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -413,7 +413,7 @@
     "fields": {
       "name": "FRESH RICOTTA 500GR TUB",
       "category": 6,
-      "pack_size": "(6TUBS  BOX)",
+      "pack_description": "(6TUBS  BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -425,7 +425,7 @@
     "fields": {
       "name": "FRESH RICOTTA 375 GR TUB",
       "category": 6,
-      "pack_size": "(6 TUBS BOX)",
+      "pack_description": "(6 TUBS BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -437,7 +437,7 @@
     "fields": {
       "name": "OAXACA 230 GR BAG",
       "category": 6,
-      "pack_size": "(9BAGS BOX)",
+      "pack_description": "(9BAGS BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -449,7 +449,7 @@
     "fields": {
       "name": "BUFFALO MILK RETAIL:",
       "category": 6,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -461,7 +461,7 @@
     "fields": {
       "name": "BUFFALO MOZZARELLA 125GR TUB",
       "category": 6,
-      "pack_size": "(6TUBS BOX)",
+      "pack_description": "(6TUBS BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -473,7 +473,7 @@
     "fields": {
       "name": "BUFFALO RICOTTA 500 GR TUB",
       "category": 6,
-      "pack_size": "(6TUBS BOX)",
+      "pack_description": "(6TUBS BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -485,7 +485,7 @@
     "fields": {
       "name": "BUFFALO RICOTTA 375 GR TUB",
       "category": 6,
-      "pack_size": "(6TUBS BOX)",
+      "pack_description": "(6TUBS BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -497,7 +497,7 @@
     "fields": {
       "name": "BUFFALO YOGURT 500GR TUB",
       "category": 6,
-      "pack_size": "(6TUBS BOX)",
+      "pack_description": "(6TUBS BOX)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -517,7 +517,7 @@
     "fields": {
       "name": "BLUE VEIN CHEESE APPROX 3,5 KG OR 9WEDGES)",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -529,7 +529,7 @@
     "fields": {
       "name": "EMMENTHAL 3-4 KG APPROX",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -541,7 +541,7 @@
     "fields": {
       "name": "FONTINA CHEESE 6X1KG",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -553,7 +553,7 @@
     "fields": {
       "name": "GOAT CHEESE",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -565,7 +565,7 @@
     "fields": {
       "name": "GORGONZOLA DOLCE  1/8 WHEEL",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -577,7 +577,7 @@
     "fields": {
       "name": "GORGONZOLA PICCANTE 1/8 WHEEL",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -589,7 +589,7 @@
     "fields": {
       "name": "GRANA PADANO WHEEL 15,18 MONTHS ,1/8            WHEEL",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -601,7 +601,7 @@
     "fields": {
       "name": "GRANA PADANO  GRATED KG BAG",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -613,7 +613,7 @@
     "fields": {
       "name": "PARMIGIANO REGGIANO 15,18 MONTHS",
       "category": 7,
-      "pack_size": "(DOP)",
+      "pack_description": "(DOP)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -625,7 +625,7 @@
     "fields": {
       "name": "PARMIGIANO REGGIANO GRATED KG BAG",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -637,7 +637,7 @@
     "fields": {
       "name": "MASCARPONE BIANCO 500 GR TUBS",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -649,7 +649,7 @@
     "fields": {
       "name": "MASCARPONE AL CAFFE\u2019 500 GR TUBS",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -661,7 +661,7 @@
     "fields": {
       "name": "PECORINO ROMANO 2 KG CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -673,7 +673,7 @@
     "fields": {
       "name": "PECORINO SARDO DOLCE  GIOVANE DOP 3,5 KG CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -685,7 +685,7 @@
     "fields": {
       "name": "PECORINO SARDO AGED DOP 3,7 KG CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -697,7 +697,7 @@
     "fields": {
       "name": "PECORINO SARDO PEPATO 6 KG CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -709,7 +709,7 @@
     "fields": {
       "name": "PECORINO TOSCANO  DOP GIOVANE 2 KG CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -721,7 +721,7 @@
     "fields": {
       "name": "PECORINO STAGIONATO 2 KG CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -733,7 +733,7 @@
     "fields": {
       "name": "PECORINO TRUFFLE/INFUSED/DOP 2KG CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -745,7 +745,7 @@
     "fields": {
       "name": "PECORINO TOSCANO IN GROTTA/GIOVANE /STAGIONATO  2KG CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -757,7 +757,7 @@
     "fields": {
       "name": "PROVOLONE DOLCE",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -769,7 +769,7 @@
     "fields": {
       "name": "PROVOLONE PICCANTE 5KG WHEEL CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -781,7 +781,7 @@
     "fields": {
       "name": "TALEGGIO DOP 2 KG CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -793,7 +793,7 @@
     "fields": {
       "name": "STRACCHINO 500 GR FROZEN",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -805,7 +805,7 @@
     "fields": {
       "name": "MONTASIO CHEESE DOP 6KG WHEEL CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -817,7 +817,7 @@
     "fields": {
       "name": "ASIAGO DOP 13 KG WHEEL CIRCA",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -829,7 +829,7 @@
     "fields": {
       "name": "FOR ALL ENQUIRIES AND ORDER PLEASE CONTACT PAOLO ON:",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -841,7 +841,7 @@
     "fields": {
       "name": "MOBILE- 0402 828883",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -853,7 +853,7 @@
     "fields": {
       "name": "E MAIL-",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -865,7 +865,7 @@
     "fields": {
       "name": "DUE TO HIGH DEMAND CUSTOMER ARE ADVISED TO PLACE AN ORDER BEFORE 11PM EVERY TUESDAY\u2019S",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -877,7 +877,7 @@
     "fields": {
       "name": "Thank you for your cooperation",
       "category": 7,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -897,7 +897,7 @@
     "fields": {
       "name": "5 STAGIONI FARINA NAPOLETANA 10 KG BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -909,7 +909,7 @@
     "fields": {
       "name": "5 STAGIONI FARINA 00 ORO ROSSA 10 KG BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -921,7 +921,7 @@
     "fields": {
       "name": "5 STAGIONI  FARINA MANITOBA  10 KG BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -933,7 +933,7 @@
     "fields": {
       "name": "5 STAGIONI FARINA 00 BLU            10 KG BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -945,7 +945,7 @@
     "fields": {
       "name": "FARINA A PIETRA 25 KG BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -957,7 +957,7 @@
     "fields": {
       "name": "FARINA SPOLVERIZZA CON SEMOLINA 10KG BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -969,7 +969,7 @@
     "fields": {
       "name": "FARINA PER PASTA 1KG BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -981,7 +981,7 @@
     "fields": {
       "name": "FARINA PER FRITTURA 1KG BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -993,7 +993,7 @@
     "fields": {
       "name": "GLUTEN FREE FARINA 500GR BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1005,7 +1005,7 @@
     "fields": {
       "name": "CORN FLOUR 500GR BAG",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1017,7 +1017,7 @@
     "fields": {
       "name": "SEMOLINO FLOUR",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1029,7 +1029,7 @@
     "fields": {
       "name": "FOR ALL ENQUIRIES AND ORDER PLEASE CONTACT PAOLO ON:",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1041,7 +1041,7 @@
     "fields": {
       "name": "MOBILE- 0402 828883",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1053,7 +1053,7 @@
     "fields": {
       "name": "E MAIL-",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1065,7 +1065,7 @@
     "fields": {
       "name": "DUE TO HIGH DEMAND CUSTOMER ARE ADVISED TO PLACE AN ORDER BEFORE 11PM EVERY TUESDAY\u2019S",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1077,7 +1077,7 @@
     "fields": {
       "name": "Thank you for your cooperation",
       "category": 8,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1097,7 +1097,7 @@
     "fields": {
       "name": "LONZA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1109,7 +1109,7 @@
     "fields": {
       "name": "CAPOCOLLO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1121,7 +1121,7 @@
     "fields": {
       "name": "FLAT PANCETTA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1133,7 +1133,7 @@
     "fields": {
       "name": "LARDO COLONNATA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1145,7 +1145,7 @@
     "fields": {
       "name": "LEG HAM",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1157,7 +1157,7 @@
     "fields": {
       "name": "BACON",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1169,7 +1169,7 @@
     "fields": {
       "name": "BRESAOLA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1181,7 +1181,7 @@
     "fields": {
       "name": "WAGYU BRESAOLA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1193,7 +1193,7 @@
     "fields": {
       "name": "SPECK ITALIANO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1205,7 +1205,7 @@
     "fields": {
       "name": "COTECHINO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1217,7 +1217,7 @@
     "fields": {
       "name": "WAGYU PASTRAMI",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1229,7 +1229,7 @@
     "fields": {
       "name": "PORK LOIN ROAST",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1241,7 +1241,7 @@
     "fields": {
       "name": "SMOKED TURKEY",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1253,7 +1253,7 @@
     "fields": {
       "name": "MORTADELLA  ANTICA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1265,7 +1265,7 @@
     "fields": {
       "name": "LOMO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1277,7 +1277,7 @@
     "fields": {
       "name": "PROSCIUTTO DI PARMA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1289,7 +1289,7 @@
     "fields": {
       "name": "QUATTROSTELLE SALAMI:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1301,7 +1301,7 @@
     "fields": {
       "name": "ITALIANO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1313,7 +1313,7 @@
     "fields": {
       "name": "CALABRESE",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1325,7 +1325,7 @@
     "fields": {
       "name": "NDUJA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1337,7 +1337,7 @@
     "fields": {
       "name": "NDUJA TRAD",
       "category": 9,
-      "pack_size": "(SPREAD)",
+      "pack_description": "(SPREAD)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1349,7 +1349,7 @@
     "fields": {
       "name": "FENNEL & GARLIC",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1361,7 +1361,7 @@
     "fields": {
       "name": "TARTUFO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1373,7 +1373,7 @@
     "fields": {
       "name": "QUATTRO STELLE",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1385,7 +1385,7 @@
     "fields": {
       "name": "CACCIATORE PLAIN",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1397,7 +1397,7 @@
     "fields": {
       "name": "CACCIATORE CALABRESE",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1409,7 +1409,7 @@
     "fields": {
       "name": "VICENTINA SOPPRESSA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1421,7 +1421,7 @@
     "fields": {
       "name": "VENTRICINA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1433,7 +1433,7 @@
     "fields": {
       "name": "SOBRASSADA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1445,7 +1445,7 @@
     "fields": {
       "name": "SEMI DRIED CHORIZO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1457,7 +1457,7 @@
     "fields": {
       "name": "CINGHIALE BOCCONCINI",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1469,7 +1469,7 @@
     "fields": {
       "name": "FOR ALL ENQUIRIES AND ORDER PLEASE CONTACT PAOLO ON:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1481,7 +1481,7 @@
     "fields": {
       "name": "MOBILE- 0402 828883",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1493,7 +1493,7 @@
     "fields": {
       "name": "E MAIL-",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1505,7 +1505,7 @@
     "fields": {
       "name": "DUE TO HIGH DEMAND CUSTOMER ARE ADVISED TO PLACE AN ORDER BEFORE 11PM EVERY TUESDAY\u2019S",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1517,7 +1517,7 @@
     "fields": {
       "name": "Thank you for your cooperation",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1529,7 +1529,7 @@
     "fields": {
       "name": "MARINATED VEGETABLES :",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1541,7 +1541,7 @@
     "fields": {
       "name": "MUSHROOMS BONETTO:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1553,7 +1553,7 @@
     "fields": {
       "name": "Champignon in oil    kg 1.7",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1565,7 +1565,7 @@
     "fields": {
       "name": "Porcini mushrooms saut\u00e9ed in oil    kg 1.",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1577,7 +1577,7 @@
     "fields": {
       "name": "Porcini panfried in oil     gr 650",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1589,7 +1589,7 @@
     "fields": {
       "name": "Mix wild mushrooms in oil    kg1.5",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1601,7 +1601,7 @@
     "fields": {
       "name": "Artichokes hearts, sliced, quarters,",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1613,7 +1613,7 @@
     "fields": {
       "name": "Artichokes alla romana, 26 pz ctn",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1625,7 +1625,7 @@
     "fields": {
       "name": "Artichokes",
       "category": 9,
-      "pack_size": "(in brine, in oil)",
+      "pack_description": "(in brine, in oil)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1637,7 +1637,7 @@
     "fields": {
       "name": "Capers  in vinegar, in brine gr 7",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1649,7 +1649,7 @@
     "fields": {
       "name": "Mini Capers of Pantelleria  in salt gr 100",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1661,7 +1661,7 @@
     "fields": {
       "name": "Peppers red & yellow grilled ,roasted kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1673,7 +1673,7 @@
     "fields": {
       "name": "Miccio Olives",
       "category": 9,
-      "pack_size": "(black,green,ligurian,Sicilian,calabrian,cerignola,nocellara,in oil,in water, kalamata, pitted, sliced, organic)",
+      "pack_description": "(black,green,ligurian,Sicilian,calabrian,cerignola,nocellara,in oil,in water, kalamata, pitted, sliced, organic)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1685,7 +1685,7 @@
     "fields": {
       "name": "LE PRIMIZIE ANTIPASTI:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1697,7 +1697,7 @@
     "fields": {
       "name": "Capsicum involtini with feta \tkg 1.5",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1709,7 +1709,7 @@
     "fields": {
       "name": "Chargrilled eggplants    \t\tkg 2",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1721,7 +1721,7 @@
     "fields": {
       "name": "Chargrilled zucchini      \t\tkg 2",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1733,7 +1733,7 @@
     "fields": {
       "name": "Olives stuffed with feta cheese kg 2",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1745,7 +1745,7 @@
     "fields": {
       "name": "Giardiniera in vinegar kg  4.250",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1757,7 +1757,7 @@
     "fields": {
       "name": "TENTAZIONI TRUFFLE PRODUCTS",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1769,7 +1769,7 @@
     "fields": {
       "name": "White & black truffle plate, sliced in oil,",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1781,7 +1781,7 @@
     "fields": {
       "name": "truffle bianchetto in brine, truffle olive oil,",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1793,7 +1793,7 @@
     "fields": {
       "name": "truffle cream, truffle pate\u2019 \t500gr",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1805,7 +1805,7 @@
     "fields": {
       "name": "Unnamed Product",
       "category": 9,
-      "pack_size": "( prices varies on avalaibility)",
+      "pack_description": "( prices varies on avalaibility)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1817,7 +1817,7 @@
     "fields": {
       "name": "TOMATO PRODUCTS STRIANESE,VENERE",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1829,7 +1829,7 @@
     "fields": {
       "name": "Peeled tomato  3kg tin x 6",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1841,7 +1841,7 @@
     "fields": {
       "name": "Peeled tomato  DOP 3kg tin x 6",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1853,7 +1853,7 @@
     "fields": {
       "name": "cherry tomato 400 gr x 24",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1865,7 +1865,7 @@
     "fields": {
       "name": "Cherry tomato 3kg x 6",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1877,7 +1877,7 @@
     "fields": {
       "name": "Tomato paste 2.2 kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1889,7 +1889,7 @@
     "fields": {
       "name": "BALSAMIC VINEGAR OF MODENA :",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1901,7 +1901,7 @@
     "fields": {
       "name": "Vinegar balsamic 5 lt",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1913,7 +1913,7 @@
     "fields": {
       "name": "Medici balsamic vinegar 500ml",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1925,7 +1925,7 @@
     "fields": {
       "name": "Aceto balsamico DOP ,",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1937,7 +1937,7 @@
     "fields": {
       "name": "Limited edition, riserva,",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1949,7 +1949,7 @@
     "fields": {
       "name": "organic, extravecchio",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1961,7 +1961,7 @@
     "fields": {
       "name": "Unnamed Product",
       "category": 9,
-      "pack_size": "( prices varies on avalaibility)",
+      "pack_description": "( prices varies on avalaibility)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1973,7 +1973,7 @@
     "fields": {
       "name": "EXTRA VIRGIN OLIVE OIL",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1985,7 +1985,7 @@
     "fields": {
       "name": "La masseria extra virgin olive oil 4 lt tin",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -1997,7 +1997,7 @@
     "fields": {
       "name": "Ranieri extra virgin olive oil 5lt tin",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2009,7 +2009,7 @@
     "fields": {
       "name": "Biologic oil ,novello oil , truffle oil",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2021,7 +2021,7 @@
     "fields": {
       "name": "Unnamed Product",
       "category": 9,
-      "pack_size": "(prices varies on avalaibility)",
+      "pack_description": "(prices varies on avalaibility)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2033,7 +2033,7 @@
     "fields": {
       "name": "FROZEN IMPORTED PRODUCTS:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2045,7 +2045,7 @@
     "fields": {
       "name": "DEPALMA FROZEN VEGETABLES  IN BATTER:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2057,7 +2057,7 @@
     "fields": {
       "name": "Artichokes\t\t\t2kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2069,7 +2069,7 @@
     "fields": {
       "name": "Black olives\t\t\t2kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2081,7 +2081,7 @@
     "fields": {
       "name": "Friarielli\t\t\t1,5 kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2093,7 +2093,7 @@
     "fields": {
       "name": "Capsicum\t\t\t3 kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2105,7 +2105,7 @@
     "fields": {
       "name": "Three of a kind veget \t2 kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2117,7 +2117,7 @@
     "fields": {
       "name": "Wild fennel\t               \t1.25 kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2129,7 +2129,7 @@
     "fields": {
       "name": "Zucchini flower\t\t2kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2141,7 +2141,7 @@
     "fields": {
       "name": "PORCINI MUSHROOMS FROZEN :",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2153,7 +2153,7 @@
     "fields": {
       "name": "Whole/sliced/dried\t1 kg",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2165,7 +2165,7 @@
     "fields": {
       "name": "OROPAN  ALTAMURA FROZEN:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2177,7 +2177,7 @@
     "fields": {
       "name": "Frozen quadrotto sourdough breadroll with green olives",
       "category": 9,
-      "pack_size": "(40gr, 100ctn)",
+      "pack_description": "(40gr, 100ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2189,7 +2189,7 @@
     "fields": {
       "name": "Frozen sourdough ciabattina Altamura",
       "category": 9,
-      "pack_size": "(50 gr,80/ctn)",
+      "pack_description": "(50 gr,80/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2201,7 +2201,7 @@
     "fields": {
       "name": "Frozen sourdough filoncini Altamura (50gr,4kg ctn approx. 80pcs",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2213,7 +2213,7 @@
     "fields": {
       "name": "Frozen sourdough focaccia with cherry tomato &olives",
       "category": 9,
-      "pack_size": "(250 gr 22/ctn)",
+      "pack_description": "(250 gr 22/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2225,7 +2225,7 @@
     "fields": {
       "name": "Frozen sourdough rosetta Altamura",
       "category": 9,
-      "pack_size": "(50gr,4kg/ctn approx. 80pcs)",
+      "pack_description": "(50gr,4kg/ctn approx. 80pcs)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2237,7 +2237,7 @@
     "fields": {
       "name": "Frozen sourdough spaccatina breadroll Altamura",
       "category": 9,
-      "pack_size": "(50gr,4kg/ctn approx. 80pcs)",
+      "pack_description": "(50gr,4kg/ctn approx. 80pcs)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2249,7 +2249,7 @@
     "fields": {
       "name": "Frozen sourdough wholemeal filoncino Altamura",
       "category": 9,
-      "pack_size": "(50gr,4kg/ctn approx. 80pcs)",
+      "pack_description": "(50gr,4kg/ctn approx. 80pcs)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2261,7 +2261,7 @@
     "fields": {
       "name": "Frozen sourdough tartaruga breadroll Altamura",
       "category": 9,
-      "pack_size": "(50gr,4kg/ctn approx. 80pcs)",
+      "pack_description": "(50gr,4kg/ctn approx. 80pcs)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2273,7 +2273,7 @@
     "fields": {
       "name": "CAKES & TORTE S.GIORGIO FROZEN:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2285,7 +2285,7 @@
     "fields": {
       "name": "S Giorgio torta tirami su\u2019 1150 gr",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2297,7 +2297,7 @@
     "fields": {
       "name": "Umberto torta nonna carmela 1200 gr\tea",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2309,7 +2309,7 @@
     "fields": {
       "name": "Umberto torta ricotta &pear 1200 gr \t\tea",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2321,7 +2321,7 @@
     "fields": {
       "name": "Velletri crostata Cinzia precut 1200 gr \tea",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2333,7 +2333,7 @@
     "fields": {
       "name": "S.Giorgio torta della nonna\t1400 gr\tea",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2345,7 +2345,7 @@
     "fields": {
       "name": "S.Giorgio crostata di mele  1400 gr \t\tea",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2357,7 +2357,7 @@
     "fields": {
       "name": "S.Gior gio crostata di limone 1400 gr\t\tea",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2369,7 +2369,7 @@
     "fields": {
       "name": "CAKES & SWEETS SGIORGIO:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2381,7 +2381,7 @@
     "fields": {
       "name": "S.Giorgio biscotto girotondo",
       "category": 9,
-      "pack_size": "(38 gr 36pz/ctn)",
+      "pack_description": "(38 gr 36pz/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2393,7 +2393,7 @@
     "fields": {
       "name": "S.Giorgio chip swirl chocolate girella",
       "category": 9,
-      "pack_size": "(80gr 50/ctn)",
+      "pack_description": "(80gr 50/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2405,7 +2405,7 @@
     "fields": {
       "name": "S.Giorgio ciambelle",
       "category": 9,
-      "pack_size": "(100 gr 36/ctn)",
+      "pack_description": "(100 gr 36/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2417,7 +2417,7 @@
     "fields": {
       "name": "S.Giorgio mini ciambelle",
       "category": 9,
-      "pack_size": "(22gr approx. 113 pcs)",
+      "pack_description": "(22gr approx. 113 pcs)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2429,7 +2429,7 @@
     "fields": {
       "name": "S.Giorgio coda d\u2019aragosta media",
       "category": 9,
-      "pack_size": "(75gr 100pz ctn)",
+      "pack_description": "(75gr 100pz ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2441,7 +2441,7 @@
     "fields": {
       "name": "S.Giorgio conchiglia chocolate",
       "category": 9,
-      "pack_size": "(95gr 60 pcs/ctn)",
+      "pack_description": "(95gr 60 pcs/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2453,7 +2453,7 @@
     "fields": {
       "name": "S.Giorgio conchiglia pannalatte &amarena",
       "category": 9,
-      "pack_size": "(110 gr 60 pzs/ctn)",
+      "pack_description": "(110 gr 60 pzs/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2465,7 +2465,7 @@
     "fields": {
       "name": "S.Giorgio fogliolina chocolate (80gr 60pzs/ctn",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2477,7 +2477,7 @@
     "fields": {
       "name": "S.Giorgio fogliolina cream & apple",
       "category": 9,
-      "pack_size": "(80 gr 60/ctn)",
+      "pack_description": "(80 gr 60/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2489,7 +2489,7 @@
     "fields": {
       "name": "S.Giorgio graffe mini",
       "category": 9,
-      "pack_size": "(30gr 83/ctn approx.)",
+      "pack_description": "(30gr 83/ctn approx.)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2501,7 +2501,7 @@
     "fields": {
       "name": "S.Giorgio lemoncino",
       "category": 9,
-      "pack_size": "(80 gr 50/ctn)",
+      "pack_description": "(80 gr 50/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2513,7 +2513,7 @@
     "fields": {
       "name": "S.Giorgio  krapfen ciok",
       "category": 9,
-      "pack_size": "(70gr 48 pz ctn )",
+      "pack_description": "(70gr 48 pz ctn )",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2525,7 +2525,7 @@
     "fields": {
       "name": "S.Giorgio  krapfen cream",
       "category": 9,
-      "pack_size": "(70gr 48 pz ctn )",
+      "pack_description": "(70gr 48 pz ctn )",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2537,7 +2537,7 @@
     "fields": {
       "name": "S.Giorgio sfogliatella frolla mignon",
       "category": 9,
-      "pack_size": "(30gr 200pzs ctn)",
+      "pack_description": "(30gr 200pzs ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2549,7 +2549,7 @@
     "fields": {
       "name": "S.Giorgio sfogliatella riccia large",
       "category": 9,
-      "pack_size": "(130gr 60/ctn)",
+      "pack_description": "(130gr 60/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2561,7 +2561,7 @@
     "fields": {
       "name": "S.Girogio sfogliatella riccia mignon",
       "category": 9,
-      "pack_size": "(35gr approx. 300/ctn)",
+      "pack_description": "(35gr approx. 300/ctn)",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2573,7 +2573,7 @@
     "fields": {
       "name": "FOR ALL ENQUIRIES AND ORDER PLEASE CONTACT PAOLO ON:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2585,7 +2585,7 @@
     "fields": {
       "name": "MOBILE- 0402 828883",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2597,7 +2597,7 @@
     "fields": {
       "name": "E MAIL-",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2609,7 +2609,7 @@
     "fields": {
       "name": "DUE TO HIGH DEMAND CUSTOMER ARE ADVISED TO PLACE AN ORDER BEFORE 11PM EVERY TUESDAY\u2019S",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2621,7 +2621,7 @@
     "fields": {
       "name": "Thank you for your cooperation",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2633,7 +2633,7 @@
     "fields": {
       "name": "Mixed frozen fresh & dry products",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2645,7 +2645,7 @@
     "fields": {
       "name": "ALICI CAREZZE DI MARE 1KG TRAY",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2657,7 +2657,7 @@
     "fields": {
       "name": "ANCHOVIES 700 GR TIN",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2669,7 +2669,7 @@
     "fields": {
       "name": "ANCHOVIES ACETARA 1,5KG JAR",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2681,7 +2681,7 @@
     "fields": {
       "name": "ARTICHOKES BRINE 2650ML TIN",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2693,7 +2693,7 @@
     "fields": {
       "name": "ARTICHOKES ROMANA 3KG JAR",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2705,7 +2705,7 @@
     "fields": {
       "name": "BABY CAPERS OF SICILY 1 KG SALTED",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2717,7 +2717,7 @@
     "fields": {
       "name": "CAPERS IN VINEGAR 720 GR",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2729,7 +2729,7 @@
     "fields": {
       "name": "OLIVES KALAMATA 12KG TIN",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2741,7 +2741,7 @@
     "fields": {
       "name": "NATURKRAFT YEAST 500GR",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2753,7 +2753,7 @@
     "fields": {
       "name": "DRY YEAST 500 GR",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2765,7 +2765,7 @@
     "fields": {
       "name": "BREAD CRUMBS 10KG BAG",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2777,7 +2777,7 @@
     "fields": {
       "name": "GIARDINIERA IN VINEGAR 4250 GR TIN",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2789,7 +2789,7 @@
     "fields": {
       "name": "FRIARIELLI 750 GR",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2801,7 +2801,7 @@
     "fields": {
       "name": "PINEAPPLE CUT 3KG X 6 BOX",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2813,7 +2813,7 @@
     "fields": {
       "name": "HAM SOCCER BALL",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2825,7 +2825,7 @@
     "fields": {
       "name": "BORGO HOT CACCIATORE",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2837,7 +2837,7 @@
     "fields": {
       "name": "CABANOSSI",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2849,7 +2849,7 @@
     "fields": {
       "name": "CULATELLO DI PARMA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2861,7 +2861,7 @@
     "fields": {
       "name": "MORTADELLA PRINCI",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2873,7 +2873,7 @@
     "fields": {
       "name": "PEPPERONI PRINCI SLICED",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2885,7 +2885,7 @@
     "fields": {
       "name": "PANCETTA PRINCI FLAT MILD",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2897,7 +2897,7 @@
     "fields": {
       "name": "PANCETTA PRINCI ROUND",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2909,7 +2909,7 @@
     "fields": {
       "name": "PROSCIUTTO PARMA",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2921,7 +2921,7 @@
     "fields": {
       "name": "PROSCIUTTO SAN DANIELE",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2933,7 +2933,7 @@
     "fields": {
       "name": "PROSCIUTTO SERRANO 500 GR",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2945,7 +2945,7 @@
     "fields": {
       "name": "SALAME CASALINGO PRINCI",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2957,7 +2957,7 @@
     "fields": {
       "name": "RISO ARBORIO 1 KG PKT",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2969,7 +2969,7 @@
     "fields": {
       "name": "SOPPRESSA MILD CASTELLO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2981,7 +2981,7 @@
     "fields": {
       "name": "TANAGRINA FIOR DI PIZZA LOG",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -2993,7 +2993,7 @@
     "fields": {
       "name": "TANAGRINA FIOR DI LATTE LOG",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -3005,7 +3005,7 @@
     "fields": {
       "name": "TANAGRINA FIOR DI LATTE JULIENNE",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -3017,7 +3017,7 @@
     "fields": {
       "name": "TANAGRINA FIOR DI LATTE CUBETTATO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -3029,7 +3029,7 @@
     "fields": {
       "name": "PAVESINI MULINO BIANCO",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -3041,7 +3041,7 @@
     "fields": {
       "name": "FOR ALL ENQUIRIES AND ORDER PLEASE CONTACT PAOLO ON:",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -3053,7 +3053,7 @@
     "fields": {
       "name": "MOBILE- 0402 828883",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -3065,7 +3065,7 @@
     "fields": {
       "name": "E MAIL-",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -3077,7 +3077,7 @@
     "fields": {
       "name": "DUE TO HIGH DEMAND CUSTOMER ARE ADVISED TO PLACE AN ORDER BEFORE 11PM EVERY TUESDAY\u2019S",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true
@@ -3089,7 +3089,7 @@
     "fields": {
       "name": "Thank you for your cooperation",
       "category": 9,
-      "pack_size": "",
+      "pack_description": "",
       "price_ex_gst": null,
       "price_inc_gst": null,
       "available": true

@@ -103,8 +103,7 @@
           <th>Image</th>
           <th>Name</th>
           <th>Category</th>
-          <th>Unit</th>
-          <th>Pack Size</th>
+          <th>Pack Description</th>
           <th>Price (Ex GST)</th>
           <th>Price (Inc GST)</th>
           <th>Available</th>
@@ -131,8 +130,7 @@
           </td>
           <td class="font-medium">{{ p.name }}</td>
           <td>{{ p.category.name }}</td>
-          <td>{{ p.unit|default:"-" }}</td>
-          <td>{{ p.pack_size|default:"-" }}</td>
+          <td>{{ p.pack_description|default:"-" }}</td>
           <td>{% if p.price_ex_gst %}A$ {{ p.price_ex_gst }}{% else %}-{% endif %}</td>
           <td>{% if p.price_inc_gst %}A$ {{ p.price_inc_gst }}{% else %}-{% endif %}</td>
           <td>
@@ -152,7 +150,7 @@
         </tr>
         {% empty %}
         <tr>
-          <td colspan="11" class="text-center py-8 text-gray-500">
+          <td colspan="10" class="text-center py-8 text-gray-500">
             {% if search or category_filter or available_filter %}
               No products found matching your filters.
             {% else %}

@@ -51,7 +51,7 @@
                 </span>
               </div>
               <p class="text-xs text-gray-600">
-                {{ p.pack_size }}
+                {{ p.pack_description }}
                 {% if site_settings.show_prices and p.price_inc_gst %} — A$ {{ p.price_inc_gst }} inc GST{% endif %}
               </p>
             </div>
@@ -68,7 +68,7 @@
                 data-product-id="{{ p.id }}"
                 data-product-name="{{ p.name }}"
                 data-product-price="{% if p.price_inc_gst %}{{ p.price_inc_gst }}{% else %}0{% endif %}"
-                data-pack-size="{{ p.pack_size }}"
+                data-pack-description="{{ p.pack_description }}"
                 class="quantity-input w-16 border rounded px-2 py-1 text-sm"
                 onchange="updateOrderSummary()">
             </div>
@@ -91,7 +91,7 @@
               </span>
             </div>
             <p class="text-sm text-gray-600">
-              {{ p.pack_size }}
+              {{ p.pack_description }}
               {% if site_settings.show_prices and p.price_inc_gst %} — A$ {{ p.price_inc_gst }} inc GST{% endif %}
             </p>
           </div>
@@ -108,7 +108,7 @@
               data-product-id="{{ p.id }}"
               data-product-name="{{ p.name }}"
               data-product-price="{% if p.price_inc_gst %}{{ p.price_inc_gst }}{% else %}0{% endif %}"
-              data-pack-size="{{ p.pack_size }}"
+              data-pack-description="{{ p.pack_description }}"
               class="quantity-input w-20 border rounded px-2 py-1"
               onchange="updateOrderSummary()">
           </div>
@@ -213,7 +213,7 @@ function updateOrderSummary() {
     const productId = input.dataset.productId;
     const productName = input.dataset.productName;
     const productPrice = parseFloat(input.dataset.productPrice) || 0;
-    const packSize = input.dataset.packSize;
+    const packDescription = input.dataset.packDescription;
 
     // Update visual indicators on product cards
     const productCard = document.getElementById(`product_${productId}`);
@@ -225,7 +225,7 @@ function updateOrderSummary() {
         name: productName,
         price: productPrice,
         quantity: quantity,
-        packSize: packSize,
+        packDescription: packDescription,
         total: productPrice * quantity
       };
       orderState.total += productPrice * quantity;
@@ -258,7 +258,7 @@ function updateOrderSummary() {
         itemElement.innerHTML = `
           <div class="flex-1">
             <p class="font-medium text-sm">${item.name}</p>
-            <p class="text-xs text-gray-600">${item.packSize}</p>
+            <p class="text-xs text-gray-600">${item.packDescription}</p>
           </div>
           <div class="text-right">
             <p class="text-sm">${item.quantity} × A$ ${item.price.toFixed(2)}</p>
@@ -269,7 +269,7 @@ function updateOrderSummary() {
         itemElement.innerHTML = `
           <div class="flex-1">
             <p class="font-medium text-sm">${item.name}</p>
-            <p class="text-xs text-gray-600">${item.packSize}</p>
+            <p class="text-xs text-gray-600">${item.packDescription}</p>
           </div>
           <div class="text-right">
             <p class="text-sm">Qty: ${item.quantity}</p>

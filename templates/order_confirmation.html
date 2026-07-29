@@ -57,7 +57,7 @@
             <div class="flex justify-between items-center py-3 border-b border-gray-100">
               <div class="flex-1">
                 <h4 class="font-medium">{{ line.product.name }}</h4>
-                <p class="text-sm text-gray-600">{{ line.product.pack_size }}</p>
+                <p class="text-sm text-gray-600">{{ line.product.pack_description }}</p>
                 <p class="text-sm text-gray-500">
                   {{ line.quantity }} ×
                   {% if line.product.price_inc_gst %}A$ {{ line.product.price_inc_gst|floatformat:2 }}{% else %}Price TBA{% endif %}

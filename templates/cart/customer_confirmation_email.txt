@@ -14,7 +14,7 @@ Status: {{ order.get_status_display }}
 Items Ordered:
 --------------
 {% for item in items %}
-{{ item.product }}{% if item.pack_size %} - {{ item.pack_size }}{% endif %}
+{{ item.product }}{% if item.pack_description %} - {{ item.pack_description }}{% endif %}
 Quantity: {{ item.quantity }} × A$ {{ item.price|floatformat:2 }} = A$ {{ item.total|floatformat:2 }}
 {% endfor %}
 

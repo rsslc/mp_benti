@@ -47,28 +47,10 @@
         </select>
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label for="unit" class="block text-sm font-medium mb-1">Unit</label>
-          <input type="text" id="unit" name="unit"
-            value="{{ form_data.unit|default:'' }}"
-            class="w-full border px-3 py-2 rounded"
-            placeholder="e.g., kg, piece">
-        </div>
-
-        <div>
-          <label for="unit_weight" class="block text-sm font-medium mb-1">Unit Weight (kg)</label>
-          <input type="number" step="0.01" id="unit_weight" name="unit_weight"
-            value="{{ form_data.unit_weight|default:'' }}"
-            class="w-full border px-3 py-2 rounded"
-            placeholder="0.00">
-        </div>
-      </div>
-
       <div>
-        <label for="pack_size" class="block text-sm font-medium mb-1">Pack Size</label>
-        <input type="text" id="pack_size" name="pack_size"
-          value="{{ form_data.pack_size|default:'' }}"
+        <label for="pack_description" class="block text-sm font-medium mb-1">Pack Description</label>
+        <input type="text" id="pack_description" name="pack_description"
+          value="{{ form_data.pack_description|default:'' }}"
           class="w-full border px-3 py-2 rounded"
           placeholder="e.g., 12 x 500g">
       </div>

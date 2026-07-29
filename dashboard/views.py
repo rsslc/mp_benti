@@ -339,8 +339,8 @@ def products_list(request):
             writer = csv.writer(response)
             # Write header
             writer.writerow([
-                'Name', 'Category', 'Description', 'Unit', 'Unit Weight',
-                'Pack Size', 'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity'
+                'Name', 'Category', 'Description', 'Pack Description',
+                'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity'
             ])
 
             # Write data
@@ -349,9 +349,7 @@ def products_list(request):
                     product.name,
                     product.category.name,
                     product.description,
-                    product.unit,
-                    product.unit_weight,
-                    product.pack_size,
+                    product.pack_description,
                     product.price_ex_gst,
                     product.price_inc_gst,
                     product.available,
@@ -559,9 +557,7 @@ def product_add(request):
         name = request.POST.get('name')
         description = request.POST.get('description', '')
         category_id = request.POST.get('category')
-        unit = request.POST.get('unit', '')
-        unit_weight = request.POST.get('unit_weight')
-        pack_size = request.POST.get('pack_size', '')
+        pack_description = request.POST.get('pack_description', '')
         price_ex_gst = request.POST.get('price_ex_gst')
         price_inc_gst = request.POST.get('price_inc_gst')
         available = request.POST.get('available') == 'on'
@@ -582,9 +578,7 @@ def product_add(request):
             name=name,
             description=description,
             category=category,
-            unit=unit,
-            unit_weight=float(unit_weight) if unit_weight else None,
-            pack_size=pack_size,
+            pack_description=pack_description,
             price_ex_gst=float(price_ex_gst) if price_ex_gst else None,
             price_inc_gst=float(price_inc_gst) if price_inc_gst else None,
             available=available,
@@ -662,12 +656,7 @@ def product_edit(request, product_id):
         product.description = request.POST.get('description', '')
         category_id = request.POST.get('category')
         product.category = get_object_or_404(Category, id=category_id)
-        product.unit = request.POST.get('unit', '')
-
-        unit_weight = request.POST.get('unit_weight')
-        product.unit_weight = float(unit_weight) if unit_weight else None
-
-        product.pack_size = request.POST.get('pack_size', '')
+        product.pack_description = request.POST.get('pack_description', '')
 
         price_ex_gst = request.POST.get('price_ex_gst')
         product.price_ex_gst = float(price_ex_gst) if price_ex_gst else None
@@ -721,9 +710,7 @@ def product_edit(request, product_id):
         'name': product.name,
         'description': product.description,
         'category': product.category.id,
-        'unit': product.unit,
-        'unit_weight': product.unit_weight,
-        'pack_size': product.pack_size,
+        'pack_description': product.pack_description,
         'price_ex_gst': product.price_ex_gst,
         'price_inc_gst': product.price_inc_gst,
         'available': product.available,
@@ -798,9 +785,7 @@ def products_import_csv(request):
                         category=category,
                         defaults={
                             'description': row.get('Description', ''),
-                            'unit': row.get('Unit', ''),
-                            'unit_weight': row.get('Unit Weight') or None,
-                            'pack_size': row.get('Pack Size', ''),
+                            'pack_description': row.get('Pack Description', ''),
                             'price_ex_gst': row.get('Price Ex GST') or None,
                             'price_inc_gst': row.get('Price Inc GST') or None,
                             'available': row.get('Available', 'True').lower() in ('true', '1', 'yes'),

@@ -27,9 +27,7 @@
             <li><strong>Name</strong> - Product name (required)</li>
             <li><strong>Category</strong> - Category name (required, will be created if doesn't exist)</li>
             <li><strong>Description</strong> - Product description</li>
-            <li><strong>Unit</strong> - Unit of measurement</li>
-            <li><strong>Unit Weight</strong> - Weight per unit</li>
-            <li><strong>Pack Size</strong> - Pack size description</li>
+            <li><strong>Pack Description</strong> - Pack description</li>
             <li><strong>Price Ex GST</strong> - Price excluding GST</li>
             <li><strong>Price Inc GST</strong> - Price including GST</li>
             <li><strong>Available</strong> - Available for sale (True/False)</li>
@@ -37,9 +35,9 @@
         </ul>
 
         <h3>Example CSV:</h3>
-        <pre>Name,Category,Description,Unit,Unit Weight,Pack Size,Price Ex GST,Price Inc GST,Available,Stock Quantity
-Italian Mozzarella,Cheese,Fresh mozzarella from Italy,kg,1.00,500g x 12,45.00,49.50,True,50
-Plain Flour,Flour,All-purpose white flour,kg,1.00,1kg x 10,25.00,27.50,True,100</pre>
+        <pre>Name,Category,Description,Pack Description,Price Ex GST,Price Inc GST,Available,Stock Quantity
+Italian Mozzarella,Cheese,Fresh mozzarella from Italy,500g x 12,45.00,49.50,True,50
+Plain Flour,Flour,All-purpose white flour,1kg x 10,25.00,27.50,True,100</pre>
 
         <p><strong>Note:</strong> If a product with the same name and category already exists, it will be updated with the new data.</p>
     </div>
