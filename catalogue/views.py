@@ -88,6 +88,25 @@ def category_detail(request, category_slug=None, parent_slug=None, child_slug=No
     return render(request, "catalogue/category_detail.html", context)
 
 
+def product_search(request):
+    query = request.GET.get('q', '').strip()
+    products = Product.objects.none()
+
+    if query:
+        products = Product.objects.select_related('category').filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(pack_description__icontains=query) |
+            Q(category__name__icontains=query)
+        ).distinct().order_by('name')
+
+    context = {
+        'products': products,
+        'search_query': query,
+    }
+    return render(request, "catalogue/product_search.html", context)
+
+
 def contact(request):
     return render(request, "contact.html")
 

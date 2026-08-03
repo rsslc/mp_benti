@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load cart_tags %}
+{% block title %}Search Products — MP Benti{% endblock %}
+
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6">Search Products</h1>
+
+<div class="mb-6">
+  <form method="get" action="{% url 'product_search' %}" class="flex gap-2">
+    <input type="search"
+           name="q"
+           value="{{ search_query|default:'' }}"
+           placeholder="Search all products..."
+           autofocus
+           class="flex-1 border rounded px-4 py-2">
+    <button type="submit" class="btn btn-primary">Search</button>
+    {% if search_query %}
+      <a href="{% url 'product_search' %}" class="btn btn-outline">Clear</a>
+    {% endif %}
+  </form>
+</div>
+
+{% if search_query %}
+  <p class="text-sm text-gray-600 mb-4">
+    {% if products %}
+      Found {{ products|length }} product{{ products|length|pluralize }} matching "{{ search_query }}"
+    {% else %}
+      No products found matching "{{ search_query }}"
+    {% endif %}
+  </p>
+{% endif %}
+
+{% if products %}
+  <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+    {% for p in products %}
+    <article class="card overflow-hidden flex flex-col min-h-full">
+      {% if p.image_main %}
+        <img src="{{ p.image_main.url }}" class="w-full h-40 object-cover" alt="{{ p.name }}"/>
+      {% else %}
+        <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">No image</div>
+      {% endif %}
+      <div class="p-4 flex flex-col justify-between h-full">
+        <div>
+          <a href="{{ p.category.get_absolute_url }}" class="text-xs text-blue-600 hover:underline">{{ p.category.name }}</a>
+          <h4 class="font-semibold">{{ p.name }}</h4>
+          <div class="mt-1 text-sm text-gray-600">
+            {% if p.pack_description %}<span>{{ p.pack_description }}</span>{% endif %}
+          </div>
+          <div class="mt-2 text-sm">
+            {% if site_settings.show_prices %}
+              {% if p.price_inc_gst %}
+                <span class="font-medium">A$ {{ p.price_inc_gst }}</span>
+                <span class="text-gray-500">(inc GST)</span>
+              {% elif p.price_ex_gst %}
+                <span class="font-medium">A$ {{ p.price_ex_gst }}</span>
+                <span class="text-gray-500">(ex GST)</span>
+              {% endif %}
+            {% else %}
+              <span class="text-gray-600 italic">{{ site_settings.price_hidden_message }}</span>
+            {% endif %}
+          </div>
+          <div class="mt-2 text-xs {% if not p.available %}text-red-600{% else %}text-green-600{% endif %}">
+            {% if p.available %}Available{% else %}Unavailable{% endif %}
+          </div>
+        </div>
+
+        {% if p.available %}
+        {% with cart_qty=cart|cart_quantity:p.id %}
+        <div class="mt-4" x-data="{ qty: {{ cart_qty|default:1 }}, inCart: {{ cart_qty }} > 0 }">
+          <div x-show="inCart" class="mb-2 text-xs text-blue-600 font-medium" x-cloak>
+            In cart: {{ cart_qty }}
+          </div>
+
+          <div class="flex gap-2">
+            <form method="post" action="{% url 'cart_add' p.id %}" class="flex-1 flex gap-2">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}?q={{ search_query|urlencode }}">
+              <input type="hidden" name="update_mode" :value="inCart ? 'true' : 'false'">
+
+              <input type="number"
+                     name="quantity"
+                     x-model="qty"
+                     min="1"
+                     class="w-16 border rounded px-2 py-1 text-center text-sm">
+              <button type="submit"
+                      class="btn btn-sm flex-1"
+                      :class="inCart ? 'btn-outline' : 'btn-primary'">
+                <span x-show="inCart" x-cloak>Update</span>
+                <span x-show="!inCart">Add to Cart</span>
+              </button>
+            </form>
+
+            <form x-show="inCart" x-cloak method="post" action="{% url 'cart_remove' p.id %}">
+              {% csrf_token %}
+              <button type="submit"
+                      class="btn btn-sm border border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+                      style="height:42px;"
+                      onclick="return confirm('Remove {{ p.name }} from cart?')"
+                      title="Remove from cart">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endwith %}
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+{% elif not search_query %}
+  <p class="text-gray-600">Enter a search term to find products across all categories.</p>
+{% endif %}
+
+{% endblock %}
