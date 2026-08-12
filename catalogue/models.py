@@ -88,6 +88,9 @@ class Product(models.Model):
     image_main = models.ImageField(upload_to="products/", blank=True, null=True)
     image_alt = models.ImageField(upload_to="products/", blank=True, null=True)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
 

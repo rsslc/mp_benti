@@ -1,5 +1,5 @@
 {% extends "dashboard_base.html" %}
-{% block title %}{% if is_edit %}Edit Product{% else %}Add Product{% endif %} - Dashboard | MP Benti{% endblock %}
+{% block title %}{% if is_edit %}Edit Product{% else %}Add Product{% endif %} - Dashboard | Generi Alimentari{% endblock %}
 {% block content %}
 
 <h1 class="text-2xl font-bold mb-4">{% if is_edit %}Edit Product{% else %}Add New Product{% endif %}</h1>
@@ -97,26 +97,48 @@
 
         <div>
           <label for="image_main" class="block text-sm font-medium mb-1">Main Image</label>
+
+          {% if is_edit and product.image_main %}
+            <div class="mb-3">
+              <p class="text-sm text-gray-600 mb-2">Current image:</p>
+              <img src="{{ product.image_main.url }}" alt="{{ product.name }}" class="w-32 h-32 object-cover rounded border">
+              <div class="mt-2">
+                <label class="flex items-center">
+                  <input type="checkbox" name="remove_image_main" class="mr-2">
+                  <span class="text-sm text-red-600">Remove current image</span>
+                </label>
+              </div>
+            </div>
+          {% endif %}
+
           <input type="file" id="image_main" name="image_main" accept="image/*"
             class="w-full border px-3 py-2 rounded">
           <p class="text-xs text-gray-500 mt-1">
             Recommended: 600x600px (1:1 ratio), max 5MB. Images will be automatically resized and optimized.
           </p>
-          {% if is_edit and product.image_main %}
-            <p class="text-sm text-gray-600 mt-1">Current: {{ product.image_main.name }}</p>
-          {% endif %}
         </div>
 
         <div>
           <label for="image_alt" class="block text-sm font-medium mb-1">Alternative Image</label>
+
+          {% if is_edit and product.image_alt %}
+            <div class="mb-3">
+              <p class="text-sm text-gray-600 mb-2">Current image:</p>
+              <img src="{{ product.image_alt.url }}" alt="{{ product.name }}" class="w-32 h-32 object-cover rounded border">
+              <div class="mt-2">
+                <label class="flex items-center">
+                  <input type="checkbox" name="remove_image_alt" class="mr-2">
+                  <span class="text-sm text-red-600">Remove current image</span>
+                </label>
+              </div>
+            </div>
+          {% endif %}
+
           <input type="file" id="image_alt" name="image_alt" accept="image/*"
             class="w-full border px-3 py-2 rounded">
           <p class="text-xs text-gray-500 mt-1">
             Recommended: 600x600px (1:1 ratio), max 5MB. Images will be automatically resized and optimized.
           </p>
-          {% if is_edit and product.image_alt %}
-            <p class="text-sm text-gray-600 mt-1">Current: {{ product.image_alt.name }}</p>
-          {% endif %}
         </div>
       </div>
     </div>

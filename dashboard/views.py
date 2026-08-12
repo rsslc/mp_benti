@@ -688,6 +688,8 @@ def product_edit(request, product_id):
                 return redirect('product_edit', product_id=product_id)
 
             product.image_main = image_main
+        elif request.POST.get('remove_image_main') == 'on':
+            product.image_main = None
 
         if request.FILES.get('image_alt'):
             image_alt = request.FILES['image_alt']
@@ -704,6 +706,8 @@ def product_edit(request, product_id):
                 return redirect('product_edit', product_id=product_id)
 
             product.image_alt = image_alt
+        elif request.POST.get('remove_image_alt') == 'on':
+            product.image_alt = None
 
         product.save()
         messages.success(request, f'Product "{product.name}" updated successfully')
