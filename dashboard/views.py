@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils import timezone
+from django.utils.text import slugify
 from decimal import Decimal
 import csv
 import io
@@ -341,7 +342,7 @@ def products_list(request):
             writer.writerow([
                 'Name', 'Category', 'Description', 'Pack Description',
                 'Price Ex GST', 'Price Inc GST', 'Available', 'Stock Quantity',
-                'Image', 'Alt Image'
+                'Image'
             ])
 
             # Write data
@@ -356,7 +357,6 @@ def products_list(request):
                     product.available,
                     product.stock_quantity,
                     os.path.basename(product.image_main.name) if product.image_main else '',
-                    os.path.basename(product.image_alt.name) if product.image_alt else '',
                 ])
 
             return response
@@ -613,30 +613,6 @@ def product_add(request):
 
             product.image_main = image_main
 
-        if request.FILES.get('image_alt'):
-            image_alt = request.FILES['image_alt']
-
-            # Validate image size and format
-            is_valid, error_msg = validate_image_size(image_alt, max_size_mb=5)
-            if not is_valid:
-                messages.error(request, f"Alt image: {error_msg}")
-                return render(request, "dashboard/product_form.html", {
-                    'categories': categories,
-                    'form_data': request.POST,
-                    'is_edit': False
-                })
-
-            is_valid, error_msg = validate_image_format(image_alt)
-            if not is_valid:
-                messages.error(request, f"Alt image: {error_msg}")
-                return render(request, "dashboard/product_form.html", {
-                    'categories': categories,
-                    'form_data': request.POST,
-                    'is_edit': False
-                })
-
-            product.image_alt = image_alt
-
         product.save()
 
         messages.success(request, f'Product "{name}" created successfully')
@@ -689,25 +665,7 @@ def product_edit(request, product_id):
 
             product.image_main = image_main
         elif request.POST.get('remove_image_main') == 'on':
-            product.image_main = None
-
-        if request.FILES.get('image_alt'):
-            image_alt = request.FILES['image_alt']
-
-            # Validate image size and format
-            is_valid, error_msg = validate_image_size(image_alt, max_size_mb=5)
-            if not is_valid:
-                messages.error(request, f"Alt image: {error_msg}")
-                return redirect('product_edit', product_id=product_id)
-
-            is_valid, error_msg = validate_image_format(image_alt)
-            if not is_valid:
-                messages.error(request, f"Alt image: {error_msg}")
-                return redirect('product_edit', product_id=product_id)
-
-            product.image_alt = image_alt
-        elif request.POST.get('remove_image_alt') == 'on':
-            product.image_alt = None
+            product.image_main.delete(save=False)
 
         product.save()
         messages.success(request, f'Product "{product.name}" updated successfully')
@@ -812,17 +770,6 @@ def products_import_csv(request):
                         else:
                             errors.append(
                                 f"Row {row_num}: image '{image_name}' not found in product_images_import folder"
-                            )
-
-                    alt_image_name = row.get('Alt Image', '').strip()
-                    if alt_image_name:
-                        alt_image_file = get_import_image_file(alt_image_name)
-                        if alt_image_file:
-                            product.image_alt = alt_image_file
-                            opened_files.append(alt_image_file)
-                        else:
-                            errors.append(
-                                f"Row {row_num}: alt image '{alt_image_name}' not found in product_images_import folder"
                             )
 
                     if opened_files:
@@ -931,6 +878,7 @@ def category_add(request):
 
         # Handle slug
         if slug:
+            slug = slugify(slug)
             # Check if slug is unique
             if Category.objects.filter(slug=slug).exists():
                 messages.error(request, 'A category with this slug already exists')
@@ -1022,6 +970,7 @@ def category_edit(request, category_id):
 
         # Handle slug
         if slug:
+            slug = slugify(slug)
             # Check if slug is unique (excluding current category)
             if Category.objects.filter(slug=slug).exclude(id=category.id).exists():
                 messages.error(request, 'A category with this slug already exists')
@@ -1058,7 +1007,7 @@ def category_edit(request, category_id):
 
             category.image = image
         elif request.POST.get('remove_image') == 'on':
-            category.image = None
+            category.image.delete(save=False)
 
         category.save()
         messages.success(request, f'Category "{category.name}" updated successfully')

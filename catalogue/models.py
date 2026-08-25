@@ -86,7 +86,6 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     stock_quantity = models.PositiveIntegerField(null=True, blank=True)
     image_main = models.ImageField(upload_to="products/", blank=True, null=True)
-    image_alt = models.ImageField(upload_to="products/", blank=True, null=True)
 
     class Meta:
         ordering = ['name']
@@ -101,16 +100,6 @@ class Product(models.Model):
                 processed_image = process_product_image(self.image_main)
                 if processed_image:
                     self.image_main = processed_image
-            except Exception:
-                # If processing fails, keep the original image
-                pass
-
-        # Process alt image if it's being uploaded/changed
-        if self.image_alt and hasattr(self.image_alt, 'file'):
-            try:
-                processed_image = process_product_image(self.image_alt)
-                if processed_image:
-                    self.image_alt = processed_image
             except Exception:
                 # If processing fails, keep the original image
                 pass

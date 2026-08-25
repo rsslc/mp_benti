@@ -25,8 +25,14 @@
           <input type="text" id="slug" name="slug"
                  value="{% if is_edit %}{{ category.slug }}{% elif form_data %}{{ form_data.slug }}{% endif %}"
                  class="w-full border px-3 py-2 rounded focus:border-gray-900"
-                 placeholder="auto-generated-from-name">
-          <p class="text-xs text-gray-500 mt-1">Leave blank to auto-generate from name</p>
+                 placeholder="auto-generated-from-name"
+                 pattern="[-a-zA-Z0-9_]+"
+                 title="Only letters, numbers, hyphens and underscores are allowed — no spaces.">
+          <p class="text-xs text-gray-500 mt-1">
+            Leave blank to auto-generate from name. Only letters, numbers, hyphens and underscores are
+            allowed — spaces and other characters will be automatically converted (e.g. "Flour Farina"
+            becomes "flour-farina").
+          </p>
         </div>
       </div>
 

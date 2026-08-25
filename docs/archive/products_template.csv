@@ -1,6 +1,6 @@
-Name,Category,Description,Pack Description,Price Ex GST,Price Inc GST,Available,Stock Quantity,Image,Alt Image
-Italian Mozzarella,Cheese,Fresh mozzarella from Italy,500g x 12,45.00,49.50,True,50,,
-Cheddar Block,Cheese,Aged cheddar cheese,1kg x 10,55.00,60.50,True,30,,
-Plain Flour,Flour,All-purpose white flour,1kg x 10,25.00,27.50,True,100,,
-Self-Raising Flour,Flour,Self-raising flour with baking powder,1kg x 10,28.00,30.80,True,80,,
-Salami Milano,Smallgoods,Traditional Italian salami,500g x 6,65.00,71.50,True,25,,
+Name,Category,Description,Pack Description,Price Ex GST,Price Inc GST,Available,Stock Quantity,Image
+Italian Mozzarella,Cheese,Fresh mozzarella from Italy,500g x 12,45.00,49.50,True,50,
+Cheddar Block,Cheese,Aged cheddar cheese,1kg x 10,55.00,60.50,True,30,
+Plain Flour,Flour,All-purpose white flour,1kg x 10,25.00,27.50,True,100,
+Self-Raising Flour,Flour,Self-raising flour with baking powder,1kg x 10,28.00,30.80,True,80,
+Salami Milano,Smallgoods,Traditional Italian salami,500g x 6,65.00,71.50,True,25,

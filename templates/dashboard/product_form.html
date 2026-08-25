@@ -93,10 +93,10 @@
       </div>
 
       <div class="space-y-4">
-        <h3 class="text-lg font-bold">Images</h3>
+        <h3 class="text-lg font-bold">Image</h3>
 
         <div>
-          <label for="image_main" class="block text-sm font-medium mb-1">Main Image</label>
+          <label for="image_main" class="block text-sm font-medium mb-1">Product Image</label>
 
           {% if is_edit and product.image_main %}
             <div class="mb-3">
@@ -112,29 +112,6 @@
           {% endif %}
 
           <input type="file" id="image_main" name="image_main" accept="image/*"
-            class="w-full border px-3 py-2 rounded">
-          <p class="text-xs text-gray-500 mt-1">
-            Recommended: 600x600px (1:1 ratio), max 5MB. Images will be automatically resized and optimized.
-          </p>
-        </div>
-
-        <div>
-          <label for="image_alt" class="block text-sm font-medium mb-1">Alternative Image</label>
-
-          {% if is_edit and product.image_alt %}
-            <div class="mb-3">
-              <p class="text-sm text-gray-600 mb-2">Current image:</p>
-              <img src="{{ product.image_alt.url }}" alt="{{ product.name }}" class="w-32 h-32 object-cover rounded border">
-              <div class="mt-2">
-                <label class="flex items-center">
-                  <input type="checkbox" name="remove_image_alt" class="mr-2">
-                  <span class="text-sm text-red-600">Remove current image</span>
-                </label>
-              </div>
-            </div>
-          {% endif %}
-
-          <input type="file" id="image_alt" name="image_alt" accept="image/*"
             class="w-full border px-3 py-2 rounded">
           <p class="text-xs text-gray-500 mt-1">
             Recommended: 600x600px (1:1 ratio), max 5MB. Images will be automatically resized and optimized.
