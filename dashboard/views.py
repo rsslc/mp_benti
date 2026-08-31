@@ -312,6 +312,27 @@ def order_delete(request, order_id):
 
 
 @staff_required
+def order_update_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        valid_statuses = dict(ORDER_STATUS)
+        if new_status in valid_statuses:
+            order.status = new_status
+            order.save()
+            messages.success(request, f'Order #{order.id} marked as {valid_statuses[new_status]}')
+        else:
+            messages.error(request, 'Invalid status')
+
+    redirect_url = reverse('dashboard_orders')
+    qs = request.POST.get('qs', '')
+    if qs:
+        redirect_url += f'?{qs}'
+    return redirect(redirect_url)
+
+
+@staff_required
 def products_list(request):
     # Handle POST requests for bulk actions
     if request.method == 'POST':
@@ -1055,12 +1076,17 @@ def generate_invoice(request, order_id):
     if order.invoice_number:
         messages.info(request, f'Order #{order.id} already has invoice number: {order.invoice_number}')
     else:
-        # Auto-populate prices from product if missing (for old orders)
+        # Backfill only whichever price is actually missing (for old orders) -
+        # never overwrite a price already captured at order time
         for line in order.lines.all():
-            if line.unit_price_ex_gst is None or line.unit_price_inc_gst is None:
-                # Use current product prices as fallback
+            updated = False
+            if line.unit_price_ex_gst is None:
                 line.unit_price_ex_gst = line.product.price_ex_gst
+                updated = True
+            if line.unit_price_inc_gst is None:
                 line.unit_price_inc_gst = line.product.price_inc_gst
+                updated = True
+            if updated:
                 line.save()
 
         invoice_number = order.generate_invoice_number()
@@ -1080,12 +1106,17 @@ def order_invoice_pdf(request, order_id):
         messages.error(request, 'Cannot generate PDF: Invoice number has not been generated yet')
         return redirect('order_detail', order_id=order.id)
 
-    # Auto-populate prices from product if missing (for old orders or edited orders)
+    # Backfill only whichever price is actually missing (for old or edited orders) -
+    # never overwrite a price already captured at order time
     for line in order.lines.all():
-        if line.unit_price_ex_gst is None or line.unit_price_inc_gst is None:
-            # Use current product prices as fallback
+        updated = False
+        if line.unit_price_ex_gst is None:
             line.unit_price_ex_gst = line.product.price_ex_gst
+            updated = True
+        if line.unit_price_inc_gst is None:
             line.unit_price_inc_gst = line.product.price_inc_gst
+            updated = True
+        if updated:
             line.save()
 
     # Create response
@@ -1248,7 +1279,7 @@ def order_invoice_pdf(request, order_id):
     # Add totals
     item_data.append(['', '', '', '', ''])
     item_data.append(['', '', '', 'Subtotal (ex GST):', f"${order.get_subtotal_ex_gst():.2f}"])
-    item_data.append(['', '', '', 'GST (10%):', f"${order.get_gst_amount():.2f}"])
+    item_data.append(['', '', '', 'GST:', f"${order.get_gst_amount():.2f}"])
     item_data.append(['', '', '', 'TOTAL (inc GST):', f"${order.get_total_inc_gst():.2f}"])
 
     item_table = Table(item_data, colWidths=[80*mm, 25*mm, 35*mm, 30*mm, 30*mm])

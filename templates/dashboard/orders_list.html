@@ -104,10 +104,29 @@
           {% endif %}
         </td>
         <td>
-          <div class="flex gap-2">
+          <div class="flex items-center gap-2">
             <a href="{% url 'order_detail' o.id %}" class="text-blue-600 hover:underline">View</a>
             <a href="{% url 'order_edit' o.id %}" class="text-blue-600 hover:underline">Edit</a>
             <a href="{% url 'order_delete' o.id %}" class="text-red-600 hover:underline">Delete</a>
+            {% if o.status == 'new' %}
+              <form method="post" action="{% url 'order_update_status' o.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="processing">
+                <input type="hidden" name="qs" value="{{ request.GET.urlencode }}">
+                <button type="submit" class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs hover:bg-yellow-200">
+                  Mark Processing →
+                </button>
+              </form>
+            {% elif o.status == 'processing' %}
+              <form method="post" action="{% url 'order_update_status' o.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="fulfilled">
+                <input type="hidden" name="qs" value="{{ request.GET.urlencode }}">
+                <button type="submit" class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200">
+                  Mark Fulfilled →
+                </button>
+              </form>
+            {% endif %}
           </div>
         </td>
       </tr>

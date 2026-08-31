@@ -70,14 +70,17 @@ class Order(models.Model):
                 total += line.unit_price_ex_gst * line.quantity
         return total
 
-    def get_gst_amount(self):
-        """Calculate total GST amount"""
-        subtotal = self.get_subtotal_ex_gst()
-        return subtotal * Decimal('0.10')  # 10% GST
-
     def get_total_inc_gst(self):
-        """Calculate order total including GST"""
-        return self.get_subtotal_ex_gst() + self.get_gst_amount()
+        """Calculate order total including GST, from each line's actual inc-GST price
+        (not all items are GST-applicable, so this can't be a flat 10% of the subtotal)"""
+        total = Decimal('0.00')
+        for line in self.lines.all():
+            total += line.get_line_total_inc_gst()
+        return total
+
+    def get_gst_amount(self):
+        """Calculate total GST amount actually charged across all lines"""
+        return self.get_total_inc_gst() - self.get_subtotal_ex_gst()
 
 
 class OrderLine(models.Model):
@@ -110,10 +113,16 @@ class OrderLine(models.Model):
             return self.unit_price_ex_gst * self.quantity
         return Decimal('0.00')
 
-    def get_line_gst(self):
-        """Get GST amount for this line"""
-        return self.get_line_total_ex_gst() * Decimal('0.10')
-
     def get_line_total_inc_gst(self):
-        """Get line total including GST"""
-        return self.get_line_total_ex_gst() + self.get_line_gst()
+        """Get line total including GST, from the actual price captured at order time
+        (not a flat 10% — GST-free items have unit_price_inc_gst == unit_price_ex_gst).
+        Falls back to the ex-GST total when no inc-GST price was captured, rather than
+        guessing a GST rate or silently dropping the line to zero."""
+        if self.unit_price_inc_gst is not None:
+            return self.unit_price_inc_gst * self.quantity
+        return self.get_line_total_ex_gst()
+
+    def get_line_gst(self):
+        """Get GST amount actually charged for this line (never negative)"""
+        gst = self.get_line_total_inc_gst() - self.get_line_total_ex_gst()
+        return gst if gst > 0 else Decimal('0.00')
